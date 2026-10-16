@@ -1,4 +1,4 @@
-name: Publish GeoLab
+name: Publish GeoLab and APK
 on:
   push:
     branches: [main]
@@ -33,3 +33,25 @@ jobs:
       name: github-pages
     steps:
       - uses: actions/deploy-pages@v4
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+      - name: Build Android APK
+        working-directory: android
+        run: gradle --no-daemon :app:assembleDebug
+      - name: Copy APK
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk GeoLab.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: GeoLab-APK
+          path: GeoLab.apk
+          retention-days: 90

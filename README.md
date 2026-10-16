@@ -16,3 +16,5 @@ GitHub Actions에서 원본 공개 배포 파일 약 3천 개를 사이트 내�
 
 배포: 저장소 Settings → Pages → Build and deployment → GitHub Actions.
 예상 URL: https://jisanhigh.github.io/GeoLab/
+
+<!-- GitHub Pages redeploy requested after enabling GitHub Actions source. -->

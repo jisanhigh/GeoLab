@@ -20,6 +20,61 @@ def icon(size,path):
             raw.extend((*v,255))
     def ch(t,s):return struct.pack('>I',len(s))+t+s+struct.pack('>I',zlib.crc32(t+s)&0xffffffff)
     path.write_bytes(b'\x89PNG\r\n\x1a\n'+ch(b'IHDR',struct.pack('>IIBBBBB',size,size,8,6,0,0,0))+ch(b'IDAT',zlib.compress(raw))+ch(b'IEND',b''))
+
+# The upstream repository was replaced by redirect pages on Oct 15, 2026.
+# Pin the last complete public Git tree rather than the current branch.
+HISTORIC_TREE="00cde01f529adc74c09a89107eea4eccd5097241"
+HISTORIC_ARCHIVE="https://codeload.github.com/twotimeessgeo/country-map-maker/zip/"+HISTORIC_TREE
+def full_historic_snapshot():
+    from concurrent.futures import ThreadPoolExecutor,as_completed
+    import hashlib,time
+    from urllib.parse import quote
+    print("Recovering complete historic public release...",flush=True)
+    # Check whether GitHub can serve an archive directly from the old tree.
+    try:
+        with urlopen(Request(HISTORIC_ARCHIVE,headers={'User-Agent':'GeoLab-Education/1.0'}),timeout=200) as f:
+            raw=f.read()
+        with ZipFile(BytesIO(raw)) as z:
+            members=[x for x in z.infolist() if not x.is_dir()]
+            if len(members)>=3000:
+                prefix=members[0].filename.split('/')[0]+'/'
+                for item in members:
+                    if not item.filename.startswith(prefix):continue
+                    name=Path(item.filename[len(prefix):])
+                    if not name.parts or name.is_absolute() or '..' in name.parts:raise ValueError('Unsafe archive')
+                    p=SITE/name;p.parent.mkdir(parents=True,exist_ok=True)
+                    with z.open(item) as src,p.open('wb') as dest:shutil.copyfileobj(src,dest)
+                return set(x.filename[len(prefix):] for x in members if x.filename.startswith(prefix))
+    except Exception as e:
+        print("Historic ZIP unavailable; fetching Git objects by path:",str(e)[:160],flush=True)
+    api="https://api.github.com/repos/twotimeessgeo/country-map-maker/git/trees/"+HISTORIC_TREE+"?recursive=1"
+    with urlopen(Request(api,headers={'User-Agent':'GeoLab-Education/1.0','Accept':'application/vnd.github+json'}),timeout=60) as r:
+        response=json.load(r)
+    items=[x for x in response.get('tree',[]) if x.get('type')=='blob']
+    if len(items)<3000 or response.get('truncated'):raise RuntimeError('Historic file manifest is incomplete')
+    source="https://raw.githubusercontent.com/twotimeessgeo/country-map-maker/"+HISTORIC_TREE+"/"
+    def one(obj):
+        path=obj['path'];dest=SITE/path
+        uri=source+quote(path,safe='/')
+        for retry in range(4):
+            try:
+                with urlopen(Request(uri,headers={'User-Agent':'GeoLab-Education/1.0'}),timeout=120) as f:
+                    data=f.read()
+                actual=hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()
+                if actual!=obj['sha']:raise RuntimeError('Hash mismatch '+path)
+                dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(data)
+                return path
+            except Exception:
+                if retry==3:raise
+                time.sleep((retry+1)*2)
+    paths=set()
+    with ThreadPoolExecutor(max_workers=12) as ex:
+        futures=[ex.submit(one,obj) for obj in items]
+        for i,f in enumerate(as_completed(futures),1):
+            paths.add(f.result())
+            if i%300==0:print("Recovered",i,"/",len(items),flush=True)
+    return paths
+
 def main():
     if SITE.exists():shutil.rmtree(SITE)
     SITE.mkdir()
@@ -36,6 +91,9 @@ def main():
             target=SITE/p;target.parent.mkdir(parents=True,exist_ok=True)
             with z.open(item) as src,target.open('wb') as dst:shutil.copyfileobj(src,dst)
             names.add(p.as_posix())
+    if len(names)<3000:
+        shutil.rmtree(SITE);SITE.mkdir()
+        names=full_historic_snapshot()
     assert len(names)>=3000,('Missing original files',len(names))
     assert not (set(REQUIRED)-names),('Missing required files',set(REQUIRED)-names)
     for family in ['tools/cut/question-images/','tools/ox/audio/','fonts/','meridian/media/','atlas-archive/','notes/']:

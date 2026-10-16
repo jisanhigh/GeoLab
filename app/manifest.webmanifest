@@ -1,0 +1,25 @@
+{
+  "name": "GeoLab | 세계지리·한국지리",
+  "short_name": "GeoLab",
+  "description": "세계지리·한국지리 자료",
+  "start_url": "./index.html",
+  "id": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f6f6",
+  "theme_color": "#13293c",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

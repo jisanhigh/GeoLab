@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#13293c"><meta name="description" content="세계지리·한국지리 자료 검색과 단원별 학습">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="GeoLab">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icon-180.png"><link rel="icon" href="./icon-192.png">
+<link rel="stylesheet" href="./app.css"><title>GeoLab | 세계지리·한국지리</title></head>
+<body>
+<header class="top"><div class="shell topinner"><button class="brand" data-view="home" aria-label="GeoLab 홈"><span class="brandmark">G</span><span>GeoLab<small>지리 학습 자료</small></span></button>
+<div class="subjects" role="group" aria-label="과목 선택"><button class="subject active" data-subject="world">세계지리</button><button class="subject" data-subject="korea">한국지리</button></div>
+<button class="header-search" data-view="search" aria-label="자료 검색">⌕ <span>자료 검색</span></button></div></header>
+<div class="shell desktop-layout"><nav class="side" aria-label="기능">
+<div class="sidelabel">학습 메뉴</div>
+<button class="navbutton active" data-view="home"><span>⌂</span> 홈</button>
+<button class="navbutton" data-view="ox"><span>◯</span> OX 학습</button>
+<button class="navbutton" data-view="search"><span>⌕</span> 자료 검색</button>
+<div class="sidelabel second">자료</div>
+<button class="navbutton" data-view="climate"><span>◉</span> 기후 지도</button>
+<button class="navbutton" data-view="stats"><span>▥</span> 통계</button>
+<button class="navbutton" data-view="exam"><span>▤</span> 기출 분석</button>
+<button class="navbutton" data-view="library"><span>☷</span> 읽기·보관 자료</button>
+<div class="sidefoot">원본 자료: twotimess<br>비영리 교육용 · GeoLab</div></nav>
+<main id="main">
+<section class="panel active" id="panel-home" aria-labelledby="homeTitle">
+<div class="pagehead"><div><div class="overline" id="subjectLabel">WORLD GEOGRAPHY</div><h1 id="homeTitle">세계지리</h1><p class="lead">단원별 개념 학습과 자료 검색</p></div><div class="simpleicon">◎</div></div>
+<div class="dashboard">
+<div class="dash-card primary"><div class="eyebrow">OX 개념 학습</div><h2>지난 학습에 이어서</h2><p id="progressLine">학습 기록을 불러오는 중입니다.</p><div class="meter"><i id="progressBar"></i></div><div class="dash-actions"><button class="btn light" data-view="ox">문제 풀기</button><button class="btn muted" id="reviewHome">오답 복습 <span id="wrongCount">0</span></button></div></div>
+<div class="dash-card stats"><div class="eyebrow">자료 현황</div><div class="metric"><strong id="oxTotal">—</strong><span>OX 문항</span></div><div class="metric"><strong id="climateTotal">—</strong><span>기후 관측 지점</span></div><div class="metric"><strong id="statsTotal">—</strong><span>통계표</span></div></div>
+</div>
+<div class="sectionrow"><h2>자료 살펴보기</h2><span>사이트 안에서 바로 열립니다.</span></div>
+<div class="tool-grid"><button class="tool" data-view="climate"><span class="toolico blue">◉</span><strong>기후 지도</strong><small>관측 지점별 기온·강수량 비교</small></button>
+<button class="tool" data-view="stats"><span class="toolico violet">▥</span><strong>통계</strong><small>국가·지역별 지표 비교</small></button>
+<button class="tool" data-view="exam"><span class="toolico amber">▤</span><strong>기출 분석</strong><small>등급컷·문항별 분석</small></button>
+<button class="tool" data-view="library"><span class="toolico green">☷</span><strong>읽기·보관 자료</strong><small>해설 자료·기후 관측 아카이브</small></button></div>
+<div class="sectionrow"><h2>단원별 OX 학습</h2><button class="textbutton" data-view="ox">전체 보기 →</button></div><div id="chapterTiles" class="chapters"><p class="hint">문항을 읽는 중입니다.</p></div>
+</section>
+
+<section class="panel" id="panel-ox"><div class="pagehead compact"><div><div class="overline">단원별 반복 학습</div><h1>OX 학습</h1><p class="lead">답을 선택하면 정답과 해설을 확인할 수 있습니다.</p></div></div>
+<div class="quiz-options"><label>단원 <select id="chapterSelect"><option value="all">전체 단원</option></select></label>
+<div class="segment" role="group" aria-label="학습 방식"><button class="active" data-mode="all">전체</button><button data-mode="wrong">오답 복습</button><button data-mode="saved">저장한 문항</button></div></div>
+<div class="quiz-layout"><div class="quiz-card"><div class="quiz-meta"><span id="questionChapter">단원</span><span id="quizCounter">0 / 0</span></div><p id="questionText" class="question">문항을 불러오고 있습니다.</p>
+<div class="answers" id="quizAnswers"><button data-answer="O" class="answer">O</button><button data-answer="X" class="answer">X</button></div>
+<div id="feedback" class="feedback" hidden></div><div class="quiz-buttons"><button id="saveQuestion" class="btn outline">☆ 문항 저장</button><button id="nextQuestion" class="btn dark">다음 문제 →</button></div></div>
+<aside class="study-summary"><h3>학습 기록</h3><div class="lineitem"><span>푼 문항</span><b id="studyDone">0</b></div><div class="lineitem"><span>정답</span><b id="studyRight">0</b></div><div class="lineitem"><span>복습할 문항</span><b id="studyWrong">0</b></div><p>학습 기록은 이 기기에 저장됩니다.</p><button id="resetProgress" class="textbutton">이 과목 기록 초기화</button></aside></div>
+</section>
+
+<section class="panel" id="panel-search"><div class="pagehead compact"><div><div class="overline">통합 자료 검색</div><h1>자료 검색</h1><p class="lead">문항, 기후 관측 지점, 통계표, 기출 기록을 한 번에 검색합니다.</p></div></div>
+<div class="searchbar"><span>⌕</span><input type="search" id="searchInput" autocomplete="off" placeholder="예: 몬순, 부산, 인구 밀도, 라니냐" aria-label="검색어"><button id="clearSearch" aria-label="검색 초기화">×</button></div>
+<div class="filter-row" id="searchKinds"><button class="active" data-kind="all">전체</button><button data-kind="ox">OX</button><button data-kind="climate">기후</button><button data-kind="stats">통계</button><button data-kind="exam">기출</button><button data-kind="library">읽기 자료</button></div>
+<div class="search-meta" id="searchCount">검색어를 입력하면 결과가 표시됩니다.</div><div class="result-list" id="searchResults"></div>
+</section>
+
+<section class="panel" id="panel-climate"><div class="modulehead"><div><div class="overline">기후 관측</div><h1>기후 지도</h1><p class="lead">지도에서 지점을 선택해 기온과 강수량을 비교할 수 있습니다.</p></div><button class="btn outline" data-expand="climate">크게 보기 ↗</button></div><div class="framewrap"><iframe id="frame-climate" title="기후 지도" loading="lazy"></iframe></div></section>
+<section class="panel" id="panel-stats"><div class="modulehead"><div><div class="overline">지역별 지표</div><h1>통계</h1><p class="lead">인구·도시·산업·자원 등 주제별 통계를 확인합니다.</p></div><button class="btn outline" data-expand="stats">크게 보기 ↗</button></div><div class="framewrap"><iframe id="frame-stats" title="지리 통계" loading="lazy"></iframe></div></section>
+<section class="panel" id="panel-exam"><div class="modulehead"><div><div class="overline">역대 시험</div><h1>기출 분석</h1><p class="lead">학년도와 시험을 선택해 등급컷과 문항별 오답률을 확인합니다.</p></div><button class="btn outline" data-expand="exam">크게 보기 ↗</button></div><div class="framewrap"><iframe id="frame-exam" title="기출 분석" loading="lazy"></iframe></div></section>
+<section class="panel" id="panel-library"><div class="pagehead compact"><div><div class="overline">읽기 자료·자료 보관소</div><h1>자료실</h1><p class="lead">원문 분석과 위도별 일조 자료를 이 사이트에서 열람할 수 있습니다.</p></div></div><div class="searchbar"><span>⌕</span><input id="librarySearch" type="search" placeholder="자료 제목이나 내용 검색" aria-label="자료실 검색"></div><div class="filter-row"><button class="active" data-lib="all">전체</button><button data-lib="읽기 자료">읽기 자료</button><button data-lib="일조 자료">일조 자료</button></div><div class="search-meta" id="libraryCount"></div><div class="result-list" id="libraryResults"></div><button class="btn outline more" id="libraryMore">더 보기</button></section>
+</main></div>
+<nav class="bottom" aria-label="모바일 메뉴"><button data-view="home" class="active"><b>⌂</b>홈</button><button data-view="ox"><b>◯</b>OX</button><button data-view="search"><b>⌕</b>검색</button><button data-view="climate"><b>◉</b>기후</button><button data-view="stats"><b>▥</b>통계</button><button data-view="exam"><b>▤</b>기출</button><button data-view="library"><b>☷</b>자료</button></nav>
+<div id="toast" aria-live="polite"></div><script src="ds/codec.js"></script><script src="./app.js" defer></script></body></html>

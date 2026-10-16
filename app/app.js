@@ -4,7 +4,7 @@ const el=id=>document.getElementById(id);
 const E=v=>String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const N=v=>String(v||"").normalize("NFKC").toLowerCase().trim();
 const F=v=>typeof v==="number"?v.toLocaleString("ko-KR"):v==null?"—":v;
-const state={s:"world",view:"home",mode:"all",ch:"all",q:null,answered:false,kind:"all",lib:"all",limit:36,ox:[],climate:[],stats:[],exams:[],docs:[],index:[],hits:[],ready:false};
+const state={s:"world",view:"home",mode:"all",ch:"all",q:null,answered:false,kind:"all",lib:"all",limit:36,ox:[],climate:[],stats:[],exams:[],docs:[],index:[],hits:[],deep:null,ready:false};
 const SUB=s=>s==="world"?"세계지리":"한국지리";
 function record(){try{return JSON.parse(localStorage.getItem("geolab-learning-"+state.s)||"{}")}catch(e){return {}}}
 function write(v){try{localStorage.setItem("geolab-learning-"+state.s,JSON.stringify(v))}catch(e){}}
@@ -14,7 +14,7 @@ function goto(view,sub,historyPush){
  state.view=view;document.body.dataset.subject=state.s;
  document.querySelectorAll(".panel").forEach(x=>x.classList.toggle("active",x.id==="panel-"+view));
  document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x.dataset.view===view));
- document.querySelectorAll("[data-subject]").forEach(x=>x.classList.toggle("active",x.dataset.subject===state.s));
+ document.querySelectorAll(".subjects button[data-subject]").forEach(x=>x.classList.toggle("active",x.dataset.subject===state.s));
  el("homeTitle").textContent=SUB(state.s);el("subjectLabel").textContent=state.s==="world"?"WORLD GEOGRAPHY":"KOREAN GEOGRAPHY";
  if(historyPush!==false)history.pushState(null,"","#"+state.s+"/"+view);
  if(view==="home")home();
@@ -25,8 +25,11 @@ function goto(view,sub,historyPush){
  window.scrollTo(0,0);
 }
 function module(which){
- const path=which==="climate"?(state.s==="world"?"tools/climate/index.html":"tools/climate/korea.html"):which==="stats"?"tools/stats/index.html?subject="+state.s:"tools/cut/index.html?subject="+state.s;
- const f=el("frame-"+which);if(f.dataset.route!==path){f.src=path;f.dataset.route=path}
+ const base=which==="climate"?(state.s==="world"?"tools/climate/index.html":"tools/climate/korea.html"):which==="stats"?"tools/stats/index.html?subject="+state.s:"tools/cut/index.html?subject="+state.s;
+ const focus=state.deep;
+ const path=focus&&focus.kind===which&&focus.subject===state.s?focus.path:base;
+ const f=el("frame-"+which);
+ if(f.dataset.route!==path){f.src=path;f.dataset.route=path;}
 }
 function bank(){return state.ox.filter(x=>x.subject===state.s)}
 function home(){
@@ -85,21 +88,30 @@ function oxData(d,extra){
  }))));
 }
 function climateData(d,s){(d.regions||[]).forEach(x=>{
+ const label=[x.country||x.nation||x.continent||x.zone,x.climateCode||x.zone].filter(Boolean).join(" · ");
  state.climate.push({subject:s,name:x.name});
- add("climate",s,x.name,"연평균 "+F(x.annualMeanTemperatureC)+"℃ · 연강수량 "+F(x.annualPrecipitationMm)+"mm",[x.country||x.nation||x.continent||x.zone,x.climateCode||x.zone].filter(Boolean).join(" · "));
+ const desc="연평균 "+F(x.annualMeanTemperatureC)+"℃ · 연강수량 "+F(x.annualPrecipitationMm)+"mm";
+ const path=(s==="world"?"tools/climate/index.html":"tools/climate/korea.html")+"?regions="+encodeURIComponent(x.id)+"&map=selected";
+ add("climate",s,x.name,desc,label,{path:path,id:x.id,hayExtra:N((x.aliases||[]).join(" "))});
 })}
 function statsData(d){Object.entries(d.subjects||{}).forEach(([s,sub])=>(sub.topics||[]).forEach(t=>(t.regions||[{title:"",tables:t.tables||[]}]).forEach(g=>(g.tables||[]).forEach(tb=>{
  state.stats.push({subject:s,title:tb.title});
- const labels=(tb.views||[]).flatMap(v=>(v.columns||[]).map(x=>x.label).concat((v.rows||[]).map(x=>x.label))).slice(0,100);
- add("stats",s,tb.title,labels.join(" · "),t.title+(g.title?" / "+g.title:""));
+ const labels=(tb.views||[]).flatMap(v=>(v.columns||[]).map(x=>x.label).concat((v.rows||[]).map(x=>x.label))).slice(0,140);
+ const extra=(tb.views||[]).flatMap(v=>(v.subviews||[]).flatMap(q=>[q.label,...(q.rows||[]).map(r=>r.label)]));
+ const url="tools/stats/index.html?subject="+s+"&topic="+encodeURIComponent(t.id)+(g.id?"&region="+encodeURIComponent(g.id):"")+"#"+encodeURIComponent(tb.id);
+ add("stats",s,tb.title,labels.join(" · "),t.title+(g.title?" / "+g.title:""),{path:url,hayExtra:N(extra.join(" "))});
 }))))}
 function examsData(d){(d.records||[]).forEach(x=>{
- let s=x.subject==="세계지리"?"world":"korea",t=x.school_year+"학년도 "+Number(x.month)+"월 "+x.subject;
- state.exams.push({subject:s,title:t});add("exam",s,t,"1등급 "+F(x.raw1)+"점 · 평균 "+F(x.national_mean)+"점","등급컷·오답률");
+ if(x.subject!=="세계지리"&&x.subject!=="한국지리")return;
+ const s=x.subject==="세계지리"?"world":"korea";
+ const month=String(x.month).padStart(2,"0");
+ const t=x.school_year+"학년도 "+Number(x.month)+"월 "+x.subject;
+ const path="tools/cut/index.html?subject="+s+"&exam="+x.school_year+"-"+month;
+ state.exams.push({subject:s,title:t});add("exam",s,t,"1등급 "+F(x.raw1)+"점 · 평균 "+F(x.national_mean)+"점","등급컷·오답률",{path});
 })}
 function catalogData(d){state.docs=d.map(x=>Object.assign({},x,{hay:N([x.title,x.type,x.text].join(" "))}));state.docs.forEach(x=>add("library","all",x.title,(x.text||"").slice(0,500),x.type,{url:x.url}))}
 const labels={ox:"OX 문항",climate:"기후 관측",stats:"통계표",exam:"기출 분석",library:"읽기 자료"};
-function hits(){const terms=N(el("searchInput").value).split(/\s+/).filter(Boolean);return terms.length?state.index.filter(x=>(x.subject==="all"||x.subject===state.s)&&(state.kind==="all"||x.kind===state.kind)&&terms.every(t=>x.hay.includes(t))):[]}
+function hits(){const terms=N(el("searchInput").value).split(/\s+/).filter(Boolean);return terms.length?state.index.filter(x=>(x.subject==="all"||x.subject===state.s)&&(state.kind==="all"||x.kind===state.kind)&&terms.every(t=>(x.hay+" "+(x.hayExtra||"")).includes(t))):[]}
 function search(){
  const items=hits();state.hits=items;const txt=N(el("searchInput").value);
  el("searchCount").textContent=state.ready?(txt?F(items.length)+"건 검색됨":"검색어를 입력해 주세요."):"자료를 불러오는 중입니다.";
@@ -116,9 +128,11 @@ function openHit(x){
  if(!x)return;
  if(x.kind==="library"){documentView(x.url);return}
  if(x.kind==="ox"){
- state.mode="all";state.ch=x.chapter;goto("ox",x.subject);state.q=state.ox.find(q=>q.id===x.id)||null;question(true);return
+ state.deep=null;state.mode="all";state.ch=x.chapter;goto("ox",x.subject);
+ state.q=state.ox.find(q=>q.id===x.id)||null;question(true);return;
  }
- goto(x.kind,x.subject);toast("해당 과목 자료를 표시합니다.");
+ if(x.path){state.deep={kind:x.kind,subject:x.subject,path:x.path};goto(x.kind,x.subject);return;}
+ state.deep=null;goto(x.kind,x.subject);
 }
 function library(){
  const terms=N(el("librarySearch").value).split(/\s+/).filter(Boolean);
@@ -139,8 +153,8 @@ async function data(){
  if(!state.ox.length)toast("OX 자료를 불러오지 못했습니다.");
 }
 document.addEventListener("click",e=>{
- const s=e.target.closest("[data-subject]");if(s){state.ch="all";state.q=null;goto(state.view,s.dataset.subject);return}
- const v=e.target.closest("[data-view]");if(v){goto(v.dataset.view);return}
+ const s=e.target.closest(".subjects button[data-subject]");if(s){state.ch="all";state.q=null;state.deep=null;goto(state.view,s.dataset.subject);return}
+ const v=e.target.closest("[data-view]");if(v){state.deep=null;goto(v.dataset.view);return}
  const c=e.target.closest("[data-chapter]");if(c){state.ch=c.dataset.chapter;state.q=null;goto("ox");return}
  const m=e.target.closest("[data-mode]");if(m){state.mode=m.dataset.mode;state.q=null;chapterSelect();question(false);return}
  const a=e.target.closest("[data-answer]");if(a){answer(a.dataset.answer);return}
@@ -158,7 +172,7 @@ el("resetProgress").onclick=()=>{if(confirm(SUB(state.s)+"의 학습 기록을 �
 el("searchInput").oninput=search;el("clearSearch").onclick=()=>{el("searchInput").value="";search()};
 el("librarySearch").oninput=()=>{state.limit=36;library()};
 el("libraryMore").onclick=()=>{state.limit+=36;library()};
-window.addEventListener("popstate",()=>{let a=location.hash.substring(1).split("/");goto(a[1]||"home",a[0]||"world",false)});
+window.addEventListener("popstate",()=>{state.deep=null;let a=location.hash.substring(1).split("/");goto(a[1]||"home",a[0]||"world",false)});
 const route=location.hash.substring(1).split("/");
 goto(route[1]||"home",route[0]||"world",false);
 data();

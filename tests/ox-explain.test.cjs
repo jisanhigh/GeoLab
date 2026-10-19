@@ -5,7 +5,7 @@ const site=path.join(__dirname,"..","site");
 const read=p=>fs.readFileSync(path.join(site,p));
 const ctx={};vm.createContext(ctx);
 vm.runInContext(read("ds/codec.js").toString("utf8"),ctx);
-vm.runInContext(read("ox-explain.js").toString("utf8"),ctx);
+for(const f of ["ox-reviewed-2027-world.js","ox-reviewed-2027-korea.js","ox-explain.js"])vm.runInContext(read(f).toString("utf8"),ctx);
 const sourceHashes={
  "tools/ox/data/ox.json":"fb8e3c58847aabd08ca7e1688efb471fbc9822adc9effef0ae8d4b9c21cc3d24",
  "tools/ox/data/ox-extra.json":"7050cf7b2e1ed589b9997ff632277a1cbe4ca0c20f564d86c7bb45856ee657d6"
@@ -38,7 +38,9 @@ for(const [p,sha] of Object.entries(sourceHashes)){
     const approved=ctx.GeoLabOX.ENTRIES[id];
     assert.ok(approved&&approved.question===q.t&&approved.answer===q.a);
     assert.ok(approved.explanation.trim().length>30);
-    assert.ok(approved.sources.length>0&&approved.curriculum);
+    assert.ok(approved.sources.length>0&&approved.curriculum&&approved.referencePage>0);
+    assert.equal(approved.reviewBasis,"uploaded_EBS_2027");
+    assert.equal(approved.answer,"O");
     assert.equal(rendered.supplement,approved.explanation);
    }
   }
@@ -47,9 +49,18 @@ for(const [p,sha] of Object.entries(sourceHashes)){
 assert.equal(total,1176);
 assert.equal(correct,765);
 assert.equal(incorrect,411);
+assert.equal(reviewed,105,"Only the 105 explicitly reviewed notes should be shown");
 assert.equal(reviewed,Object.keys(ctx.GeoLabOX.ENTRIES).length,"Orphan or mismatched reviewed explanation");
 assert.equal(pending,correct-reviewed);
 for(const id of Object.keys(ctx.GeoLabOX.ENTRIES))assert.ok(used.has(id),"Unverified orphan entry "+id);
+assert.equal(Object.keys(ctx.GeoLabOX2027World).length,43);
+assert.equal(Object.keys(ctx.GeoLabOX2027Korea).length,62);
+for(const id of Object.keys(ctx.GeoLabOX.ENTRIES)){
+ const note=ctx.GeoLabOX.ENTRIES[id];
+ assert.equal(note.question.length>0,true);
+ assert.equal(note.answer,"O","Only O questions may receive supplements");
+ assert.ok(note.verifiedWith.includes("2027학년도 EBS"));
+}
 const entry=ctx.GeoLabOX.ENTRIES["korea:base:01:위치:6"];
 const tampered=ctx.GeoLabOX.build({id:"korea:base:01:위치:6",text:"임의로 바꾼 문제",answer:"O",explanation:""});
 assert.equal(tampered.checked,false);

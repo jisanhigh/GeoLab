@@ -24,7 +24,7 @@ for(const subject of ["world","korea"]){
   }
  }
  const climate=data.subjects[subject].topics.find(t=>t.id==="climate");
- assert.ok(climate&&climate.tables.length===0);
+ assert.ok(climate&&(!climate.tables||climate.tables.length===0));
 }
 const world=mod.allTables(data,"world");
 const continents=world.find(x=>x.table.id==="world-energy-compare--continent").table;

@@ -17,6 +17,8 @@ jobs:
           python-version: "3.11"
       - name: Build complete GeoLab site
         run: python build_site.py
+      - name: Test Köppen classification and station search
+        run: node tests/climate.test.cjs
       - uses: actions/upload-artifact@v4
         with:
           name: GeoLab-site

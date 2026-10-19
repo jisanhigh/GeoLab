@@ -118,18 +118,34 @@ function mount(host,d,subject,focus){
    const cols=view.columns||[];st.metric=Math.max(0,Math.min(st.metric,cols.length-1));
    const col=cols[st.metric]||{label:"수치"},unit=col.unit||"",dec=col.digits??1,rows=ranked(view,st.metric,st.asc);
    const years=[col.year,view.year,...(view.sources||[]).map(x=>x.year)].filter(Boolean);
+   const differentYears=new Set(cols.map(c=>c.year||view.year).filter(Boolean)).size>1;
+   const cells=(view.rows||[]).map(r=>r.values?.[st.metric]);
+   const hasNamed=cells.some(v=>root.GeoLabStatFormat.isNamed(v));
+   const hasNonNumeric=cells.some(v=>root.GeoLabStatFormat.isText(v));
+   const multicolNamed=cols.length>1&&hasNamed;
+   const showChart=!multicolNamed&&!hasNonNumeric&&rows.length>0;
+
    const src=[...new Set((view.sources||[]).map(x=>x.name).filter(Boolean))];
-   const quick=rows.slice(0,3).map(x=>E(x.row.label)+" "+fmt(x.val,dec)).join(" · ");
+   const quick=rows.slice(0,3).map(x=>E(x.name)+" "+fmt(x.val,dec)).join(" · ");
    const title='<div class="es-dtitle"><div><small>'+E(ent.topic.title)+(ent.region.title?" · "+E(ent.region.title):"")+'</small><h2>'+E(table.title)+'</h2></div><button data-es-export>CSV 저장</button></div>';
    const views=table.views.length>1?'<div class="es-views">'+table.views.map((v,i)=>'<button data-es-view="'+i+'" class="'+(i===st.view?"on":"")+'">'+E(v.label||"자료 "+(i+1))+'</button>').join("")+'</div>':"";
    const controls='<div class="es-controls"><label>비교 지표<select id="es-metric">'+cols.map((c,i)=>'<option value="'+i+'"'+(i===st.metric?" selected":"")+'>'+E(c.label)+(c.unit?" ("+E(c.unit)+")":"")+'</option>').join("")+'</select></label><label>정렬<select id="es-order"><option value="desc"'+(!st.asc?" selected":"")+'>값 큰 순서</option><option value="asc"'+(st.asc?" selected":"")+'>값 작은 순서</option></select></label><label>그래프 표시<select id="es-limit"><option value="10"'+(st.limit===10?" selected":"")+'>상위 10개</option><option value="20"'+(st.limit===20?" selected":"")+'>20개</option><option value="9999"'+(st.limit===9999?" selected":"")+'>전체</option></select></label></div>';
-   const meta='<div class="es-meta"><span>단위 <b>'+E(unit||"원자료 확인")+'</b></span><span>기준 <b>'+E([...new Set(years)].join(" / ")||"출처 확인")+'</b></span><span>지역 <b>'+rows.length+'개</b></span></div>';
+   const meta='<div class="es-meta"><span>단위 <b>'+E(unit||"원자료 확인")+'</b></span><span>기준 <b>'+E([...new Set(years)].join(" / ")||"출처 확인")+'</b></span><span>자료 <b>'+(view.rows||[]).length+'개</b></span></div>'+
+ (differentYears?'<div class="es-note">지표별 기준 연도가 다릅니다. 아래 열 제목의 연도를 확인하세요.</div>':"")+
+ (hasNamed?'<div class="es-note">국가명과 수치가 함께 기록된 순위 자료입니다. 국가명과 수치를 나누어 표시합니다.</div>':"");
    const reading='<div class="es-reading"><strong>자료 확인</strong><p>수치의 크기뿐 아니라 단위와 기준 연도를 확인하고, 절대량과 비율을 구분하세요.</p>'+(quick?'<p><b>'+(st.asc?"낮은 값":"높은 값")+' 순서</b> '+quick+'</p>':"")+'</div>';
    const head='<thead><tr><th>'+E(view.rowLabel||"지역")+'</th>'+cols.map((c,i)=>'<th><button data-es-col="'+i+'">'+E(c.label)+(c.unit?' <small>'+E(c.unit)+'</small>':'')+(c.year?' <em>'+E(c.year)+'</em>':'')+'</button></th>').join("")+'</tr></thead>';
-   const ordered=[...(view.rows||[])].sort((a,b)=>{const a1=number(a.values?.[st.metric]),b1=number(b.values?.[st.metric]);if(a1===null)return 1;if(b1===null)return -1;return st.asc?a1-b1:b1-a1});
-   const tb='<div class="es-table-wrap"><table>'+head+'<tbody>'+ordered.map(r=>'<tr><th>'+E(r.label)+'</th>'+cols.map((c,i)=>'<td class="'+(i===st.metric?"selected":"")+'">'+fmt(r.values?.[i],c.digits??1)+'</td>').join("")+'</tr>').join("")+'</tbody></table></div>';
+   const ordered=[...(view.rows||[])].sort((a,b)=>{
+   const a1=root.GeoLabStatFormat.safeNumber(a.values?.[st.metric]);
+   const b1=root.GeoLabStatFormat.safeNumber(b.values?.[st.metric]);
+   if(a1===null&&b1===null)return 0;
+   if(a1===null)return 1;if(b1===null)return -1;
+   return st.asc?a1-b1:b1-a1;
+  });
+   const tb='<div class="es-table-wrap"><table>'+head+'<tbody>'+ordered.map(r=>'<tr><th>'+E(r.label)+'</th>'+cols.map((c,i)=>'<td class="'+(i===st.metric?"selected":"")+'">'+E(root.GeoLabStatFormat.cellText(r.values?.[i],c.digits??1))+'</td>').join("")+'</tr>').join("")+'</tbody></table></div>';
    q(host,"#es-detail").innerHTML=title+views+meta+reading+controls+'<div class="es-grid"><div class="es-chartbox"><strong>'+E(col.label)+' 비교</strong><div id="es-chart"></div></div><div class="es-tablebox"><strong>원자료 전체</strong>'+tb+'</div></div><p class="es-source">출처 '+E(src.join(", ")||"원본 통계")+ (view.note?' · '+E(view.note):"")+'</p>';
-   bars(q(host,"#es-chart"),rows,dec,unit,st.limit);
+   if(showChart)bars(q(host,"#es-chart"),rows,dec,unit,st.limit);
+   else q(host,"#es-chart").innerHTML='<p class="es-wait">이 지표는 국가명·순위·문자 자료가 포함되어 있습니다. 아래 전체 표에서 정확한 자료를 확인하세요.</p>';
  };
  const draw=()=>{drawNav();drawDetail()};
  host.onclick=e=>{

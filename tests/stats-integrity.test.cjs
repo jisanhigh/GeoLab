@@ -57,6 +57,10 @@ assert.equal(india.name,"인도");assert.ok(Math.abs(india.value/1000-18.5)<.1);
 const migration=m.find(t=>t.id==="world-ef54d4ad");
 const total2024=migration.views[0].rows.find(r=>r.label==="세계").values[0];
 assert.ok(Math.abs(total2024-304)<.1);
+assert.equal(Math.round(total2024*1e6),304021813);
+assert.equal(Math.round(us.value*1000),52375047);
+assert.equal(Math.round(germany.value*1000),16750084);
+assert.equal(Math.round(india.value*1000),18533845);
 const r=fmt.rankRows(dest,0);
 assert.equal(r[0].name,"미국");assert.equal(r[0].val,us.value);
 assert.ok(fmt.cellText(us,1).startsWith("미국 · "));
@@ -77,6 +81,8 @@ const report={
  original:total,
  selectedUN2024:{international_migrants_millions:total2024,USA_destination_millions:us.value/1000,Germany_destination_millions:germany.value/1000,India_origin_millions:india.value/1000},
  reference:"https://www.un.org/development/desa/pd/content/International-migrant-stock",
+ cross_check_table:"https://www.bpb.de/kurz-knapp/zahlen-und-fakten/globalisierung/52711/migration-aufnahmestaaten/",
+ verification:"Exact values checked for four UN 2024 migration metrics against independently published UN tabulation. All other 136 source tables receive structural and metadata checks only.",
  note:"Checks preserve values, columns, view provenance, source presence and 2024 UN headline figures. Individual values of all other 136 tables have NOT been independently verified against primary statistical publishers. Original data may include inaccuracies."
 };
 fs.writeFileSync(path.join(root,"STATISTICS_AUDIT.json"),JSON.stringify(report,null,2));

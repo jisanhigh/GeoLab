@@ -77,3 +77,13 @@
  .es-chartbox svg{min-width:430px}
  .es-chartbox #es-chart{overflow-x:auto}
 }
+
+/* Completely separate continent, country, and other statistics */
+.es-scope{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:14px 0}
+.es-scope button{background:#fff;border:1px solid #d9e7ed;border-radius:11px;color:#3a6174;font-weight:800;padding:13px 8px;font-size:14px}
+.es-scope button.on{background:#225d7c;color:#fff;border-color:#225d7c}
+.es-note{padding:10px 12px;background:#fff7e8;border:1px solid #eddfc0;border-radius:8px;color:#75613b;font-size:12px;margin:8px 0}
+.es-chartbox .es-wait{font-size:13px;line-height:1.8}
+.es-table-wrap td{white-space:nowrap}
+.es-table-wrap td.selected{min-width:90px}
+@media(max-width:640px){.es-scope{gap:5px;margin:10px 0}.es-scope button{padding:10px 4px;font-size:12px}}

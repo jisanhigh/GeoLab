@@ -1,0 +1,79 @@
+
+/* 수능용 자료 해석 화면 — 기존 통계 데이터의 전부를 유지합니다. */
+.es-wait{padding:45px 15px;text-align:center;color:#718694}
+.es-top{display:flex;align-items:center;justify-content:space-between;gap:18px;border:1px solid #dee9ee;border-radius:14px;background:#fff;padding:21px 24px;margin:15px 0 14px}
+.es-top strong{font-size:20px;color:#1c3b52}.es-top p{margin:4px 0 0;color:#78909e;font-size:12px}
+.es-mode{display:inline-flex;background:#eaf1f4;padding:4px;border-radius:10px;gap:3px;flex-shrink:0}
+.es-mode button{border:0;border-radius:7px;background:transparent;padding:9px 15px;color:#66808e;font-size:13px;font-weight:700}
+.es-mode button.on{background:#fff;color:#235978;box-shadow:0 1px 4px #123d531c}
+.es-cats{display:flex;align-items:center;gap:7px;overflow-x:auto;padding:3px 1px 12px;scrollbar-width:thin}
+.es-cats button{background:#fff;border:1px solid #dee7eb;color:#516b7a;padding:9px 13px;border-radius:20px;white-space:nowrap;font-size:12px;font-weight:700}
+.es-cats button.on{background:#234f6b;border-color:#234f6b;color:#fff}
+.es-cats button small{font-weight:500;font-size:10px;opacity:.65;margin-left:3px}
+.es-choices{margin-bottom:18px}
+.es-tip{font-size:12px;color:#738794;margin:2px 4px 12px}
+.es-picks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.es-picks button{min-height:98px;text-align:left;background:#fff;border:1px solid #dfe9ed;padding:16px 14px;border-radius:12px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;transition:border-color .12s,background .12s}
+.es-picks button:hover{border-color:#73a6ba;background:#f7fafb}
+.es-picks button.on{border:2px solid #4386a5;background:#eef6f8;padding:15px 13px}
+.es-picks small{font-size:10px;color:#7295a7}
+.es-picks strong{font-size:14px;line-height:1.4;color:#203e52}
+.es-picks span{font-size:11px;color:#8b9ea7}
+.es-searchrow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:10px 0}
+.es-searchrow input{min-width:0;width:min(600px,100%);border:1px solid #d7e5eb;border-radius:10px;padding:13px 14px;background:#fff}
+.es-searchrow small{font-size:11px;color:#899ba5;white-space:nowrap}
+.es-all{max-height:270px;overflow:auto;display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:7px}
+.es-all button{border:1px solid #e1e9ed;background:white;border-radius:10px;text-align:left;padding:11px 12px;line-height:1.5;font-size:12px;color:#324d60}
+.es-all button small{display:block;margin-top:4px;color:#91a0a7;font-size:10px}
+.es-all button.on{border-color:#5c94ae;background:#eaf4f8}
+.es-detail{border:1px solid #dde8ee;border-radius:15px;background:#fff;padding:23px;margin:20px 0 28px;scroll-margin-top:90px}
+.es-dtitle{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.es-dtitle small{font-size:11px;color:#788f9c}.es-dtitle h2{margin:4px 0 7px;font-size:23px;color:#1c3d55}
+.es-dtitle>button{border:1px solid #dae6ec;background:#f8fbfc;padding:9px 12px;border-radius:9px;color:#2b627e;white-space:nowrap;font-size:12px;font-weight:700}
+.es-views{display:flex;gap:6px;overflow-x:auto;padding:10px 0;margin:6px 0 10px;border-bottom:1px solid #edf2f4;scrollbar-width:thin}
+.es-views button{border:1px solid #dce7eb;background:#fff;color:#5d7684;border-radius:8px;padding:8px 11px;white-space:nowrap;font-size:12px}
+.es-views button.on{background:#e6f2f7;color:#246587;border-color:#6ca5c0;font-weight:750}
+.es-meta{display:flex;flex-wrap:wrap;gap:8px;margin:13px 0 12px}
+.es-meta span{padding:7px 11px;border:1px solid #e4edf0;border-radius:8px;background:#f9fbfc;color:#8498a3;font-size:11px}
+.es-meta b{color:#395c70;font-weight:750;margin-left:4px}
+.es-reading{border-left:3px solid #93b9c8;background:#f3f7f9;border-radius:0 9px 9px 0;padding:12px 15px;color:#597585;font-size:12px}
+.es-reading strong{font-size:13px;color:#2f596e}
+.es-reading p{margin:4px 0;line-height:1.7}
+.es-reading b{color:#264a60}
+.es-controls{display:flex;align-items:end;gap:10px;flex-wrap:wrap;margin:17px 0 15px}
+.es-controls label{display:grid;gap:5px;font-size:11px;color:#728998;font-weight:700}
+.es-controls select{border:1px solid #d6e3e9;border-radius:9px;padding:9px 11px;background:white;color:#234559;min-width:130px;max-width:100%;font-size:12px}
+.es-controls label:first-child{flex:1;min-width:170px}
+.es-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+.es-chartbox,.es-tablebox{min-width:0;padding:15px;border:1px solid #e6edf1;border-radius:11px;background:#fff}
+.es-chartbox strong,.es-tablebox strong{display:block;font-size:14px;color:#2b4c61;margin-bottom:13px}
+.es-chartbox svg{width:100%;height:auto;max-width:800px}
+.es-table-wrap{max-height:540px;overflow:auto;position:relative}
+.es-table-wrap table{border-collapse:collapse;white-space:nowrap;width:100%;font-size:12px}
+.es-table-wrap th,.es-table-wrap td{border-bottom:1px solid #eaf0f3;padding:10px 12px;text-align:right;font-variant-numeric:tabular-nums}
+.es-table-wrap th:first-child{text-align:left;position:sticky;left:0;background:white}
+.es-table-wrap thead th{position:sticky;top:0;z-index:2;background:#f2f6f8;color:#4b6a79}
+.es-table-wrap thead th:first-child{background:#f2f6f8;z-index:3}
+.es-table-wrap thead button{background:none;border:0;color:inherit;font-weight:750;cursor:pointer;white-space:nowrap}
+.es-table-wrap thead small,.es-table-wrap thead em{font-size:10px;color:#8d9fa9;font-weight:500;font-style:normal}
+.es-table-wrap td.selected{background:#edf6f9;color:#245b7b;font-weight:800}
+.es-source{font-size:11px;color:#8ca0aa;line-height:1.7;margin:13px 0 1px}
+@media(max-width:950px){.es-picks,.es-all{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){
+ .es-top{padding:15px 13px;display:block;margin:9px 0 13px}
+ .es-top strong{font-size:18px}.es-top p{margin-bottom:12px}
+ .es-mode{display:flex;width:100%}.es-mode button{flex:1}
+ .es-picks,.es-all{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ .es-picks button{min-height:93px;padding:12px 10px}
+ .es-picks button.on{padding:11px 9px}
+ .es-picks strong{font-size:12px}.es-picks span{font-size:10px}
+ .es-detail{padding:13px 11px;margin:13px -7px 20px;scroll-margin-top:68px}
+ .es-dtitle h2{font-size:18px}
+ .es-meta{gap:5px}.es-meta span{font-size:10px;padding:6px 8px}
+ .es-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+ .es-controls label:first-child{grid-column:1/-1}
+ .es-controls select{width:100%;min-width:0}
+ .es-chartbox,.es-tablebox{padding:10px}
+ .es-chartbox svg{min-width:430px}
+ .es-chartbox #es-chart{overflow-x:auto}
+}

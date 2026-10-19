@@ -1,7 +1,7 @@
 (function(){
 "use strict";
 const $=(selector,root)=>root.querySelector(selector);
-const $$=(root,selector)=>Array.from(root.querySelectorAll(selector));
+const $=(selector,root)=>Array.from(root.querySelectorAll(selector));
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const norm=s=>String(s||"").normalize("NFKC").toLocaleLowerCase("ko-KR").trim();
 const fmt=(n,d)=>n==null||n===""||!Number.isFinite(Number(n))?"—":Number(n).toLocaleString("ko-KR",{maximumFractionDigits:d==null?1:d});

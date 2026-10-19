@@ -1,6 +1,6 @@
 (function(){
 "use strict";
-const $=(root,selector)=>root.querySelector(selector);
+const $=(selector,root)=>root.querySelector(selector);
 const $$=(root,selector)=>Array.from(root.querySelectorAll(selector));
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const norm=s=>String(s||"").normalize("NFKC").toLocaleLowerCase("ko-KR").trim();

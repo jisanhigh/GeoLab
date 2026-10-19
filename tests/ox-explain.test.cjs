@@ -1,48 +1,62 @@
 "use strict";
 const assert=require("node:assert/strict");
-const fs=require("node:fs"),path=require("node:path"),vm=require("node:vm");
+const fs=require("node:fs"),path=require("node:path"),vm=require("node:vm"),crypto=require("node:crypto");
 const site=path.join(__dirname,"..","site");
-const load=p=>fs.readFileSync(path.join(site,p),"utf8");
+const read=p=>fs.readFileSync(path.join(site,p));
 const ctx={};vm.createContext(ctx);
-vm.runInContext(load("ds/codec.js"),ctx);
-vm.runInContext(load("ox-explain.js"),ctx);
-const ox=ctx.GeoLabOX;
-assert.ok(ox&&typeof ox.build==="function");
-let total=0,correct=0,incorrect=0,missing=0,conceptGaps=0,sourceCorrectionsChanged=0,specific=0,failed=[];
-const ids=new Set();
-for(const [file,which] of [["tools/ox/data/ox.json","base"],["tools/ox/data/ox-extra.json","ext"]]){
- const d=ctx.TwCodec.unwrap(JSON.parse(load(file)));
- for(const [subject,s] of Object.entries(d.subjects||{})){
-  for(const c of s.chapters||[])for(const g of c.groups||[])for(const x of g.items||[]){
-   const id=subject+":"+which+":"+c.no+":"+g.title+":"+x.n;
-   assert.ok(!ids.has(id),"duplicate question ID: "+id);ids.add(id);
+vm.runInContext(read("ds/codec.js").toString("utf8"),ctx);
+vm.runInContext(read("ox-explain.js").toString("utf8"),ctx);
+const sourceHashes={
+ "tools/ox/data/ox.json":"fb8e3c58847aabd08ca7e1688efb471fbc9822adc9effef0ae8d4b9c21cc3d24",
+ "tools/ox/data/ox-extra.json":"7050cf7b2e1ed589b9997ff632277a1cbe4ca0c20f564d86c7bb45856ee657d6"
+};
+let total=0,correct=0,incorrect=0,pending=0,reviewed=0;
+const seen=new Set(),used=new Set();
+for(const [p,sha] of Object.entries(sourceHashes)){
+ const b=read(p),actual=crypto.createHash("sha256").update(b).digest("hex");
+ assert.equal(actual,sha,"Original OX source file was modified: "+p);
+ const ext=p.endsWith("ox-extra.json"),d=ctx.TwCodec.unwrap(JSON.parse(b.toString("utf8")));
+ for(const [subject,v] of Object.entries(d.subjects||{})){
+  for(const ch of v.chapters||[])for(const group of ch.groups||[])for(const q of group.items||[]){
+   const id=subject+":"+(ext?"ext":"base")+":"+ch.no+":"+group.title+":"+q.n;
+   assert.ok(!seen.has(id),"Duplicate question ID: "+id);seen.add(id);
+   assert.ok(q.a==="O"||q.a==="X","Invalid original answer");
+   const item=Object.freeze({id,subject,chapter:ch.title||"기타",group:group.title,text:q.t,answer:q.a,explanation:q.f||""});
    total++;
-   const item={id,subject,chapter:c.title,group:g.title,text:x.t,answer:x.a,explanation:x.f||""};
-   const result=ox.build(item);
-   if(result.kind==="문항별 근거")specific++;
-   if(!result.correction||result.correction.trim().length<12)failed.push("empty/too short: "+id);
-   if(item.answer==="O"){
-    correct++;
-    if(item.explanation)failed.push("Unexpected original explanation for O: "+id);
-    if(result.correction.includes("이 문항은 "+item.chapter))conceptGaps++;
-   } else {
-    incorrect++;
-    if(!item.explanation)missing++;
-    if(result.correction!==item.explanation)sourceCorrectionsChanged++;
+   const rendered=ctx.GeoLabOX.build(item);
+   if(q.a==="O"){
+     correct++;
+     assert.equal(rendered.correction,"","O questions have no original correction");
+     assert.equal(item.explanation,"","Do not insert original-looking explanations into O source");
+     if(!rendered.checked){pending++;assert.equal(rendered.supplement,"")}
+   }else{
+     incorrect++;
+     assert.equal(rendered.correction,q.f,"X corrections must preserve original punctuation and brackets");
    }
-   if(!["문항별 근거","단원 핵심 개념","틀린 표현 바로잡기"].includes(result.kind))failed.push("Invalid kind: "+id);
+   if(rendered.checked){
+    reviewed++;used.add(id);
+    const approved=ctx.GeoLabOX.ENTRIES[id];
+    assert.ok(approved&&approved.question===q.t&&approved.answer===q.a);
+    assert.ok(approved.explanation.trim().length>30);
+    assert.ok(approved.sources.length>0&&approved.curriculum);
+    assert.equal(rendered.supplement,approved.explanation);
+   }
   }
  }
 }
 assert.equal(total,1176);
 assert.equal(correct,765);
 assert.equal(incorrect,411);
-assert.equal(missing,0);
-assert.equal(sourceCorrectionsChanged,0);
-assert.equal(conceptGaps,0,"Every O item should have a dedicated chapter/group concept");
-assert.equal(failed.length,0,failed.slice(0,10).join("\n"));
-const app=load("app.js"),html=load("index.html"),styles=load("app.css");
-assert.ok(app.includes("GeoLabOX.build(q)"));
-assert.ok(html.includes("ox-explain.js"));
-assert.ok(styles.includes(".ox-explain"));
-console.log("PASS: "+total+" OX explanations; "+correct+" O concept notes, "+incorrect+" original X corrections preserved, "+specific+" item-specific reasoning matches; no missing notes.");
+assert.equal(reviewed,Object.keys(ctx.GeoLabOX.ENTRIES).length,"Orphan or mismatched reviewed explanation");
+assert.equal(pending,correct-reviewed);
+for(const id of Object.keys(ctx.GeoLabOX.ENTRIES))assert.ok(used.has(id),"Unverified orphan entry "+id);
+const entry=ctx.GeoLabOX.ENTRIES["korea:base:01:위치:6"];
+const tampered=ctx.GeoLabOX.build({id:"korea:base:01:위치:6",text:"임의로 바꾼 문제",answer:"O",explanation:""});
+assert.equal(tampered.checked,false);
+const alteredAnswer=ctx.GeoLabOX.build({id:"korea:base:01:위치:6",text:entry.question,answer:"X",explanation:""});
+assert.equal(alteredAnswer.checked,false);
+const app=read("app.js").toString("utf8");
+assert.ok(app.includes("Object.freeze({id,subject"));
+assert.ok(app.includes("const rawCorrection=q.answer"));
+assert.ok(!app.includes(".replace(/\\[([^\\]]+)\\]/g"),"No bracket substitutions allowed");
+console.log("PASS: 1176 original OX unchanged, source SHA-256 matched, 411 original X corrections verbatim, "+reviewed+" reviewed O explanations, "+pending+" unreviewed O notes withheld.");

@@ -70,7 +70,7 @@ function render(subject,focus){
 }
 function mount(host,d,subject,focus){
  const all=allTables(d,subject),curated=featured(d,subject),ids=new Map(all.map(x=>[x.table.id,x]));
- const st=stStore[subject]||(stStore[subject]={mode:"core",cat:"all",query:"",table:null,view:0,metric:0,asc:false,limit:10});
+ const st=stStore[subject]||(stStore[subject]={mode:"core",cat:"0",query:"",table:null,view:0,metric:0,asc:false,limit:10});
  const linked=focus?.path?new URL(focus.path,location.href):null;
  if(linked?.pathname.includes("stats")){
    const id=decodeURIComponent(linked.hash.slice(1)),e=ids.get(id)||ids.get(id+"--continent");
@@ -119,7 +119,7 @@ function mount(host,d,subject,focus){
  };
  const draw=()=>{drawNav();drawDetail()};
  host.onclick=e=>{
-  let b=e.target.closest("[data-es-mode]");if(b){st.mode=b.dataset.esMode;st.cat="all";draw();return}
+  let b=e.target.closest("[data-es-mode]");if(b){st.mode=b.dataset.esMode;st.cat=st.mode==="core"?"0":"all";draw();return}
   b=e.target.closest("[data-es-cat]");if(b){st.cat=b.dataset.esCat;drawNav();return}
   b=e.target.closest("[data-es-table]");if(b){st.table=b.dataset.esTable;st.view=Number(b.dataset.esStart||0);st.metric=0;st.asc=false;draw();q(host,"#es-detail").scrollIntoView({behavior:"smooth",block:"start"});return}
   b=e.target.closest("[data-es-view]");if(b){st.view=Number(b.dataset.esView);st.metric=0;drawDetail();return}

@@ -183,11 +183,11 @@ async function mapClimate(root,subject,st,regions,redraw,toggleRegion){
  svg.call(zoom).on("dblclick.zoom",null);
  st.mapMarkers=markers;st.svg=svg;st.zoom=zoom;
 }
-function statsTables(sub){return (sub.topics||[]).flatMap(t=>(t.regions||[{title:"",id:"",tables:t.tables||[]}]).flatMap(g=>(g.tables||[]).map(tb=>({topic:t,region:g,table:tb}))))}
+function statsTables(sub,subject){return sub.topics.flatMap(t=>window.GeoLabStats.tablesForTopic(t,subject))}
 async function renderStats(subject,focus){
  const root=section("stats");root.innerHTML='<p class="ng-empty">통계 자료를 불러오는 중입니다.</p>';
  try{
- const data=await raw("tools/stats/data/stats.json");const sub=data.subjects[subject],all=statsTables(sub);if(!all.length)throw Error("통계표가 없습니다");
+ const data=await raw("tools/stats/data/stats.json");const sub=data.subjects[subject],all=statsTables(sub,subject);if(!all.length)throw Error("통계표가 없습니다");
  let st=store.stats[subject];if(!st)st=store.stats[subject]={topic:sub.topics[0].id,table:null,view:0,subview:-1,col:0,descending:true,query:""};
  const u=pathFromFocus(focus);if(u&&u.pathname.includes("stats")){st.topic=u.searchParams.get("topic")||st.topic;let tableId=decodeURIComponent(u.hash.slice(1));if(tableId){let found=all.find(x=>x.table.id===tableId&&x.topic.id===st.topic);if(found)st.table=found.table.id}}
  root.innerHTML='<div class="ng-controlbar"><label>통계표 검색<input class="ng-input" id="ng-stats-search" placeholder="예: 인구, 경지 면적, 산업" value="'+esc(st.query)+'"></label><button class="ng-btn" id="ng-stats-csv">CSV 저장</button></div><div class="ng-topic-tabs" id="ng-topic-tabs"></div><div class="ng-stats-layout"><div class="ng-stats-sidebar" id="ng-stats-list"></div><div class="ng-stats-main" id="ng-stats-main"></div></div>';

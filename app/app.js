@@ -95,13 +95,19 @@ function climateData(d,s){(d.regions||[]).forEach(x=>{
  const path=(s==="world"?"tools/climate/index.html":"tools/climate/korea.html")+"?regions="+encodeURIComponent(x.id)+"&map=selected";
  add("climate",s,x.name,desc,label,{path,id:x.id,climateKey,hayExtra:N((x.aliases||[]).join(" "))});
 })}
-function statsData(d){Object.entries(d.subjects||{}).forEach(([s,sub])=>(sub.topics||[]).forEach(t=>(t.regions||[{title:"",tables:t.tables||[]}]).forEach(g=>(g.tables||[]).forEach(tb=>{
- state.stats.push({subject:s,title:tb.title});
- const labels=(tb.views||[]).flatMap(v=>(v.columns||[]).map(x=>x.label).concat((v.rows||[]).map(x=>x.label))).slice(0,140);
- const extra=(tb.views||[]).flatMap(v=>(v.subviews||[]).flatMap(q=>[q.label,...(q.rows||[]).map(r=>r.label)]));
- const url="tools/stats/index.html?subject="+s+"&topic="+encodeURIComponent(t.id)+(g.id?"&region="+encodeURIComponent(g.id):"")+"#"+encodeURIComponent(tb.id);
- add("stats",s,tb.title,labels.join(" · "),t.title+(g.title?" / "+g.title:""),{path:url,hayExtra:N(extra.join(" "))});
-}))))}
+function statsData(d){
+ for(const [s,sub] of Object.entries(d.subjects||{})){
+  for(const t of sub.topics||[]){
+   for(const {region:g,table:tb} of window.GeoLabStats.tablesForTopic(t,s)){
+    state.stats.push({subject:s,title:tb.title});
+    const labels=(tb.views||[]).flatMap(v=>(v.columns||[]).map(x=>x.label).concat((v.rows||[]).map(x=>x.label))).slice(0,140);
+    const extra=(tb.views||[]).flatMap(v=>(v.subviews||[]).flatMap(q=>[q.label,...(q.rows||[]).map(r=>r.label)]));
+    const url="tools/stats/index.html?subject="+s+"&topic="+encodeURIComponent(t.id)+(g.id?"&region="+encodeURIComponent(g.id):"")+"#"+encodeURIComponent(tb.id);
+    add("stats",s,tb.title,labels.join(" · "),t.title+(g.title?" / "+g.title:""),{path:url,hayExtra:N(extra.join(" "))});
+   }
+  }
+ }
+}
 function examsData(d){(d.records||[]).forEach(x=>{
  if(x.subject!=="세계지리"&&x.subject!=="한국지리")return;
  const s=x.subject==="세계지리"?"world":"korea";

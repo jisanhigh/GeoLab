@@ -101,7 +101,10 @@ function statsData(d){
    for(const {region:g,table:tb} of window.GeoLabStats.tablesForTopic(t,s)){
     state.stats.push({subject:s,title:tb.title});
     const labels=(tb.views||[]).flatMap(v=>(v.columns||[]).map(x=>x.label).concat((v.rows||[]).map(x=>x.label))).slice(0,140);
-    const extra=(tb.views||[]).flatMap(v=>(v.subviews||[]).flatMap(q=>[q.label,...(q.rows||[]).map(r=>r.label)]));
+    const extra=(tb.views||[]).flatMap(v=>[
+   ...(v.subviews||[]).flatMap(q=>[q.label,...(q.rows||[]).map(r=>r.label)]),
+   ...(v.rows||[]).flatMap(r=>(r.values||[]).filter(x=>x&&typeof x==="object"&&typeof x.name==="string").map(x=>x.name))
+  ]);
     const url="tools/stats/index.html?subject="+s+"&topic="+encodeURIComponent(t.id)+(g.id?"&region="+encodeURIComponent(g.id):"")+"#"+encodeURIComponent(tb.id);
     add("stats",s,tb.title,labels.join(" · "),t.title+(g.title?" / "+g.title:""),{path:url,hayExtra:N(extra.join(" "))});
    }

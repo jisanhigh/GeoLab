@@ -7,7 +7,7 @@ const MENU={
  ["농업·식량",[["world-crop-rank",0,"곡물 생산 상위 국가"],["world-crop-trade-rank",0,"곡물 수출입 상위 국가"],["world-livestock-rank",0,"가축 사육 상위 국가"],["world-b2858416",0,"기호 작물 생산 국가"]]],
  ["에너지·자원",[["world-primary-energy-rank",0,"1차 에너지 공급 상위 국가"],["world-energy-compare--continent",0,"대륙별 에너지"],["world-energy-compare--country",3,"주요 국가별 에너지"],["world-fossil-energy-balance",3,"화석연료 생산·소비"],["world-renewable-generation-rank",2,"신·재생 에너지 발전 국가"]]],
  ["산업·무역",[["world-e30c1073",0,"국가별 산업 구조"],["world-6baf531c",0,"국가별 수출입 구성"],["world-ec1c1e8d",0,"세계 제조업 비중 변화"]]],
- ["문화·종교",[["world-religion-compare--country",1,"주요 국가의 종교 구성"],["world-religion-rank",0,"종교별 신자 수 상위 국가"]]],
+ ["문화·종교",[["world-religion-compare--country",2,"주요 국가의 종교 구성"],["world-religion-rank",0,"종교별 신자 수 상위 국가"]]],
  ["지역별 특징",[["world-monsoon-compare",0,"몬순 아시아·오세아니아"],["world-dry-compare",0,"건조 아시아·북부 아프리카"],["world-africa-latin-compare",0,"사하라 이남 아프리카·중남미"]]]
  ],
  korea:[
@@ -130,6 +130,14 @@ function mount(host,d,subject,focus){
    const title='<div class="es-dtitle"><div><small>'+E(ent.topic.title)+(ent.region.title?" · "+E(ent.region.title):"")+'</small><h2>'+E(table.title)+'</h2></div><button data-es-export>CSV 저장</button></div>';
    const views=table.views.length>1?'<div class="es-views">'+table.views.map((v,i)=>'<button data-es-view="'+i+'" class="'+(i===st.view?"on":"")+'">'+E(v.label||"자료 "+(i+1))+'</button>').join("")+'</div>':"";
    const controls='<div class="es-controls"><label>비교 지표<select id="es-metric">'+cols.map((c,i)=>'<option value="'+i+'"'+(i===st.metric?" selected":"")+'>'+E(c.label)+(c.unit?" ("+E(c.unit)+")":"")+'</option>').join("")+'</select></label><label>정렬<select id="es-order"><option value="desc"'+(!st.asc?" selected":"")+'>값 큰 순서</option><option value="asc"'+(st.asc?" selected":"")+'>값 작은 순서</option></select></label><label>그래프 표시<select id="es-limit"><option value="10"'+(st.limit===10?" selected":"")+'>상위 10개</option><option value="20"'+(st.limit===20?" selected":"")+'>20개</option><option value="9999"'+(st.limit===9999?" selected":"")+'>전체</option></select></label></div>';
+   const dataNote=table.originalId==="world-population-compare"&&view.label==="국제 인구 이동"
+    ?'<div class="es-note">순 이동(일정 기간의 인구 이동)과 국제 이주자 수(해당 시점의 거주 인원)는 서로 다른 통계입니다.</div>'
+    :table.id==="world-ca743699"&&/인구 대비/.test(view.label)
+    ?'<div class="es-note">원자료의 1위·2위는 이주자 수 기준입니다. 인구 대비 비율 순위가 아닙니다.</div>'
+    :"";
+   const sourceAudit=table.id==="world-ca743699"||table.id==="world-ef54d4ad"
+    ?'유엔 2024 국제 이주자 총수 및 주요 국가 수치를 별도 대조했습니다.'
+    :'원본 표의 구조·출처·값 형식을 검사했으며, 원출처의 모든 개별 수치를 별도로 확인한 것은 아닙니다.';
    const meta='<div class="es-meta"><span>단위 <b>'+E(unit||"원자료 확인")+'</b></span><span>기준 <b>'+E([...new Set(years)].join(" / ")||"출처 확인")+'</b></span><span>자료 <b>'+(view.rows||[]).length+'개</b></span></div>'+
  (differentYears?'<div class="es-note">지표별 기준 연도가 다릅니다. 아래 열 제목의 연도를 확인하세요.</div>':"")+
  (hasNamed?'<div class="es-note">국가명과 수치가 함께 기록된 순위 자료입니다. 국가명과 수치를 나누어 표시합니다.</div>':"");
@@ -143,7 +151,7 @@ function mount(host,d,subject,focus){
    return st.asc?a1-b1:b1-a1;
   });
    const tb='<div class="es-table-wrap"><table>'+head+'<tbody>'+ordered.map(r=>'<tr><th>'+E(r.label)+'</th>'+cols.map((c,i)=>'<td class="'+(i===st.metric?"selected":"")+'">'+E(root.GeoLabStatFormat.cellText(r.values?.[i],c.digits??1))+'</td>').join("")+'</tr>').join("")+'</tbody></table></div>';
-   q(host,"#es-detail").innerHTML=title+views+meta+reading+controls+'<div class="es-grid"><div class="es-chartbox"><strong>'+E(col.label)+' 비교</strong><div id="es-chart"></div></div><div class="es-tablebox"><strong>원자료 전체</strong>'+tb+'</div></div><p class="es-source">출처 '+E(src.join(", ")||"원본 통계")+ (view.note?' · '+E(view.note):"")+'</p>';
+   q(host,"#es-detail").innerHTML=title+views+meta+dataNote+reading+controls+'<div class="es-grid"><div class="es-chartbox"><strong>'+E(col.label)+' 비교</strong><div id="es-chart"></div></div><div class="es-tablebox"><strong>원자료 전체</strong>'+tb+'</div></div><p class="es-source">출처 '+E(src.join(", ")||"원본 통계")+ (view.note?' · '+E(view.note):"")+'</p><p class="es-source">자료 확인: '+E(sourceAudit)+'</p>';
    if(showChart)bars(q(host,"#es-chart"),rows,dec,unit,st.limit);
    else q(host,"#es-chart").innerHTML='<p class="es-wait">이 지표는 국가명·순위·문자 자료가 포함되어 있습니다. 아래 전체 표에서 정확한 자료를 확인하세요.</p>';
  };

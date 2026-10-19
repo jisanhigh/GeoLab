@@ -26,3 +26,8 @@ main{min-width:0;padding-bottom:80px}.panel{display:none}.panel.active{display:b
 .ox-caution{margin:4px 17px 13px;border:1px solid #f0e1c2;color:#816c49;background:#fff9ee;padding:11px 12px;border-radius:9px;font-size:12px;line-height:1.7}
 .ox-attribution{margin:3px 18px 13px;font-size:10px;color:#94a2ab}
 @media(max-width:640px){.ox-explain{padding:15px 14px 11px}.ox-concept{margin:0 13px 12px}.ox-explain p,.ox-concept p{font-size:13px}}
+
+/* The original correction is rendered as literal text, including brackets and punctuation. */
+.ox-source-verbatim{white-space:pre-wrap;overflow-wrap:anywhere}
+.ox-pending{padding:14px 18px;margin:0;color:#587080;font-size:13px;line-height:1.8}
+.ox-verification{display:block;font-size:10px;color:#8294a0;margin-top:9px;line-height:1.6}

@@ -72,23 +72,27 @@ function answer(a){
  progress[q.id]=Object.assign({},progress[q.id],{seen:true,wrong:!ok,tries:((progress[q.id]||{}).tries||0)+1});
  write(progress);
  document.querySelectorAll(".answer").forEach(b=>{
-  b.disabled=true;
-  if(b.dataset.answer===q.answer)b.classList.add("correct");
-  else if(b.dataset.answer===a&&!ok)b.classList.add("incorrect");
+   b.disabled=true;
+   if(b.dataset.answer===q.answer)b.classList.add("correct");
+   else if(b.dataset.answer===a&&!ok)b.classList.add("incorrect");
  });
- const expl=rootOx(q),f=el("feedback");
- const correction=E(expl.correction||"해설 준비 중입니다.").replace(/\[([^\]]+)\]/g,'<strong class="ox-highlight">$1</strong>');
- const concept=expl.concept?'<div class="ox-concept"><strong>함께 알아둘 개념</strong><p>'+E(expl.concept)+'</p></div>':"";
- const caution=expl.caution?'<p class="ox-caution">'+E(expl.caution)+'</p>':"";
+ const expl=window.GeoLabOX?.build(q),f=el("feedback");
+ // Text and answer are displayed from the original object without any substitutions.
+ const rawCorrection=q.answer==="X"?q.explanation:"";
+ const correctionBlock=q.answer==="X"
+   ?'<section class="ox-explain"><span class="ox-explain-heading">원본 정정 해설</span><p class="ox-source-verbatim">'+E(rawCorrection||"원본에 정정 해설이 없습니다.")+'</p></section>'
+   :"";
+ const checked=expl?.checked===true;
+ const supplement=checked
+   ?'<section class="ox-concept"><strong>확인된 보충 해설</strong><p>'+E(expl.supplement)+'</p><small class="ox-verification">'+E(expl.curriculum)+' · '+E(expl.verifiedWith)+'</small></section>'
+   :"";
+ const pending=q.answer==="O"&&!checked
+   ?'<p class="ox-pending">원본에는 별도 해설이 없습니다. 교과 내용과 자료를 대조한 뒤 문항별 해설을 추가할 예정입니다.</p>'
+   :"";
  f.hidden=false;
  f.innerHTML='<div class="ox-result '+(ok?"is-correct":"is-wrong")+'"><span>'+(ok?"정답입니다.":"오답입니다.")+'</span><strong>정답 '+E(q.answer)+'</strong></div>'+
- '<div class="ox-explain"><span class="ox-explain-heading">'+E(expl.kind||"해설")+'</span><p>'+correction+'</p></div>'+concept+caution+
- '<p class="ox-attribution">'+E(expl.source||"지리 개념 확인")+'</p>';
+ correctionBlock+supplement+pending;
  stat();
-}
-function rootOx(q){
- if(window.GeoLabOX&&typeof window.GeoLabOX.build==="function")return window.GeoLabOX.build(q);
- return {kind:"정답 해설",correction:q.explanation||"해설을 불러오지 못했습니다.",concept:"",caution:"",source:""};
 }
 function add(kind,subject,title,desc,sub,extra){
  state.index.push(Object.assign({kind,subject,title,desc,sub,hay:N([title,desc,sub].join(" "))},extra||{}));
@@ -96,7 +100,7 @@ function add(kind,subject,title,desc,sub,extra){
 function oxData(d,extra){
  Object.entries(d.subjects||{}).forEach(([s,v])=>(v.chapters||[]).forEach(c=>(c.groups||[]).forEach(g=>(g.items||[]).forEach(q=>{
  const id=s+":"+(extra?"ext":"base")+":"+c.no+":"+g.title+":"+q.n;
- const item={id,subject:s,chapter:c.title||"기타",group:g.title,text:q.t,answer:q.a,explanation:q.f||""};
+ const item=Object.freeze({id,subject:s,chapter:c.title||"기타",group:g.title,text:q.t,answer:q.a,explanation:q.f||""});
  state.ox.push(item);add("ox",s,q.t,q.f||"OX 문제",c.title+" · "+g.title,{id,chapter:item.chapter})
  }))));
 }

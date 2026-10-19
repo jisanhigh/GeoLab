@@ -4,7 +4,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="GeoLab">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icon-180.png"><link rel="icon" href="./icon-192.png">
-<link rel="stylesheet" href="./app.css?v=fix2"><title>GeoLab | 세계지리·한국지리</title></head>
+<link rel="stylesheet" href="./native.css?v=47"><link rel="stylesheet" href="./app.css?v=fix2"><title>GeoLab | 세계지리·한국지리</title></head>
 <body>
 <header class="top"><div class="shell topinner"><button class="brand" data-view="home" aria-label="GeoLab 홈"><span class="brandmark">G</span><span>GeoLab<small>지리 학습 자료</small></span></button>
 <div class="subjects" role="group" aria-label="과목 선택"><button class="subject active" data-subject="world">세계지리</button><button class="subject" data-subject="korea">한국지리</button></div>
@@ -50,10 +50,10 @@
 <div class="search-meta" id="searchCount">검색어를 입력하면 결과가 표시됩니다.</div><div class="result-list" id="searchResults"></div>
 </section>
 
-<section class="panel" id="panel-climate"><div class="modulehead"><div><div class="overline">기후 관측</div><h1>기후 지도</h1><p class="lead">지도에서 지점을 선택해 기온과 강수량을 비교할 수 있습니다.</p></div><button class="btn outline" data-expand="climate">크게 보기 ↗</button></div><div class="framewrap"><iframe id="frame-climate" title="기후 지도" loading="lazy"></iframe></div></section>
-<section class="panel" id="panel-stats"><div class="modulehead"><div><div class="overline">지역별 지표</div><h1>통계</h1><p class="lead">인구·도시·산업·자원 등 주제별 통계를 확인합니다.</p></div><button class="btn outline" data-expand="stats">크게 보기 ↗</button></div><div class="framewrap"><iframe id="frame-stats" title="지리 통계" loading="lazy"></iframe></div></section>
-<section class="panel" id="panel-exam"><div class="modulehead"><div><div class="overline">역대 시험</div><h1>기출 분석</h1><p class="lead">학년도와 시험을 선택해 등급컷과 문항별 오답률을 확인합니다.</p></div><button class="btn outline" data-expand="exam">크게 보기 ↗</button></div><div class="framewrap"><iframe id="frame-exam" title="기출 분석" loading="lazy"></iframe></div></section>
+<section class="panel" id="panel-climate"><div class="modulehead"><div><div class="overline">기후 관측</div><h1>기후 지도</h1><p class="lead">지도에서 지점을 선택해 기온과 강수량을 비교할 수 있습니다.</p></div></div><div class="ng-native" id="native-climate"><p class="ng-empty">자료를 불러오고 있습니다.</p></div></section>
+<section class="panel" id="panel-stats"><div class="modulehead"><div><div class="overline">지역별 지표</div><h1>통계</h1><p class="lead">인구·도시·산업·자원 등 주제별 통계를 확인합니다.</p></div></div><div class="ng-native" id="native-stats"><p class="ng-empty">자료를 불러오고 있습니다.</p></div></section>
+<section class="panel" id="panel-exam"><div class="modulehead"><div><div class="overline">역대 시험</div><h1>기출 분석</h1><p class="lead">학년도와 시험을 선택해 등급컷과 문항별 오답률을 확인합니다.</p></div></div><div class="ng-native" id="native-exam"><p class="ng-empty">자료를 불러오고 있습니다.</p></div></section>
 <section class="panel" id="panel-library"><div class="pagehead compact"><div><div class="overline">읽기 자료·자료 보관소</div><h1>자료실</h1><p class="lead">원문 분석과 위도별 일조 자료를 이 사이트에서 열람할 수 있습니다.</p></div></div><div class="searchbar"><span>⌕</span><input id="librarySearch" type="search" placeholder="자료 제목이나 내용 검색" aria-label="자료실 검색"></div><div class="filter-row"><button class="active" data-lib="all">전체</button><button data-lib="읽기 자료">읽기 자료</button><button data-lib="일조 자료">일조 자료</button></div><div class="search-meta" id="libraryCount"></div><div class="result-list" id="libraryResults"></div><button class="btn outline more" id="libraryMore">더 보기</button></section>
 </main></div>
 <nav class="bottom" aria-label="모바일 메뉴"><button data-view="home" class="active"><b>⌂</b>홈</button><button data-view="ox"><b>◯</b>OX</button><button data-view="search"><b>⌕</b>검색</button><button data-view="climate"><b>◉</b>기후</button><button data-view="stats"><b>▥</b>통계</button><button data-view="exam"><b>▤</b>기출</button><button data-view="library"><b>☷</b>자료</button></nav>
-<div id="toast" aria-live="polite"></div><script src="ds/codec.js"></script><script src="./app.js?v=fix2" defer></script></body></html>
+<div id="toast" aria-live="polite"></div><script src="ds/codec.js"></script><script src="tools/climate/data/vendor-d3.min.js" defer></script><script src="tools/climate/data/vendor-topojson-client.min.js" defer></script><script src="tools/climate/data/korea-peninsula-geo.js" defer></script><script src="./native.js?v=47" defer></script><script src="./app.js?v=47" defer></script></body></html>

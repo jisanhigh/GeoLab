@@ -25,11 +25,8 @@ function goto(view,sub,historyPush){
  window.scrollTo(0,0);
 }
 function module(which){
- const base=which==="climate"?(state.s==="world"?"tools/climate/index.html":"tools/climate/korea.html"):which==="stats"?"tools/stats/index.html?subject="+state.s:"tools/cut/index.html?subject="+state.s;
- const focus=state.deep;
- const path=focus&&focus.kind===which&&focus.subject===state.s?focus.path:base;
- const f=el("frame-"+which);
- if(f.dataset.route!==path){f.src=path;f.dataset.route=path;}
+ if(window.GeoLabNative){window.GeoLabNative.render(which,state.s,state.deep);return}
+ const box=document.getElementById("native-"+which);if(box)box.textContent="해당 자료 화면을 초기화하지 못했습니다.";
 }
 function bank(){return state.ox.filter(x=>x.subject===state.s)}
 function home(){
@@ -119,10 +116,8 @@ function search(){
  '<button class="result" data-hit="'+i+'"><span class="type">'+E(labels[x.kind])+'</span><strong>'+E(x.title)+'</strong><p>'+E(x.desc)+'</p><div class="footnote">'+E(x.sub)+' · 자료 보기 →</div></button>').join("");
 }
 function documentView(url){
- const d=document.createElement("dialog");d.className="document-dialog";
- const bar=document.createElement("div");bar.className="dialogbar";bar.innerHTML='<strong>원문 자료</strong><button class="btn outline">닫기 ×</button>';
- const f=document.createElement("iframe");f.title="자료 본문";f.src=url;d.append(bar,f);
- bar.querySelector("button").onclick=()=>d.close();d.onclose=()=>d.remove();document.body.appendChild(d);d.showModal();
+ if(window.GeoLabNative)window.GeoLabNative.openDocument(url);
+ else alert("자료 읽기 기능을 불러오지 못했습니다.");
 }
 function openHit(x){
  if(!x)return;

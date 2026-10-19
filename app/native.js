@@ -205,7 +205,7 @@ async function renderExam(subject,focus){
      const n=i+1,o=wrongs.get(n);return '<button class="ng-question-button'+(st.question===n?" on":"")+'" data-exam-q="'+n+'">'+n+'번'+(o?'<small>오답 '+fmt(o.wrong_rate)+'%</small>':"")+'</button>'
    }).join("");
    const q=st.question||1,o=wrongs.get(q),img=getImage(rec,q);
-   const imgurl=img?"tools/cut/data/"+img.url.replace(/^\.\//,""):"";
+   const imgurl=img?"tools/cut/"+img.url.replace(/^\.\//,""):"";
    const image=img?'<img loading="lazy" class="ng-exam-img" src="'+esc(imgurl)+'" alt="'+esc(rec.subject+" "+rec.school_year+"학년도 "+Number(rec.month)+"월 "+q+"번 문항")+'">':'<div class="ng-empty">해당 문항의 이미지가 제공되지 않습니다.</div>';
    const opts=o?.choices||[];
    const bars=opts.length?'<div class="ng-choice-data"><h4>선택지 응답 비율</h4>'+opts.map((x,i)=>'<div class="ng-choice"><span>'+(i+1)+'번'+(o.answer===i+1?" · 정답":"")+'</span><div><i style="width:'+Math.min(100,Math.max(0,Number(x)))+'%"></i></div><b>'+fmt(x)+'%</b></div>').join("")+'</div>':"";

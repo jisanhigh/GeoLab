@@ -3,7 +3,7 @@ const assert=require("node:assert/strict"),fs=require("fs"),vm=require("vm"),pat
 const root=path.join(__dirname,"..","site");
 const read=p=>fs.readFileSync(path.join(root,p),"utf8");
 const c={};vm.createContext(c);
-for(const f of ["ds/codec.js","stats-utils.js","study-stats.js"])vm.runInContext(read(f),c);
+for(const f of ["ds/codec.js","stats-utils.js","stats-format.js","study-stats.js"])vm.runInContext(read(f),c);
 const raw=JSON.parse(read("tools/stats/data/stats.json"));
 const data=c.TwCodec.unwrap(raw);
 const mod=c.GeoLabExamStats;

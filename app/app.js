@@ -66,13 +66,29 @@ function question(keep){
  el("saveQuestion").textContent=q&&record()[q.id]&&record()[q.id].saved?"★ 저장됨":"☆ 문항 저장";stat();
 }
 function answer(a){
- let q=state.q;if(!q||state.answered)return;state.answered=true;let ok=a===q.answer,r=record();
- r[q.id]=Object.assign({},r[q.id],{seen:true,wrong:!ok,tries:((r[q.id]||{}).tries||0)+1});
- write(r);
- document.querySelectorAll(".answer").forEach(b=>{b.disabled=true;if(b.dataset.answer===q.answer)b.classList.add("correct");else if(b.dataset.answer===a&&!ok)b.classList.add("incorrect")});
- const f=el("feedback");f.hidden=false;
- f.innerHTML="<b>"+(ok?"정답입니다.":"오답입니다.")+" 정답: "+E(q.answer)+"</b>"+E(q.explanation||"해설이 없는 문항입니다.").replace(/\[([^\]]+)\]/g,"<em>$1</em>");
+ const q=state.q;if(!q||state.answered)return;
+ state.answered=true;
+ const ok=a===q.answer,progress=record();
+ progress[q.id]=Object.assign({},progress[q.id],{seen:true,wrong:!ok,tries:((progress[q.id]||{}).tries||0)+1});
+ write(progress);
+ document.querySelectorAll(".answer").forEach(b=>{
+  b.disabled=true;
+  if(b.dataset.answer===q.answer)b.classList.add("correct");
+  else if(b.dataset.answer===a&&!ok)b.classList.add("incorrect");
+ });
+ const expl=rootOx(q),f=el("feedback");
+ const correction=E(expl.correction||"해설 준비 중입니다.").replace(/\[([^\]]+)\]/g,'<strong class="ox-highlight">$1</strong>');
+ const concept=expl.concept?'<div class="ox-concept"><strong>함께 알아둘 개념</strong><p>'+E(expl.concept)+'</p></div>':"";
+ const caution=expl.caution?'<p class="ox-caution">'+E(expl.caution)+'</p>':"";
+ f.hidden=false;
+ f.innerHTML='<div class="ox-result '+(ok?"is-correct":"is-wrong")+'"><span>'+(ok?"정답입니다.":"오답입니다.")+'</span><strong>정답 '+E(q.answer)+'</strong></div>'+
+ '<div class="ox-explain"><span class="ox-explain-heading">'+E(expl.kind||"해설")+'</span><p>'+correction+'</p></div>'+concept+caution+
+ '<p class="ox-attribution">'+E(expl.source||"지리 개념 확인")+'</p>';
  stat();
+}
+function rootOx(q){
+ if(window.GeoLabOX&&typeof window.GeoLabOX.build==="function")return window.GeoLabOX.build(q);
+ return {kind:"정답 해설",correction:q.explanation||"해설을 불러오지 못했습니다.",concept:"",caution:"",source:""};
 }
 function add(kind,subject,title,desc,sub,extra){
  state.index.push(Object.assign({kind,subject,title,desc,sub,hay:N([title,desc,sub].join(" "))},extra||{}));

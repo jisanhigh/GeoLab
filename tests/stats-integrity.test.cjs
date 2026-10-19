@@ -46,6 +46,23 @@ assert.equal(total.badRows,0);
 assert.equal(total.missingSources,0);
 assert.equal(total.invalidNamed,0);
 assert.equal(total.mixedAfter,0);
+let splitViews=0,splitRows=0;
+for(const t of original.subjects.world.topics){
+ for(const tb of t.tables||[]){
+  if(!helper.SPLIT[tb.id])continue;
+  const halves=helper.splitTable(tb,"world");
+  assert.equal(halves.length,2,"Two independent geographic groups required");
+  for(const v of tb.views){
+   const grouped=halves.flatMap(h=>h.views.filter(x=>x.id===v.id).flatMap(x=>x.rows));
+   assert.equal(grouped.length,v.rows.length,"Every original row must survive split: "+tb.id+"/"+v.label);
+   const normalize=items=>items.map(x=>JSON.stringify(x)).sort();
+   assert.deepEqual(JSON.parse(JSON.stringify(normalize(grouped))),JSON.parse(JSON.stringify(normalize(v.rows))),
+    "All source data unchanged by split: "+tb.id+"/"+v.label);
+   splitViews++;splitRows+=v.rows.length;
+  }
+ }
+}
+
 assert.equal(total.mixedBefore,7);
 const m=original.subjects.world.topics.find(t=>t.id==="population").tables;
 const ranks=m.find(t=>t.id==="world-ca743699");
@@ -78,7 +95,7 @@ assert.ok(read("study-stats.js").includes('data-es-scope'));
 const report={
  audit_date:"2026-10-19",source_dataset_built_at:original.meta?.builtAt||null,
  kind:"structure_and_selected_official_reference_comparison",
- original:total,
+ original:total, splitVerified:{views:splitViews,sourceRowsPreserved:splitRows},
  selectedUN2024:{international_migrants_millions:total2024,USA_destination_millions:us.value/1000,Germany_destination_millions:germany.value/1000,India_origin_millions:india.value/1000},
  reference:"https://www.un.org/development/desa/pd/content/International-migrant-stock",
  cross_check_table:"https://www.bpb.de/kurz-knapp/zahlen-und-fakten/globalisierung/52711/migration-aufnahmestaaten/",

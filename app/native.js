@@ -45,13 +45,13 @@ async function renderClimate(subject,focus){
     drawList();drawClimateGraphs(root,st,regions);
     if(st.mapMarkers)st.mapMarkers.attr("fill",r=>st.selected.includes(r.id)?"#dd7853":"#2f7694").attr("r",r=>st.selected.includes(r.id)?7.2:4.5).attr("stroke-width",r=>st.selected.includes(r.id)?2.5:1.4);
   };
-  root.addEventListener("click",e=>{
+  root.onclick=e=>{
     const station=e.target.closest("[data-climate]");
     if(station){const id=station.dataset.climate;const idx=st.selected.indexOf(id);if(idx>=0)st.selected.splice(idx,1);else if(st.selected.length<4)st.selected.push(id);else{alert("관측 지점은 최대 4곳까지 비교할 수 있습니다.");return}redraw();return}
     const remove=e.target.closest("[data-remove]");if(remove){st.selected=st.selected.filter(id=>id!==remove.dataset.remove);redraw();return}
     if(e.target.closest("#ng-zoomreset")&&st.zoom&&st.svg){st.svg.transition().duration(350).call(st.zoom.transform,window.d3.zoomIdentity)}
     if(e.target.closest("#ng-climate-csv")){const rs=regions.filter(r=>st.selected.includes(r.id));csvDownload((subject==="world"?"세계":"한국")+"_기후비교.csv",[["지점","항목",...months],...rs.flatMap(r=>[[r.name,"기온(℃)",...r.monthlyTemperatureC],[r.name,"강수(mm)",...r.monthlyPrecipitationMm]])])}
-  });
+  };
   $("#ng-climate-search",root).addEventListener("input",e=>{st.query=e.target.value;drawList()});
   $("#ng-climate-zone",root).addEventListener("change",e=>{st.region=e.target.value;drawList()});
   redraw();
@@ -138,14 +138,14 @@ async function renderStats(subject,focus){
   $("#ng-stats-list",root).innerHTML=allInTopic.map(x=>'<button type="button" class="ng-stat-item'+(current().table===x.table?" on":"")+'" data-table="'+esc(x.table.id)+'">'+esc(x.table.title)+(x.region.title?'<small>'+esc(x.region.title)+'</small>':"")+'</button>').join("")||'<p class="ng-empty">표가 없습니다.</p>';
   renderStatsTable(root,st,current(),currView());
  };
- root.addEventListener("click",e=>{
+ root.onclick=e=>{
   let t=e.target.closest("[data-topic]");if(t){st.topic=t.dataset.topic;st.table=null;st.view=0;st.subview=-1;st.col=0;draw();return}
   t=e.target.closest("[data-table]");if(t){st.table=t.dataset.table;st.view=0;st.subview=-1;st.col=0;draw();return}
   t=e.target.closest("[data-stat-view]");if(t){st.view=Number(t.dataset.statView);st.subview=-1;st.col=0;draw();return}
   t=e.target.closest("[data-stat-subview]");if(t){st.subview=Number(t.dataset.statSubview);st.col=0;draw();return}
   t=e.target.closest("[data-stat-column]");if(t){const k=Number(t.dataset.statColumn);if(st.col===k)st.descending=!st.descending;else{st.col=k;st.descending=true}draw();return}
   if(e.target.closest("#ng-stats-csv")){let v=currView();csvDownload("GeoLab_"+current().table.title+".csv",[[v.rowLabel||"지역",...(v.columns||[]).map(c=>c.label+" ("+(c.unit||"")+")")],...(v.rows||[]).map(r=>[r.label,...r.values])])}
- });
+ };
  $("#ng-stats-search",root).addEventListener("input",e=>{st.query=e.target.value;draw()});
  if(!all.some(x=>x.topic.id===st.topic))st.topic=all[0].topic.id;
  draw();
@@ -212,7 +212,7 @@ async function renderExam(subject,focus){
    $("#ng-exam-content",root).innerHTML='<div class="ng-exam-summary"><div><span>원점수 평균</span><strong>'+fmt(rec.national_mean)+'</strong></div><div><span>표준편차</span><strong>'+fmt(rec.national_sd)+'</strong></div><div><span>자료 기준</span><strong>'+esc(rec.source||"EBSi")+'</strong></div></div><div class="ng-exam-columns"><div class="ng-chartcard"><h3>등급 구분점수</h3><table class="ng-table"><thead><tr><th>등급</th><th>원점수</th><th>표준점수</th><th>백분위</th></tr></thead><tbody>'+cuts+'</tbody></table></div><div class="ng-chartcard"><h3>오답률 상위 문항</h3><div class="ng-wrong-top">'+(rec.wrong_top15||[]).slice(0,10).map(x=>'<button data-exam-q="'+x.question+'"><b>'+x.question+'번</b><span>오답 '+fmt(x.wrong_rate)+'%</span></button>').join("")+'</div></div></div><div class="ng-chartcard ng-exam-questions"><h3>문항별 자료 <small>문항을 선택하세요</small></h3><div class="ng-question-grid">'+choices+'</div><div class="ng-exam-detail"><div><div class="ng-exam-qtitle"><strong>'+q+'번</strong><span>'+(!o?"오답률 자료 미제공":"오답률 "+fmt(o.wrong_rate)+"% · 정답 "+fmt(o.answer,0)+"번")+'</span></div>'+image+'</div>'+bars+'</div></div>';
    $("#ng-exam-selector",root).value=rec.exam_year+"-"+rec.month;
  }
- root.addEventListener("click",e=>{const x=e.target.closest("[data-exam-q]");if(x){st.question=Number(x.dataset.examQ);draw();x.closest(".ng-exam-questions")?.scrollIntoView({block:"nearest"})}});
+ root.onclick=e=>{const x=e.target.closest("[data-exam-q]");if(x){st.question=Number(x.dataset.examQ);draw();x.closest(".ng-exam-questions")?.scrollIntoView({block:"nearest"})}};
  $("#ng-exam-selector",root).addEventListener("change",e=>{st.key=e.target.value;st.question=1;draw()});
  draw();
  }catch(e){showError(root,e)}

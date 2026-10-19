@@ -53,7 +53,7 @@ for(const t of original.subjects.world.topics){
   const halves=helper.splitTable(tb,"world");
   assert.equal(halves.length,2,"Two independent geographic groups required");
   for(const v of tb.views){
-   const grouped=halves.flatMap(h=>h.views.filter(x=>x.id===v.id).flatMap(x=>x.rows));
+   const grouped=halves.flatMap(h=>h.views.filter(x=>x.id===v.id&&x.label===v.label).flatMap(x=>x.rows));
    assert.equal(grouped.length,v.rows.length,"Every original row must survive split: "+tb.id+"/"+v.label);
    const normalize=items=>items.map(x=>JSON.stringify(x)).sort();
    assert.deepEqual(JSON.parse(JSON.stringify(normalize(grouped))),JSON.parse(JSON.stringify(normalize(v.rows))),

@@ -22,40 +22,101 @@ function csvDownload(filename,rows){
 const pathFromFocus=focus=>{if(!focus||!focus.path)return null;try{return new URL(focus.path,location.href)}catch{return null}};
 
 async function renderClimate(subject,focus){
- const root=section("climate");root.innerHTML='<p class="ng-empty">기후 지도와 관측 자료를 준비하는 중입니다.</p>';
+ const root=section("climate");root.innerHTML='<p class="ng-empty">기후 관측 자료를 불러오는 중입니다.</p>';
  try{
-  const path=subject==="world"?"tools/climate/data/climate-data.json":"tools/climate/data/korea-climate-data.json";
+  const C=window.GeoLabClimate;
+  if(!C)throw Error("기후 검색 기능을 불러오지 못했습니다.");
+  const isWorld=subject==="world";
+  const path=isWorld?"tools/climate/data/climate-data.json":"tools/climate/data/korea-climate-data.json";
   const data=await raw(path),regions=data.regions||[];
-  if(!regions.length)throw Error("관측 자료가 없습니다.");
+  if(!regions.length)throw Error("관측 지점 자료가 없습니다.");
   let st=store.climate[subject];
-  if(!st){st={selected:regions.slice(0,2).map(x=>x.id),query:"",region:"all"};store.climate[subject]=st}
+  if(!st){st={selected:regions.slice(0,2).map(x=>x.id),query:"",region:"all",nation:"all",group:"all"};store.climate[subject]=st}
+  st.group=st.group||"all";st.nation=st.nation||"all";
   const u=pathFromFocus(focus),requested=u?.searchParams.get("regions");
-  if(requested&&regions.some(x=>x.id===requested)&&st.focus!==requested){st.selected=[requested];st.focus=requested}
-  const groups=[...new Set(regions.map(r=>subject==="world"?r.continent:r.zone).filter(Boolean))];
-  root.innerHTML='<div class="ng-controlbar"><div class="ng-maininputs"><label>지역·관측 지점 검색<input class="ng-input" id="ng-climate-search" type="search" placeholder="지점 이름, 국가, 기후형" value="'+esc(st.query)+'"></label><label>지역 선택<select class="ng-input" id="ng-climate-zone">'+option("all","전체 지역",st.region==="all")+groups.map(g=>option(g,g,st.region===g)).join("")+'</select></label></div><button class="ng-btn" id="ng-climate-csv">비교 자료 CSV</button></div>'+
-  '<div class="ng-climate-grid"><div class="ng-map-card"><div class="ng-maphead"><strong>'+(subject==="world"?"세계 기후 관측 지도":"한반도 기후 관측 지도")+'</strong><span>지점 선택 · 지도 확대 가능</span><button class="ng-btn ghost" id="ng-zoomreset">지도 초기화</button></div><div class="ng-map-holder" id="ng-map-holder"></div><div class="ng-map-foot">기온·강수 평년값 1991–2020 · 원자료: twotimess</div></div><div class="ng-stations"><div class="ng-station-top"><strong>관측 지점</strong><small>최대 4곳 비교</small></div><div id="ng-station-list" class="ng-station-list"></div></div></div>'+
-  '<div class="ng-selected" id="ng-selected"></div><div id="ng-climate-graphs"></div>';
+  if(requested&&regions.some(x=>x.id===requested)&&st.focus!==requested){
+    st.selected=[requested];st.focus=requested;st.query="";st.group="all";st.region="all";st.nation="all";
+  }
+  const groups=[...new Set(regions.map(r=>isWorld?r.continent:r.zone).filter(Boolean))];
+  const nations=isWorld?[]:[...new Set(regions.map(r=>r.nation).filter(Boolean))];
+  const types=isWorld?C.counts(regions):[];
+  const placeholder=isWorld?"지명·국가 또는 기후 기호 (Af, Cfa, BW)":"관측 지점·지역 검색 (예: 부산, 영동)";
+  const typesUI=isWorld
+   ?'<section class="ng-koppen" aria-label="쾨펜 기후형별 관측 지점"><div class="ng-koppen-heading"><strong>기후형별 보기</strong><small>쾨펜 기호는 대문자·소문자를 구분합니다. BW는 사막 기후입니다.</small></div>'+
+    '<div class="ng-koppen-list" id="ng-koppen-list"><button type="button" data-climate-group="all">전체 <b>'+regions.length+'</b></button>'+
+    types.map(t=>'<button type="button" data-climate-group="'+esc(t.code)+'"><b class="ng-koppen-code">'+esc(t.code)+'</b><span>'+esc(t.name)+'</span><small>'+t.count+'곳</small></button>').join("")+
+    '</div><p class="ng-koppen-summary" id="ng-koppen-summary" role="status"></p></section>'
+   :"";
+  root.innerHTML='<div class="ng-controlbar"><div class="ng-maininputs"><label>관측 지점 검색<input class="ng-input" id="ng-climate-search" type="search" placeholder="'+placeholder+'" value="'+esc(st.query)+'"></label>'+
+    '<label>지역 선택<select class="ng-input" id="ng-climate-zone">'+option("all","전체 지역",st.region==="all")+groups.map(g=>option(g,g,st.region===g)).join("")+'</select></label>'+
+    (isWorld?"":'<label>남·북한 구분<select class="ng-input" id="ng-climate-nation">'+option("all","남·북한 전체",st.nation==="all")+nations.map(n=>option(n,n,st.nation===n)).join("")+'</select></label>')+
+    '</div><button class="ng-btn" id="ng-climate-csv">비교 자료 CSV</button></div>'+typesUI+
+    '<div class="ng-climate-grid"><div class="ng-map-card"><div class="ng-maphead"><strong>'+(isWorld?"세계 기후 관측 지도":"한반도 기후 관측 지도")+'</strong><span>지점 선택 · 확대 및 이동</span><button class="ng-btn ghost" id="ng-zoomreset">지도 초기화</button></div><div class="ng-map-holder" id="ng-map-holder"></div><div class="ng-map-foot">기후 평년값 1991–2020 · 자료: twotimess</div></div>'+
+    '<div class="ng-stations"><div class="ng-station-top"><strong>관측 지점</strong><small>최대 4곳 비교</small></div><div id="ng-station-list" class="ng-station-list"></div></div></div>'+
+    '<div class="ng-selected" id="ng-selected"></div><div id="ng-climate-graphs"></div>';
+  let visibleIds=new Set();
+  const inFilters=r=>(st.region==="all"||(isWorld?r.continent:r.zone)===st.region)
+      &&(isWorld||st.nation==="all"||r.nation===st.nation)
+      &&(!isWorld||st.group==="all"||C.code(r)===st.group)
+      &&C.matchStation(r,st.query,subject);
   const drawList=()=>{
-    const words=norm(st.query).split(/\s+/).filter(Boolean);
-    const visible=regions.filter(r=>(st.region==="all"||(subject==="world"?r.continent:r.zone)===st.region)&&words.every(w=>norm([r.name,r.englishName,r.country,r.continent,r.nation,r.zone,r.climateCode,...(r.aliases||[])].join(" ")).includes(w)));
-    $("#ng-station-list",root).innerHTML=visible.map(r=>'<button type="button" data-climate="'+esc(r.id)+'" class="ng-station'+(st.selected.includes(r.id)?" on":"")+'"><span>'+esc(r.name)+'<small>'+esc([subject==="world"?r.country:r.zone,subject==="world"?r.climateCode:r.nation].filter(Boolean).join(" · "))+'</small></span><b>'+(st.selected.includes(r.id)?"✓":"＋")+'</b></button>').join("")||'<p class="ng-empty">일치하는 지점이 없습니다.</p>';
-    $(".ng-station-top small",root).textContent=fmt(visible.length,0)+"곳 / 최대 4곳";
+    const visible=regions.filter(inFilters);
+    visibleIds=new Set(visible.map(r=>r.id));
+    const badCode=isWorld?C.invalidCode(st.query):null;
+    $("#ng-station-list",root).innerHTML=visible.map(r=>'<button type="button" data-climate="'+esc(r.id)+'" class="ng-station'+(st.selected.includes(r.id)?" on":"")+'"><span>'+esc(r.name)+'<small>'+esc([isWorld?r.country:r.zone,isWorld?C.code(r):r.nation].filter(Boolean).join(" · "))+'</small></span><b>'+(st.selected.includes(r.id)?"✓":"＋")+'</b></button>').join("")
+      ||'<p class="ng-empty">'+(badCode?"기후 기호는 대문자·소문자를 구분합니다. 올바른 기호: "+esc(C.codeToken(badCode)):"조건에 해당하는 관측 지점이 없습니다.")+'</p>';
+    $(".ng-station-top small",root).textContent=fmt(visible.length,0)+"곳 / 최대 4곳 비교";
+    if(isWorld){
+      const chosen=types.find(t=>t.code===st.group);
+      $("#ng-koppen-summary",root).textContent=(chosen?chosen.code+" · "+chosen.name+" — ":"")+visible.length+"개 관측 지점 표시 · 지도에서 강조된 지점을 선택해 비교할 수 있습니다.";
+      $$("#ng-koppen-list button",root).forEach(b=>{
+        const on=b.dataset.climateGroup===st.group;b.classList.toggle("on",on);b.setAttribute("aria-pressed",String(on));
+      });
+    }
   };
   const redraw=()=>{
     drawList();drawClimateGraphs(root,st,regions);
-    if(st.mapMarkers)st.mapMarkers.attr("fill",r=>st.selected.includes(r.id)?"#dd7853":"#2f7694").attr("r",r=>st.selected.includes(r.id)?7.2:4.5).attr("stroke-width",r=>st.selected.includes(r.id)?2.5:1.4);
+    if(st.mapMarkers){
+      st.mapMarkers
+       .attr("opacity",r=>visibleIds.has(r.id)?1:.12)
+       .attr("pointer-events",r=>visibleIds.has(r.id)?"auto":"none")
+       .attr("fill",r=>st.selected.includes(r.id)?"#dd7853":visibleIds.has(r.id)?"#2f7694":"#a0b3bc")
+       .attr("r",r=>st.selected.includes(r.id)?7.2:visibleIds.has(r.id)?5:3.6)
+       .attr("stroke-width",r=>st.selected.includes(r.id)?2.5:1.2);
+    }
+  };
+  const toggleRegion=id=>{
+    if(!visibleIds.has(id))return;
+    const i=st.selected.indexOf(id);
+    if(i>=0)st.selected.splice(i,1);
+    else if(st.selected.length<4)st.selected.push(id);
+    else{alert("관측 지점은 최대 4곳까지 비교할 수 있습니다.");return}
+    redraw();
   };
   root.onclick=e=>{
+    const grp=e.target.closest("[data-climate-group]");
+    if(grp&&isWorld){
+      st.group=grp.dataset.climateGroup;st.query="";st.region="all";st.selected=[];st.focus=null;
+      $("#ng-climate-search",root).value="";
+      $("#ng-climate-zone",root).value="all";
+      redraw();return;
+    }
     const station=e.target.closest("[data-climate]");
-    if(station){const id=station.dataset.climate;const idx=st.selected.indexOf(id);if(idx>=0)st.selected.splice(idx,1);else if(st.selected.length<4)st.selected.push(id);else{alert("관측 지점은 최대 4곳까지 비교할 수 있습니다.");return}redraw();return}
-    const remove=e.target.closest("[data-remove]");if(remove){st.selected=st.selected.filter(id=>id!==remove.dataset.remove);redraw();return}
-    if(e.target.closest("#ng-zoomreset")&&st.zoom&&st.svg){st.svg.transition().duration(350).call(st.zoom.transform,window.d3.zoomIdentity)}
-    if(e.target.closest("#ng-climate-csv")){const rs=regions.filter(r=>st.selected.includes(r.id));csvDownload((subject==="world"?"세계":"한국")+"_기후비교.csv",[["지점","항목",...months],...rs.flatMap(r=>[[r.name,"기온(℃)",...r.monthlyTemperatureC],[r.name,"강수(mm)",...r.monthlyPrecipitationMm]])])}
+    if(station){toggleRegion(station.dataset.climate);return}
+    const remove=e.target.closest("[data-remove]");
+    if(remove){st.selected=st.selected.filter(id=>id!==remove.dataset.remove);redraw();return}
+    if(e.target.closest("#ng-zoomreset")&&st.zoom&&st.svg)st.svg.transition().duration(350).call(st.zoom.transform,window.d3.zoomIdentity);
+    if(e.target.closest("#ng-climate-csv")){
+      const rs=regions.filter(r=>st.selected.includes(r.id));
+      csvDownload((isWorld?"세계":"한국")+"_기후비교.csv",[["지점","항목",...months],...rs.flatMap(r=>[[r.name,"기온(℃)",...r.monthlyTemperatureC],[r.name,"강수(mm)",...r.monthlyPrecipitationMm]])]);
+    }
   };
-  $("#ng-climate-search",root).addEventListener("input",e=>{st.query=e.target.value;drawList()});
-  $("#ng-climate-zone",root).addEventListener("change",e=>{st.region=e.target.value;drawList()});
+  $("#ng-climate-search",root).oninput=e=>{st.query=e.target.value;st.group="all";redraw()};
+  $("#ng-climate-zone",root).onchange=e=>{st.region=e.target.value;redraw()};
+  if(!isWorld)$("#ng-climate-nation",root).onchange=e=>{st.nation=e.target.value;redraw()};
   redraw();
-  try{await mapClimate(root,subject,st,regions,redraw)}catch(error){$("#ng-map-holder",root).innerHTML='<p class="ng-empty">지도 표시 오류: '+esc(error.message)+'</p>'}
+  try{await mapClimate(root,subject,st,regions,redraw,toggleRegion);redraw()}
+  catch(error){$("#ng-map-holder",root).innerHTML='<p class="ng-empty">지도 표시 오류: '+esc(error.message)+'</p>'}
  }catch(e){showError(root,e)}
 }
 function drawClimateGraphs(root,st,regions){
@@ -88,7 +149,7 @@ function climateChart(holder,chosen,kind){
   }
  });
 }
-async function mapClimate(root,subject,st,regions,redraw){
+async function mapClimate(root,subject,st,regions,redraw,toggleRegion){
  const d3=window.d3,topojson=window.topojson;
  if(!d3)throw Error("지도 도구가 로드되지 않았습니다.");
  const box=$("#ng-map-holder",root);box.innerHTML="";
@@ -115,9 +176,9 @@ async function mapClimate(root,subject,st,regions,redraw){
   .join("circle").attr("class","ng-marker").attr("cx",r=>proj([r.coordinates.longitude,r.coordinates.latitude])[0]).attr("cy",r=>proj([r.coordinates.longitude,r.coordinates.latitude])[1])
   .attr("r",r=>st.selected.includes(r.id)?7.2:4.5).attr("fill",r=>st.selected.includes(r.id)?"#dd7853":"#2f7694")
   .attr("stroke","#fff").attr("stroke-width",1.4).style("cursor","pointer").on("click",(event,r)=>{
-    event.stopPropagation();if(st.selected.includes(r.id))st.selected=st.selected.filter(x=>x!==r.id);else if(st.selected.length<4)st.selected.push(r.id);else{alert("최대 4곳까지 선택할 수 있습니다.");return}redraw()
+    event.stopPropagation();toggleRegion(r.id)
   });
- markers.append("title").text(r=>r.name+" · "+(r.climateCode||r.zone||""));
+ markers.append("title").text(r=>r.name+" · "+(subject==="world"?window.GeoLabClimate.code(r):r.zone||""));
  const zoom=d3.zoom().scaleExtent([1,8]).on("zoom",e=>zoomgroup.attr("transform",e.transform));
  svg.call(zoom).on("dblclick.zoom",null);
  st.mapMarkers=markers;st.svg=svg;st.zoom=zoom;

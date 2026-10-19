@@ -5,7 +5,7 @@ const ctx={};vm.createContext(ctx);
 for(const file of ["ds/codec.js","stats-utils.js","stats-format.js","study-stats.js"])vm.runInContext(read(file),ctx);
 const original=ctx.TwCodec.unwrap(JSON.parse(read("tools/stats/data/stats.json")));
 const helper=ctx.GeoLabStats,fmt=ctx.GeoLabStatFormat;
-let total={baseTables:0,views:0,values:0,numeric:0,named:0,text:0,missing:0,badRows:0,missingSources:0,invalidNamed:0,mixedBefore:0,mixedAfter:0};
+let total={baseTables:0,views:0,values:0,numeric:0,named:0,text:0,numericStrings:0,strings:0,missing:0,badRows:0,missingSources:0,invalidNamed:0,mixedBefore:0,mixedAfter:0};
 for(const [subject,sub] of Object.entries(original.subjects)){
  for(const topic of sub.topics){
   for(const tab of [...(topic.tables||[]),...(topic.regions||[]).flatMap(g=>g.tables||[])]){
@@ -30,7 +30,7 @@ for(const [subject,sub] of Object.entries(original.subjects)){
       if(typeof val==="object"){
        if(!fmt.isNamed(val))total.invalidNamed++;
        else total.named++;
-      }else if(typeof val==="string"&&fmt.isText(val))total.text++;
+      }else if(typeof val==="string"){total.strings++;if(fmt.isText(val))total.text++;else{total.numericStrings++;total.numeric++;}}
       else if(fmt.safeNumber(val)!==null)total.numeric++;
      }
     }
@@ -41,7 +41,7 @@ for(const [subject,sub] of Object.entries(original.subjects)){
 assert.equal(total.baseTables,136);
 assert.equal(total.views,374);
 assert.equal(total.named,1445);
-assert.equal(total.text,440);
+assert.equal(total.strings,440);assert.equal(total.text,261);assert.equal(total.numericStrings,179);
 assert.equal(total.badRows,0);
 assert.equal(total.missingSources,0);
 assert.equal(total.invalidNamed,0);

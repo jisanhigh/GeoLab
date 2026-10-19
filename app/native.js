@@ -307,5 +307,5 @@ async function openDocument(path){
   mount.addEventListener("click",e=>{let x=e.target.closest("[data-localdoc]");if(x){d.close();openDocument(x.dataset.localdoc)}});
  }catch(e){$(".ng-document-body",d).innerHTML='<p class="ng-empty">'+esc(e.message)+'</p>'}
 }
-window.GeoLabNative={render:function(kind,subject,focus){if(kind==="climate")return renderClimate(subject,focus);if(kind==="stats")return renderStats(subject,focus);if(kind==="exam")return renderExam(subject,focus)},openDocument};
+window.GeoLabNative={render:function(kind,subject,focus){if(kind==="climate")return renderClimate(subject,focus);if(kind==="stats")return window.GeoLabExamStats.render(subject,focus);if(kind==="exam")return renderExam(subject,focus)},openDocument};
 })();

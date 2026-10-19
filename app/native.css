@@ -124,3 +124,18 @@
 .ng-document{width:100vw;height:100dvh;border-radius:0;margin:0}
 .ng-document-body{padding:18px 15px}
 }
+
+/* Köppen code navigator. Visible only in world geography. */
+.ng-koppen{background:#fff;border:1px solid #dfe9ed;border-radius:14px;padding:16px;margin:12px 0 16px}
+.ng-koppen-heading{display:flex;align-items:baseline;flex-wrap:wrap;justify-content:space-between;gap:6px;margin-bottom:12px}
+.ng-koppen-heading strong{font-size:15px;color:#264358}
+.ng-koppen-heading small{font-size:11px;color:#738792}
+.ng-koppen-list{display:flex;flex-wrap:wrap;gap:7px}
+.ng-koppen-list button{border:1px solid #d9e5eb;border-radius:10px;background:#f9fbfc;color:#486172;display:flex;align-items:center;gap:7px;padding:9px 11px;font-size:12px;cursor:pointer;min-height:41px}
+.ng-koppen-list button:hover{border-color:#5795b1;background:#eef6fa}
+.ng-koppen-list button.on{background:#24556e;color:white;border-color:#24556e}
+.ng-koppen-code{font-family:system-ui,sans-serif;font-weight:800;letter-spacing:.2px;font-size:14px;font-variant-caps:normal}
+.ng-koppen-list button span{font-size:11px}
+.ng-koppen-list button small{font-size:10px;opacity:.78;font-variant-numeric:tabular-nums}
+.ng-koppen-summary{margin:13px 0 0;color:#6d8290;font-size:12px}
+@media(max-width:640px){.ng-koppen{padding:13px 10px;margin:10px 0 14px}.ng-koppen-heading{display:block}.ng-koppen-heading small{display:block;margin-top:3px;line-height:1.5}.ng-koppen-list{gap:6px}.ng-koppen-list button{padding:8px 9px;min-height:38px}.ng-koppen-list button span{font-size:10px}.ng-koppen-code{font-size:13px}}

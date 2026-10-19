@@ -85,11 +85,15 @@ function oxData(d,extra){
  }))));
 }
 function climateData(d,s){(d.regions||[]).forEach(x=>{
- const label=[x.country||x.nation||x.continent||x.zone,x.climateCode||x.zone].filter(Boolean).join(" · ");
- state.climate.push({subject:s,name:x.name});
+ const C=window.GeoLabClimate;
+ const climateKey=s==="world"&&C?C.code(x):null;
+ const label=s==="world"
+   ?[x.country||x.continent,climateKey].filter(Boolean).join(" · ")
+   :[x.nation,x.zone].filter(Boolean).join(" · ");
+ state.climate.push({subject:s,name:x.name,climateKey});
  const desc="연평균 "+F(x.annualMeanTemperatureC)+"℃ · 연강수량 "+F(x.annualPrecipitationMm)+"mm";
  const path=(s==="world"?"tools/climate/index.html":"tools/climate/korea.html")+"?regions="+encodeURIComponent(x.id)+"&map=selected";
- add("climate",s,x.name,desc,label,{path:path,id:x.id,hayExtra:N((x.aliases||[]).join(" "))});
+ add("climate",s,x.name,desc,label,{path,id:x.id,climateKey,hayExtra:N((x.aliases||[]).join(" "))});
 })}
 function statsData(d){Object.entries(d.subjects||{}).forEach(([s,sub])=>(sub.topics||[]).forEach(t=>(t.regions||[{title:"",tables:t.tables||[]}]).forEach(g=>(g.tables||[]).forEach(tb=>{
  state.stats.push({subject:s,title:tb.title});
@@ -108,11 +112,23 @@ function examsData(d){(d.records||[]).forEach(x=>{
 })}
 function catalogData(d){state.docs=d.map(x=>Object.assign({},x,{hay:N([x.title,x.type,x.text].join(" "))}));state.docs.forEach(x=>add("library","all",x.title,(x.text||"").slice(0,500),x.type,{url:x.url}))}
 const labels={ox:"OX 문항",climate:"기후 관측",stats:"통계표",exam:"기출 분석",library:"읽기 자료"};
-function hits(){const terms=N(el("searchInput").value).split(/\s+/).filter(Boolean);return terms.length?state.index.filter(x=>(x.subject==="all"||x.subject===state.s)&&(state.kind==="all"||x.kind===state.kind)&&terms.every(t=>(x.hay+" "+(x.hayExtra||"")).includes(t))):[]}
+function hits(){
+ const raw=String(el("searchInput").value||"").normalize("NFKC").trim();
+ const terms=raw.split(/\s+/).filter(Boolean);
+ if(!terms.length)return [];
+ const climate=window.GeoLabClimate;
+ return state.index.filter(x=>(x.subject==="all"||x.subject===state.s)
+ &&(state.kind==="all"||x.kind===state.kind)
+ &&terms.every(t=>{
+   const asCode=climate?.codeToken(t);
+   if(asCode)return x.kind==="climate"&&x.subject==="world"&&x.climateKey===t;
+   return (x.hay+" "+(x.hayExtra||"")).includes(t.toLocaleLowerCase("ko-KR"));
+ }));
+}
 function search(){
  const items=hits();state.hits=items;const txt=N(el("searchInput").value);
  el("searchCount").textContent=state.ready?(txt?F(items.length)+"건 검색됨":"검색어를 입력해 주세요."):"자료를 불러오는 중입니다.";
- el("searchResults").innerHTML=!txt?'<div class="empty">검색어를 입력하면 자료가 표시됩니다.</div>':!items.length?'<div class="empty">검색 결과가 없습니다.</div>':items.slice(0,70).map((x,i)=>
+ el("searchResults").innerHTML=!txt?'<div class="empty">검색어를 입력하면 자료가 표시됩니다.</div>':!items.length?'<div class="empty">검색 결과가 없습니다. 쾨펜 기후 기호는 Af, Aw, BW처럼 대소문자를 구분합니다.</div>':items.slice(0,70).map((x,i)=>
  '<button class="result" data-hit="'+i+'"><span class="type">'+E(labels[x.kind])+'</span><strong>'+E(x.title)+'</strong><p>'+E(x.desc)+'</p><div class="footnote">'+E(x.sub)+' · 자료 보기 →</div></button>').join("");
 }
 function documentView(url){

@@ -9,7 +9,7 @@
  "world-urban-compare":["대륙별 도시·촌락","주요 국가별 도시화"],
  "world-food-compare":["대륙별 농업·식량","주요 국가별 농업·식량"],
  "world-energy-compare":["대륙별 에너지","주요 국가별 에너지"],
- "world-8cf8c2b8":["대륙별 수력 제외 신·재생 에너지","주요 국가별 수력 제외 신·재생 에너지"],
+ "world-8cf8c2b8":["대륙별 수력 제외 신·재생 에너지 발전","주요 국가별 수력 제외 신·재생 에너지 발전"],
  "world-religion-compare":["대륙별 종교","주요 국가별 종교"]
  };
  function kind(row){

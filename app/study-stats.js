@@ -38,7 +38,7 @@ function featured(d,s,scope){
  const menu=s==="world"&&scope==="continent"?CONTINENT_MENU:(MENU[s]||[]);
  return menu.map((p,i)=>({name:p[0],key:String(i),items:p[1].map(it=>{
  const e=lookup.get(it[0]);return e?{entry:e,label:it[2],view:Math.min(it[1],e.table.views.length-1)}:null;
- }).filter(item=>item&&(!scope||s!=="world"||scope==="continent"||scope==="other"||root.GeoLabStats.scopeOf(item.entry)===scope))})).filter(g=>g.items.length);
+ }).filter(item=>item&&(!scope||s!=="world"||scope==="continent"||root.GeoLabStats.scopeOf(item.entry)===scope))})).filter(g=>g.items.length);
 }
 function ranked(view,col,asc){return root.GeoLabStatFormat.rankRows(view,col,asc)}
 function csv(filename,view){
@@ -157,8 +157,8 @@ function mount(host,d,subject,focus){
  };
  const draw=()=>{drawNav();drawDetail()};
  host.onclick=e=>{
-  let b=e.target.closest("[data-es-mode]");if(b){st.mode=b.dataset.esMode;st.cat=st.mode==="core"?"0":"all";draw();return}
-  b=e.target.closest("[data-es-scope]");if(b){st.scope=b.dataset.esScope;st.cat=st.mode==="core"?"0":"all";resetIfOut();draw();return}
+  let b=e.target.closest("[data-es-mode]");if(b){st.mode=b.dataset.esMode;if(st.mode==="core"&&st.scope==="other")st.scope="country";st.cat=st.mode==="core"?"0":"all";resetIfOut();draw();return}
+  b=e.target.closest("[data-es-scope]");if(b){st.scope=b.dataset.esScope;if(st.scope==="other")st.mode="all";st.cat=st.mode==="core"?"0":"all";resetIfOut();draw();return}
   b=e.target.closest("[data-es-cat]");if(b){st.cat=b.dataset.esCat;drawNav();return}
   b=e.target.closest("[data-es-table]");if(b){st.table=b.dataset.esTable;st.view=Number(b.dataset.esStart||0);st.metric=0;st.asc=false;draw();q(host,"#es-detail").scrollIntoView({behavior:"smooth",block:"start"});return}
   b=e.target.closest("[data-es-view]");if(b){st.view=Number(b.dataset.esView);st.metric=0;drawDetail();return}

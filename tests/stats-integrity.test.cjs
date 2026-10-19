@@ -8,7 +8,7 @@ const helper=ctx.GeoLabStats,fmt=ctx.GeoLabStatFormat;
 let total={baseTables:0,views:0,values:0,numeric:0,named:0,text:0,missing:0,badRows:0,missingSources:0,invalidNamed:0,mixedBefore:0,mixedAfter:0};
 for(const [subject,sub] of Object.entries(original.subjects)){
  for(const topic of sub.topics){
-  for(const tab of topic.tables||[]){
+  for(const tab of [...(topic.tables||[]),...(topic.regions||[]).flatMap(g=>g.tables||[])]){
    total.baseTables++;
    const parts=helper.splitTable(tab,subject);
    const rawMixed=tab.views.some(v=>new Set(v.rows.map(x=>x.group)).has("continent")&&new Set(v.rows.map(x=>x.group)).has("country"));

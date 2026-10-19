@@ -23,6 +23,8 @@ jobs:
         run: node tests/stats.test.cjs
       - name: Test exam-focused geography statistics
         run: node tests/study-stats.test.cjs
+      - name: Audit complete source statistics and official UN migration cross-checks
+        run: node tests/stats-integrity.test.cjs
       - uses: actions/upload-artifact@v4
         with:
           name: GeoLab-site

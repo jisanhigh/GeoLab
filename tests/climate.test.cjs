@@ -29,6 +29,6 @@ assert.ok(!korea.some(r=>r.climateGroup));
 const html=read("index.html");
 const native=read("native.js");
 assert.ok(html.includes("climate-utils.js"));
-assert.ok(native.includes('const $$=(selector,root)=>Array.from(root.querySelectorAll(selector))'));
+assert.ok(native.includes('const selectAll=(selector,root)=>Array.from(root.querySelectorAll(selector))'));
 assert.ok(native.includes('if(!isWorld)$("#ng-climate-nation",root)'));
 console.log("PASS: Köppen symbols are case-sensitive; 14 world groups; 169 world and 246 Korean stations");

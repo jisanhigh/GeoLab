@@ -1,7 +1,7 @@
 (function(){
 "use strict";
 const $=(selector,root)=>root.querySelector(selector);
-const $=(selector,root)=>Array.from(root.querySelectorAll(selector));
+const selectAll=(selector,root)=>Array.from(root.querySelectorAll(selector));
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const norm=s=>String(s||"").normalize("NFKC").toLocaleLowerCase("ko-KR").trim();
 const fmt=(n,d)=>n==null||n===""||!Number.isFinite(Number(n))?"—":Number(n).toLocaleString("ko-KR",{maximumFractionDigits:d==null?1:d});
@@ -69,7 +69,7 @@ async function renderClimate(subject,focus){
     if(isWorld){
       const chosen=types.find(t=>t.code===st.group);
       $("#ng-koppen-summary",root).textContent=(chosen?chosen.code+" · "+chosen.name+" — ":"")+visible.length+"개 관측 지점 표시 · 지도에서 강조된 지점을 선택해 비교할 수 있습니다.";
-      $$("#ng-koppen-list button",root).forEach(b=>{
+      selectAll("#ng-koppen-list button",root).forEach(b=>{
         const on=b.dataset.climateGroup===st.group;b.classList.toggle("on",on);b.setAttribute("aria-pressed",String(on));
       });
     }

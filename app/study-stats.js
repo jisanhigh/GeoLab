@@ -3,11 +3,11 @@
 /* Student-first presentation of existing official statistics; source values untouched. */
 const MENU={
  world:[
- ["인구·도시",[["world-population-compare",0,"대륙·국가별 인구"],["world-08d3586a",0,"국가별 인구 구조"],["world-urbanization-history",1,"주요 국가 도시화율"],["world-ca743699",0,"국제 이주자 상위 국가"]]],
+ ["인구·도시",[["world-population-compare--country",0,"주요 국가 인구"],["world-08d3586a--country",0,"국가별 인구 구조"],["world-urbanization-history",1,"주요 국가 도시화율"],["world-ca743699",0,"국제 이주자 상위 국가"]]],
  ["농업·식량",[["world-crop-rank",0,"곡물 생산 상위 국가"],["world-crop-trade-rank",0,"곡물 수출입 상위 국가"],["world-livestock-rank",0,"가축 사육 상위 국가"],["world-b2858416",0,"기호 작물 생산 국가"]]],
  ["에너지·자원",[["world-primary-energy-rank",0,"1차 에너지 공급 상위 국가"],["world-energy-compare--continent",0,"대륙별 에너지"],["world-energy-compare--country",3,"주요 국가별 에너지"],["world-fossil-energy-balance",3,"화석연료 생산·소비"],["world-renewable-generation-rank",2,"신·재생 에너지 발전 국가"]]],
  ["산업·무역",[["world-e30c1073",0,"국가별 산업 구조"],["world-6baf531c",0,"국가별 수출입 구성"],["world-ec1c1e8d",0,"세계 제조업 비중 변화"]]],
- ["문화·종교",[["world-religion-compare",3,"주요 국가의 종교 구성"],["world-religion-rank",0,"종교별 신자 수 상위 국가"]]],
+ ["문화·종교",[["world-religion-compare--country",1,"주요 국가의 종교 구성"],["world-religion-rank",0,"종교별 신자 수 상위 국가"]]],
  ["지역별 특징",[["world-monsoon-compare",0,"몬순 아시아·오세아니아"],["world-dry-compare",0,"건조 아시아·북부 아프리카"],["world-africa-latin-compare",0,"사하라 이남 아프리카·중남미"]]]
  ],
  korea:[
@@ -17,6 +17,12 @@ const MENU={
  ["에너지·자원",[["korea-energy-compare",0,"시도별 에너지"],["korea-generation-mix",1,"시도별 발전량"],["korea-renewable-production",0,"신·재생 에너지 생산"]]],
  ["지역·남북한",[["korea-capital-compare",0,"수도권 주요 지표"],["korea-532f0cf7",0,"남한과 북한의 주요 지표"],["korea-north-compare",0,"남북한 농업 지표"]]]
  ]};
+const CONTINENT_MENU=[
+ ["인구·도시",[["world-population-compare--continent",0,"대륙별 인구"],["world-08d3586a--continent",0,"대륙별 인구 구조"],["world-urban-compare--continent",0,"대륙별 도시화"],["world-migration-history",0,"대륙별 순 이동 변화"]]],
+ ["농업·식량",[["world-food-compare--continent",0,"대륙별 농업 생산"]]],
+ ["에너지·자원",[["world-energy-compare--continent",0,"대륙별 에너지"],["world-8cf8c2b8--continent",0,"대륙별 신·재생 에너지 발전"]]],
+ ["문화·종교",[["world-religion-compare--continent",0,"대륙별 종교"]]]
+];
 const stStore={},q=(root,id)=>root.querySelector(id);
 const E=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const lower=s=>String(s??"").normalize("NFKC").toLocaleLowerCase("ko-KR");
@@ -27,20 +33,17 @@ function allTables(d,subject){
  if(!sub||!root.GeoLabStats)throw Error("통계 자료가 없습니다.");
  return (sub.topics||[]).flatMap(t=>root.GeoLabStats.tablesForTopic(t,subject));
 }
-function featured(d,s){
+function featured(d,s,scope){
  const lookup=new Map(allTables(d,s).map(e=>[e.table.id,e]));
- return (MENU[s]||[]).map((p,i)=>({name:p[0],key:String(i),items:p[1].map(it=>{
+ const menu=s==="world"&&scope==="continent"?CONTINENT_MENU:(MENU[s]||[]);
+ return menu.map((p,i)=>({name:p[0],key:String(i),items:p[1].map(it=>{
  const e=lookup.get(it[0]);return e?{entry:e,label:it[2],view:Math.min(it[1],e.table.views.length-1)}:null;
- }).filter(Boolean)}));
+ }).filter(item=>item&&(!scope||s!=="world"||scope==="continent"||scope==="other"||root.GeoLabStats.scopeOf(item.entry)===scope))})).filter(g=>g.items.length);
 }
-function ranked(view,col,asc){
- return (view.rows||[]).map(r=>({row:r,val:number(r.values?.[col])}))
- .filter(x=>x.val!==null&&x.row.group!=="national"&&!["전국","합계","총계","세계","전체"].includes(x.row.label))
- .sort((a,b)=>asc?a.val-b.val:b.val-a.val);
-}
+function ranked(view,col,asc){return root.GeoLabStatFormat.rankRows(view,col,asc)}
 function csv(filename,view){
  const rows=[[view.rowLabel||"지역",...(view.columns||[]).map(c=>[c.label,c.year||view.year,c.unit].filter(Boolean).join(" / "))],
- ...(view.rows||[]).map(r=>[r.label,...(r.values||[])])];
+ ...(view.rows||[]).map(r=>[r.label,...(r.values||[]).map((v,i)=>root.GeoLabStatFormat.cellText(v,view.columns?.[i]?.digits??1))])];
  const text="\ufeff"+rows.map(r=>r.map(x=>'"'+String(x??"").replace(/"/g,'""')+'"').join(",")).join("\r\n");
  const url=URL.createObjectURL(new Blob([text],{type:"text/csv;charset=utf-8"}));
  const a=document.createElement("a");a.href=url;a.download="GeoLab_"+filename.replace(/[\\/:*?"<>|]/g,"_")+".csv";a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);
@@ -56,7 +59,7 @@ function bars(holder,rows,digits,unit,limit){
  const svg=d3.select(holder).append("svg").attr("viewBox","0 0 "+width+" "+height).attr("role","img").attr("aria-label","지역별 수치 비교 그래프");
  values.forEach((v,i)=>{
    const y=6+i*30;
-   svg.append("text").attr("x",left-8).attr("y",y+14).attr("text-anchor","end").attr("font-size",12).text(v.row.label.length>11?v.row.label.slice(0,10)+"…":v.row.label);
+   svg.append("text").attr("x",left-8).attr("y",y+14).attr("text-anchor","end").attr("font-size",12).text(v.name.length>11?v.name.slice(0,10)+"…":v.name);
    svg.append("rect").attr("x",Math.min(x(0),x(v.val))).attr("y",y).attr("width",Math.max(1,Math.abs(x(0)-x(v.val)))).attr("height",19).attr("fill","#397b9f").attr("rx",3);
    svg.append("text").attr("x",Math.max(x(0),x(v.val))+6).attr("y",y+14).attr("font-size",11).text(fmt(v.val,digits));
  });
@@ -69,32 +72,43 @@ function render(subject,focus){
  remote.then(d=>mount(host,d,subject,focus)).catch(e=>{host.innerHTML='<p class="es-wait">자료를 불러오지 못했습니다. '+E(e.message)+'</p>'});
 }
 function mount(host,d,subject,focus){
- const all=allTables(d,subject),curated=featured(d,subject),ids=new Map(all.map(x=>[x.table.id,x]));
- const st=stStore[subject]||(stStore[subject]={mode:"core",cat:"0",query:"",table:null,view:0,metric:0,asc:false,limit:10});
+ const all=allTables(d,subject),ids=new Map(all.map(x=>[x.table.id,x]));
+ const st=stStore[subject]||(stStore[subject]={mode:"core",cat:"0",scope:subject==="world"?"country":"all",query:"",table:null,view:0,metric:0,asc:false,limit:10});
+ const scopeOf=x=>subject==="world"?root.GeoLabStats.scopeOf(x):"all";
+ const applyScope=x=>st.scope==="all"||(st.scope==="other"?scopeOf(x)==="other":scopeOf(x)===st.scope);
+ const shownAll=()=>all.filter(applyScope);
+ const shownFeatured=()=>featured(d,subject,st.scope);
+ const firstAvailable=()=>shownFeatured().flatMap(g=>g.items)[0]?.entry||shownAll()[0]||all[0];
+ const resetIfOut=()=>{
+  if(!ids.has(st.table)||!applyScope(ids.get(st.table))){
+   const x=firstAvailable();
+   st.table=x.table.id;st.view=0;st.metric=0;
+  }
+ };
  const linked=focus?.path?new URL(focus.path,location.href):null;
  if(linked?.pathname.includes("stats")){
-   const id=decodeURIComponent(linked.hash.slice(1)),e=ids.get(id)||ids.get(id+"--continent");
-   if(e){st.mode="all";st.cat=e.topic.id;st.table=e.table.id;st.view=0;st.metric=0;}
+  const id=decodeURIComponent(linked.hash.slice(1));
+  const x=ids.get(id)||ids.get(id+"--country")||ids.get(id+"--continent");
+  if(x){st.mode="all";st.scope=scopeOf(x);st.cat=x.topic.id;st.table=x.table.id;st.view=0;st.metric=0;}
  }
- if(!ids.has(st.table)){
-   const first=curated.flatMap(x=>x.items)[0];
-   st.table=first?.entry.table.id||all[0].table.id;
-   st.view=first?.view||0;
- }
- const current=()=>ids.get(st.table)||all[0];
- host.innerHTML='<div class="es-top"><div><strong>수능 자료 해석</strong><p>지역별 순위·비율·분포를 비교할 통계를 선택하세요.</p></div><div class="es-mode"><button data-es-mode="core">핵심 통계</button><button data-es-mode="all">전체 자료</button></div></div>'+
+ resetIfOut();
+ const current=()=>ids.get(st.table)||firstAvailable();
+ host.innerHTML='<div class="es-top"><div><strong>수능 자료 해석</strong><p>대륙 자료와 국가 자료를 구분해서 확인합니다.</p></div><div class="es-mode"><button data-es-mode="core">핵심 통계</button><button data-es-mode="all">전체 자료</button></div></div>'+
+ (subject==="world"?'<div class="es-scope" aria-label="비교 범위 선택"><button data-es-scope="continent">대륙별 통계</button><button data-es-scope="country">주요 국가별 통계</button><button data-es-scope="other">그 밖의 통계</button></div>':"")+
  '<div id="es-cats" class="es-cats"></div><div id="es-choices" class="es-choices"></div><section id="es-detail" class="es-detail"></section>';
  const drawNav=()=>{
    host.querySelectorAll("[data-es-mode]").forEach(b=>b.classList.toggle("on",b.dataset.esMode===st.mode));
+   const curated=shownFeatured(),scoped=shownAll();
+   host.querySelectorAll("[data-es-scope]").forEach(b=>{const on=b.dataset.esScope===st.scope;b.classList.toggle("on",on);b.setAttribute("aria-pressed",String(on))});
    const list=st.mode==="core"?curated.map(x=>({key:x.key,name:x.name,count:x.items.length})):
-    d.subjects[subject].topics.filter(t=>t.id!=="climate").map(t=>({key:t.id,name:t.title,count:all.filter(x=>x.topic.id===t.id).length}));
-   q(host,"#es-cats").innerHTML=[{key:"all",name:"전체",count:st.mode==="core"?curated.reduce((n,x)=>n+x.items.length,0):all.length},...list].map(x=>'<button data-es-cat="'+E(x.key)+'" class="'+(st.cat===x.key?"on":"")+'">'+E(x.name)+' <small>'+x.count+'</small></button>').join("");
+    d.subjects[subject].topics.filter(t=>t.id!=="climate").map(t=>({key:t.id,name:t.title,count:scoped.filter(x=>x.topic.id===t.id).length}));
+   q(host,"#es-cats").innerHTML=[{key:"all",name:"전체",count:st.mode==="core"?curated.reduce((n,x)=>n+x.items.length,0):scoped.length},...list].map(x=>'<button data-es-cat="'+E(x.key)+'" class="'+(st.cat===x.key?"on":"")+'">'+E(x.name)+' <small>'+x.count+'</small></button>').join("");
    if(st.mode==="core"){
      const rows=curated.filter(x=>st.cat==="all"||st.cat===x.key).flatMap(x=>x.items.map(i=>({...i,group:x.name})));
      q(host,"#es-choices").innerHTML='<p class="es-tip">수능 자료 해석에 활용도가 높은 통계부터 배치했습니다. 원하는 자료를 선택하세요.</p><div class="es-picks">'+rows.map(x=>'<button data-es-table="'+E(x.entry.table.id)+'" data-es-start="'+x.view+'" class="'+(st.table===x.entry.table.id?"on":"")+'"><small>'+E(x.group)+'</small><strong>'+E(x.label)+'</strong><span>'+E(x.entry.table.views[x.view]?.label||"자료 비교")+'</span></button>').join("")+'</div>';
    }else{
      const needle=lower(st.query).trim();
-     const rows=all.filter(x=>(st.cat==="all"||x.topic.id===st.cat)&&(!needle||lower([x.table.title,x.topic.title,x.region.title,...x.table.views.map(v=>v.label),...x.table.views.flatMap(v=>(v.columns||[]).map(c=>c.label))].join(" ")).includes(needle)));
+     const rows=scoped.filter(x=>(st.cat==="all"||x.topic.id===st.cat)&&(!needle||lower([x.table.title,x.topic.title,x.region.title,...x.table.views.map(v=>v.label),...x.table.views.flatMap(v=>(v.columns||[]).map(c=>c.label))].join(" ")).includes(needle)));
      q(host,"#es-choices").innerHTML='<div class="es-searchrow"><input type="search" id="es-search" placeholder="통계명·지표 검색" value="'+E(st.query)+'" aria-label="통계 검색"><small>검색 결과 '+rows.length+'개</small></div><div class="es-all">'+rows.map(x=>'<button data-es-table="'+E(x.table.id)+'" class="'+(st.table===x.table.id?"on":"")+'">'+E(x.table.title)+' <small>'+E(x.topic.title)+(x.region.title?" · "+E(x.region.title):"")+'</small></button>').join("")+'</div>';
    }
  };
@@ -120,6 +134,7 @@ function mount(host,d,subject,focus){
  const draw=()=>{drawNav();drawDetail()};
  host.onclick=e=>{
   let b=e.target.closest("[data-es-mode]");if(b){st.mode=b.dataset.esMode;st.cat=st.mode==="core"?"0":"all";draw();return}
+  b=e.target.closest("[data-es-scope]");if(b){st.scope=b.dataset.esScope;st.cat=st.mode==="core"?"0":"all";resetIfOut();draw();return}
   b=e.target.closest("[data-es-cat]");if(b){st.cat=b.dataset.esCat;drawNav();return}
   b=e.target.closest("[data-es-table]");if(b){st.table=b.dataset.esTable;st.view=Number(b.dataset.esStart||0);st.metric=0;st.asc=false;draw();q(host,"#es-detail").scrollIntoView({behavior:"smooth",block:"start"});return}
   b=e.target.closest("[data-es-view]");if(b){st.view=Number(b.dataset.esView);st.metric=0;drawDetail();return}

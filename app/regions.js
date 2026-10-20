@@ -61,7 +61,7 @@ function renderPanel(){
  '<p class="rg-source">행정경계 원자료: 국가공간정보포털(V-World, 2023년), 가공: KnellBalm/kr-admin-geojson. 2026년과 경계 차이가 있을 수 있습니다. 구 단위는 합쳐서 표시하며 특별·광역·특별자치시는 도시 전체를 시 유형으로 묶어 보여줍니다.</p>';
  $("#rg-province",r).value=state.province;
  $("#rg-search",r).value=state.query;
- r.addEventListener("click",event=>{
+ r.onclick=event=>{
   const mode=event.target.closest("[data-rg-mode]");
   if(mode){state.mode=mode.dataset.rgMode;state.chosen=null;if(state.mode==="quiz"){state.query="";$("#rg-search",r).value="";startQuiz()}else draw();return}
   if(event.target.closest("#rg-zoomin")){state.svg.transition().duration(220).call(state.zoom.scaleBy,1.6);return}
@@ -80,7 +80,7 @@ function renderPanel(){
    const i=Number(item.dataset.rgItem);const f=state.data.features[i];
    if(f){state.chosen=f;draw()}return;
   }
- });
+ };
  $("#rg-province",r).addEventListener("change",e=>{state.province=e.target.value;state.chosen=null;if(state.mode==="quiz")startQuiz();else draw()});
  $("#rg-search",r).addEventListener("input",e=>{state.query=e.target.value.trim();state.chosen=null; if(state.mode==="quiz"){state.mode="all"}draw()});
  mapInit();

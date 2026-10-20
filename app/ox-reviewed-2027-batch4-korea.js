@@ -316,12 +316,12 @@
     "question": "수도권 공장 총량제는 수도권 과밀을 억제하기 위한 정책이다.",
     "answer": "O",
     "explanation": "수도권 공장 총량제는 수도권에서 새로 짓거나 늘리는 공장 건축 면적을 제한하는 제도입니다. 산업과 인구가 수도권에 과도하게 집중되는 현상을 완화하려는 목적이 있습니다.",
-    "verifiedWith": "2027학년도 EBS 수능특강 한국지리 정답과 해설 26쪽",
+    "verifiedWith": "2027학년도 EBS 수능특강 한국지리 정답과 해설 44쪽",
     "curriculum": "2015 개정 한국지리",
     "sources": [
-      "2027 수능특강 한국지리 정답과 해설 26쪽"
+      "2027 수능특강 한국지리 정답과 해설 44쪽"
     ],
-    "referencePage": 26,
+    "referencePage": 44,
     "reviewBasis": "uploaded_EBS_2027",
     "reviewStage": "source_paraphrase_reviewed"
   },

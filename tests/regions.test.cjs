@@ -40,7 +40,7 @@ for(const [region,kind] of [
  ["세종특별자치시 세종특별자치시","city"],["전북특별자치도 전주시","city"]
 ])assert.equal(byName.get(region),kind,"Misclassified: "+region);
 const page=text("site/index.html");
-for(const snippet of ['id="panel-regions"','data-view="regions"','./regions.js?v=1','./regions.css?v=1'])assert.ok(page.includes(snippet),"Missing interface: "+snippet);
+for(const snippet of ['id="panel-regions"','data-view="regions"','./regions.js?v=2','./regions.css?v=1'])assert.ok(page.includes(snippet),"Missing interface: "+snippet);
 assert.ok(fs.existsSync(path.join(root,"site/data/korea-sigun.geojson")),"Site build did not copy boundary data");
 const regionScript=text("app/regions.js");
 new Function(regionScript);

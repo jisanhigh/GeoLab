@@ -121,12 +121,12 @@
     "question": "카나트는 이란의 전통 지하 관개 수로이다.",
     "answer": "O",
     "explanation": "카나트는 이란 등 건조 지역에서 지하수를 농경지와 취락으로 보내는 전통적인 지하 수로입니다. 물이 지표에 노출되는 구간을 줄여 증발을 억제할 수 있습니다.",
-    "verifiedWith": "2027학년도 EBS 수능특강 세계지리 정답과 해설 11쪽",
+    "verifiedWith": "2027학년도 EBS 수능특강 세계지리 정답과 해설 35~36쪽",
     "curriculum": "2015 개정 세계지리",
     "sources": [
-      "2027 수능특강 세계지리 정답과 해설 11쪽"
+      "2027 수능특강 세계지리 정답과 해설 35~36쪽"
     ],
-    "referencePage": 11,
+    "referencePage": 35,
     "reviewBasis": "uploaded_EBS_2027",
     "reviewStage": "source_paraphrase_reviewed"
   },
@@ -212,12 +212,12 @@
     "question": "룸비니는 불교의 성지이다.",
     "answer": "O",
     "explanation": "룸비니는 불교의 창시자인 석가모니가 태어난 곳으로 알려진 불교의 성지입니다. 현재 네팔 남부에 위치합니다.",
-    "verifiedWith": "2027학년도 EBS 수능특강 세계지리 정답과 해설 17쪽",
+    "verifiedWith": "2027학년도 EBS 수능완성 세계지리 본문 35쪽",
     "curriculum": "2015 개정 세계지리",
     "sources": [
-      "2027 수능특강 세계지리 정답과 해설 17쪽"
+      "2027 수능완성 세계지리 본문 35쪽"
     ],
-    "referencePage": 17,
+    "referencePage": 35,
     "reviewBasis": "uploaded_EBS_2027",
     "reviewStage": "source_paraphrase_reviewed"
   }

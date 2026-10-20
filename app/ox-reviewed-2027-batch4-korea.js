@@ -238,12 +238,12 @@
     "question": "갈색 삼림토는 우리나라에 가장 넓게 분포하는 성대 토양이다.",
     "answer": "O",
     "explanation": "우리나라의 산지와 구릉지에는 온대림 아래에서 형성된 갈색 삼림토가 넓게 분포합니다. 갈색 삼림토는 기후와 식생의 영향을 받는 성대 토양입니다.",
-    "verifiedWith": "2027학년도 EBS 수능특강 한국지리 정답과 해설 19쪽",
+    "verifiedWith": "2027학년도 EBS 수능완성 한국지리 본문 42쪽(우리나라 토양 분포)",
     "curriculum": "2015 개정 한국지리",
     "sources": [
-      "2027 수능특강 한국지리 정답과 해설 19쪽"
+      "2027학년도 EBS 수능완성 한국지리 본문 42쪽"
     ],
-    "referencePage": 19,
+    "referencePage": 42,
     "reviewBasis": "uploaded_EBS_2027",
     "reviewStage": "source_paraphrase_reviewed"
   },
@@ -316,12 +316,12 @@
     "question": "수도권 공장 총량제는 수도권 과밀을 억제하기 위한 정책이다.",
     "answer": "O",
     "explanation": "수도권 공장 총량제는 수도권에서 새로 짓거나 늘리는 공장 건축 면적을 제한하는 제도입니다. 산업과 인구가 수도권에 과도하게 집중되는 현상을 완화하려는 목적이 있습니다.",
-    "verifiedWith": "2027학년도 EBS 수능특강 한국지리 정답과 해설 44쪽",
+    "verifiedWith": "2027학년도 EBS 수능특강 한국지리 정답과 해설 42쪽(수도권 공장 총량제)",
     "curriculum": "2015 개정 한국지리",
     "sources": [
-      "2027 수능특강 한국지리 정답과 해설 44쪽"
+      "2027학년도 EBS 수능특강 한국지리 해설 42쪽"
     ],
-    "referencePage": 44,
+    "referencePage": 42,
     "reviewBasis": "uploaded_EBS_2027",
     "reviewStage": "source_paraphrase_reviewed"
   },
@@ -368,10 +368,10 @@
     "question": "서울 북촌 한옥 마을은 보존 재개발 사례이다.",
     "answer": "O",
     "explanation": "서울 북촌 한옥 마을은 기존 한옥과 역사적 경관을 유지하면서 주변 환경을 정비한 사례입니다. 따라서 기존 건물을 없애는 철거 재개발이 아니라 보존 재개발에 해당합니다.",
-    "verifiedWith": "2027학년도 EBS 수능특강 한국지리 정답과 해설 26쪽",
+    "verifiedWith": "2027학년도 EBS 수능특강 한국지리 정답과 해설 26쪽(보존 재개발 유형의 개념만 확인; '북촌' 지명은 원본 OX 문항)",
     "curriculum": "2015 개정 한국지리",
     "sources": [
-      "2027 수능특강 한국지리 정답과 해설 26쪽"
+      "2027학년도 EBS 수능특강 한국지리 해설 26쪽(보존 재개발의 유형)"
     ],
     "referencePage": 26,
     "reviewBasis": "uploaded_EBS_2027",

@@ -68,6 +68,15 @@ assert.equal(Object.keys(ctx.GeoLabOX2027Batch2).length,31);
 assert.equal(Object.keys(ctx.GeoLabOX2027Batch3).length,25);
 assert.equal(Object.keys(ctx.GeoLabOX2027Batch4World).length,17);
 assert.equal(Object.keys(ctx.GeoLabOX2027Batch4Korea).length,39);
+
+const auditedWorld=ctx.GeoLabOX2027Batch4World["world:base:03:성지와 경관:132"];
+const auditedFactory=ctx.GeoLabOX2027Batch4Korea["korea:base:04:대도시권:251"];
+const auditedSoil=ctx.GeoLabOX2027Batch4Korea["korea:base:03:식생과 토양:215"];
+assert.ok(auditedWorld.sources.some(s=>s.includes("수능완성 세계지리 본문 35쪽")),"Lumbini source must be explicit");
+assert.ok(auditedFactory.sources.some(s=>s.includes("수능특강 한국지리 해설 42쪽")),"Factory-limit page correction");
+assert.ok(auditedSoil.sources.some(s=>s.includes("수능완성 한국지리 본문 42쪽")),"Brown forest soil source correction");
+assert.ok(ctx.GeoLabOX2027Batch4Korea["korea:base:04:도시 재개발:268"].verifiedWith.includes("개념만 확인"),"Do not imply EBS explicitly verifies original Bukchon place name");
+
 for(const id of Object.keys(ctx.GeoLabOX.ENTRIES)){
  const note=ctx.GeoLabOX.ENTRIES[id];
  assert.equal(note.question.length>0,true);

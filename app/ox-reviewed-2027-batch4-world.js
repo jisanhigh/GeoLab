@@ -212,10 +212,10 @@
     "question": "룸비니는 불교의 성지이다.",
     "answer": "O",
     "explanation": "룸비니는 불교의 창시자인 석가모니가 태어난 곳으로 알려진 불교의 성지입니다. 현재 네팔 남부에 위치합니다.",
-    "verifiedWith": "2027학년도 EBS 수능완성 세계지리 본문 35쪽",
+    "verifiedWith": "2027학년도 EBS 수능완성 세계지리 본문 35쪽(불교의 성지·룸비니)",
     "curriculum": "2015 개정 세계지리",
     "sources": [
-      "2027 수능완성 세계지리 본문 35쪽"
+      "2027학년도 EBS 수능완성 세계지리 본문 35쪽"
     ],
     "referencePage": 35,
     "reviewBasis": "uploaded_EBS_2027",

@@ -5,7 +5,7 @@ const site=path.join(__dirname,"..","site");
 const read=p=>fs.readFileSync(path.join(site,p));
 const ctx={};vm.createContext(ctx);
 vm.runInContext(read("ds/codec.js").toString("utf8"),ctx);
-for(const f of ["ox-reviewed-2027-world.js","ox-reviewed-2027-korea.js","ox-reviewed-2027-batch2.js","ox-reviewed-2027-batch3.js","ox-explain.js"])vm.runInContext(read(f).toString("utf8"),ctx);
+for(const f of ["ox-reviewed-2027-world.js","ox-reviewed-2027-korea.js","ox-reviewed-2027-batch2.js","ox-reviewed-2027-batch3.js","ox-reviewed-2027-batch4-world.js","ox-reviewed-2027-batch4-korea.js","ox-explain.js"])vm.runInContext(read(f).toString("utf8"),ctx);
 const sourceHashes={
  "tools/ox/data/ox.json":"fb8e3c58847aabd08ca7e1688efb471fbc9822adc9effef0ae8d4b9c21cc3d24",
  "tools/ox/data/ox-extra.json":"7050cf7b2e1ed589b9997ff632277a1cbe4ca0c20f564d86c7bb45856ee657d6"
@@ -49,7 +49,7 @@ for(const [p,sha] of Object.entries(sourceHashes)){
 assert.equal(total,1176);
 assert.equal(correct,765);
 assert.equal(incorrect,411);
-assert.equal(reviewed,161,"Only the 161 individually recorded EBS notes should be shown");
+assert.equal(reviewed,217,"Only 217 specifically linked EBS concept explanations may be shown");
 assert.equal(reviewed,Object.keys(ctx.GeoLabOX.ENTRIES).length,"Orphan or mismatched reviewed explanation");
 
 for(const [id,note] of Object.entries(ctx.GeoLabOX.ENTRIES)){
@@ -66,6 +66,8 @@ assert.equal(Object.keys(ctx.GeoLabOX2027World).length,43);
 assert.equal(Object.keys(ctx.GeoLabOX2027Korea).length,62);
 assert.equal(Object.keys(ctx.GeoLabOX2027Batch2).length,31);
 assert.equal(Object.keys(ctx.GeoLabOX2027Batch3).length,25);
+assert.equal(Object.keys(ctx.GeoLabOX2027Batch4World).length,17);
+assert.equal(Object.keys(ctx.GeoLabOX2027Batch4Korea).length,39);
 for(const id of Object.keys(ctx.GeoLabOX.ENTRIES)){
  const note=ctx.GeoLabOX.ENTRIES[id];
  assert.equal(note.question.length>0,true);

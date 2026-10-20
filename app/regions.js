@@ -35,6 +35,27 @@ const notes={
 const state={data:null,provinces:null,promise:null,mode:"all",province:"all",query:"",chosen:null,session:[],step:0,answered:false,score:0,selectedAnswer:null,zoom:null,svg:null,layer:null,paths:null,root:null,ready:false};
 const kind=f=>f.properties.kind==="city"?"시":f.properties.kind==="county"?"군":"광역시 등";
 const isStudy=f=>f.properties.kind==="city"||f.properties.kind==="county";
+
+/* Accept either the current 161-region dataset or the legacy 167-region release.
+ * Metropolitan cities, including their counties, are always grouped and excluded.
+ * Older cached geography therefore cannot break the study screen. */
+function normalizeData(source){
+ if(!source||!Array.isArray(source.features))throw Error("시·군 지도 파일 형식이 올바르지 않습니다.");
+ const metros=new Map(),learnable=[];
+ for(const feature of source.features){
+  const props=feature&&feature.properties;
+  if(!props||!props.province||!feature.geometry||feature.geometry.type!=="MultiPolygon")throw Error("시·군 지도에 지역 경계가 누락되어 있습니다.");
+  if(metro.has(props.province)){
+   if(!metros.has(props.province))metros.set(props.province,{type:"Feature",properties:{name:props.province,province:props.province,kind:"metro"},geometry:{type:"MultiPolygon",coordinates:[]}});
+   metros.get(props.province).geometry.coordinates.push(...feature.geometry.coordinates);
+  }else{
+   if(!["city","county"].includes(props.kind))throw Error("시·군 분류가 잘못된 지역: "+props.name);
+   learnable.push(feature);
+  }
+ }
+ if(metros.size!==8||learnable.length!==153)throw Error("지역 자료가 일부 누락되었습니다. 학습 지역 "+learnable.length+"개, 특별·광역시 "+metros.size+"개");
+ return {...source,features:[...learnable,...metros.values()]};
+}
 const isShown=f=>isStudy(f)&&(state.province==="all"||f.properties.province===state.province)&&(!state.query||identity(f).replace(/\s/g,"").includes(state.query.replace(/\s/g,"")));
 function pool(){return state.data.features.filter(f=>isStudy(f)&&(state.province==="all"||f.properties.province===state.province))}
 function shuffle(items){const a=items.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
@@ -168,14 +189,16 @@ async function render(){
  if(!window.d3){state.root.textContent="지도를 표시하는 데 필요한 라이브러리를 찾을 수 없습니다.";return}
  state.root.innerHTML='<p class="rg-loading">지역 지도 데이터를 불러오는 중입니다.</p>';
  try{
-  if(!state.promise)state.promise=Promise.all([file,provinceFile].map(p=>fetch(p).then(r=>{if(!r.ok)throw Error(p+" HTTP "+r.status);return r.json()}))).catch(err=>{state.promise=null;throw err});
-  [state.data,state.provinces]=await state.promise;
-  const features=state.data.features;
-  if(!Array.isArray(features)||features.length!==161||features.some(f=>!["city","county","metro"].includes(f.properties.kind)))throw Error("시·군 경계 자료가 올바르지 않습니다.");
-  if(!Array.isArray(state.provinces.features)||state.provinces.features.length!==17)throw Error("시·도 경계 자료가 올바르지 않습니다.");
+  if(!state.promise)state.promise=Promise.all([file,provinceFile].map(p=>
+   fetch(p+"?dataset=20261021-v4",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error(p+" HTTP "+r.status);return r.json()})
+  )).catch(err=>{state.promise=null;throw err});
+  const [rawData,boundaries]=await state.promise;
+  state.data=normalizeData(rawData);
+  state.provinces=boundaries;
+  if(!Array.isArray(boundaries.features)||boundaries.features.length!==17)throw Error("시·도 경계 자료가 올바르지 않습니다.");
   state.chosen=null;
   state.ready=true;renderPanel();
  }catch(e){state.root.innerHTML='<p class="rg-loading">지역 지도를 불러올 수 없습니다: '+E(e.message)+'</p>'}
 }
-window.GeoLabRegions={render};
+window.GeoLabRegions={render,normalizeData};
 })();

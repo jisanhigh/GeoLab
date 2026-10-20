@@ -11,6 +11,7 @@ function write(v){try{localStorage.setItem("geolab-learning-"+state.s,JSON.strin
 function toast(s){const o=el("toast");o.textContent=s;o.style.display="block";clearTimeout(toast.timer);toast.timer=setTimeout(()=>o.style.display="none",1900)}
 function goto(view,sub,historyPush){
  if(sub==="world"||sub==="korea")state.s=sub;
+ if(view==="regions"&&state.s!=="korea")view="home";
  state.view=view;document.body.dataset.subject=state.s;
  document.querySelectorAll(".panel").forEach(x=>x.classList.toggle("active",x.id==="panel-"+view));
  document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x.dataset.view===view));
@@ -21,6 +22,7 @@ function goto(view,sub,historyPush){
  if(view==="ox"){chapterSelect();question(false)}
  if(view==="search")search();
  if(view==="library")library();
+ if(view==="regions"&&window.GeoLabRegions)window.GeoLabRegions.render();
  if(["climate","stats","exam"].includes(view))module(view);
  window.scrollTo(0,0);
 }

@@ -1,6 +1,7 @@
 (function(){
 "use strict";
 const file="data/korea-sigun.geojson";
+const provinceFile="data/korea-provinces.geojson";
 const $=(sel,root)=>root.querySelector(sel);
 const E=x=>String(x==null?"":x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const identity=f=>f.properties.province+" "+f.properties.name;
@@ -31,10 +32,11 @@ const notes={
  "전북특별자치도 김제시":"호남평야의 곡창 지대와 벼농사",
  "인천광역시 강화군":"강화도 일대의 도서 지역과 접경 지역"
 };
-const state={data:null,promise:null,mode:"all",province:"all",query:"",chosen:null,session:[],step:0,answered:false,score:0,selectedAnswer:null,zoom:null,svg:null,layer:null,paths:null,root:null,ready:false};
-const kind=f=>f.properties.kind==="city"?"시":"군";
-const isShown=f=>(state.province==="all"||f.properties.province===state.province)&&(!state.query||identity(f).replace(/\s/g,"").includes(state.query.replace(/\s/g,"")));
-function pool(){return state.data.features.filter(f=>state.province==="all"||f.properties.province===state.province)}
+const state={data:null,provinces:null,promise:null,mode:"all",province:"all",query:"",chosen:null,session:[],step:0,answered:false,score:0,selectedAnswer:null,zoom:null,svg:null,layer:null,paths:null,root:null,ready:false};
+const kind=f=>f.properties.kind==="city"?"시":f.properties.kind==="county"?"군":"광역시 등";
+const isStudy=f=>f.properties.kind==="city"||f.properties.kind==="county";
+const isShown=f=>isStudy(f)&&(state.province==="all"||f.properties.province===state.province)&&(!state.query||identity(f).replace(/\s/g,"").includes(state.query.replace(/\s/g,"")));
+function pool(){return state.data.features.filter(f=>isStudy(f)&&(state.province==="all"||f.properties.province===state.province))}
 function shuffle(items){const a=items.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function startQuiz(){state.session=shuffle(pool()).slice(0,20);state.step=0;state.score=0;state.answered=false;state.selectedAnswer=null;state.chosen=null;draw()}
 function nextQuiz(){if(!state.answered)return;if(state.step+1>=state.session.length){startQuiz();return}state.step++;state.answered=false;state.selectedAnswer=null;draw()}
@@ -48,17 +50,17 @@ function saveAnswer(f,ok){
  }catch(_){}
 }
 function renderPanel(){
- const r=state.root,p=state.data.features,provinces=[...new Set(p.map(f=>f.properties.province))].sort((a,b)=>a.localeCompare(b,"ko"));
+ const r=state.root,p=state.data.features,provinces=[...new Set(p.filter(isStudy).map(f=>f.properties.province))].sort((a,b)=>a.localeCompare(b,"ko"));
  r.innerHTML='<div class="rg-toolbar"><div class="rg-tabs" role="group" aria-label="지역 학습 방식">'+
  ['all','city','county','quiz'].map((m,i)=>'<button type="button" data-rg-mode="'+m+'">'+['전체 보기','시만 보기','군만 보기','시·군 판별 퀴즈'][i]+'</button>').join("")+
  '</div><div class="rg-filters"><label>시·도 선택<select id="rg-province">'+
  '<option value="all">전국</option>'+provinces.map(v=>'<option value="'+E(v)+'">'+E(v)+'</option>').join("")+'</select></label>'+
  '<label>지역 찾기<input id="rg-search" type="search" placeholder="시·군 이름 검색" autocomplete="off"></label></div></div>'+
  '<div class="rg-layout"><div class="rg-map"><div class="rg-maphead"><strong>대한민국 시·군 지도</strong><div><button class="rg-mini" id="rg-zoomin" type="button" aria-label="지도 확대">＋</button><button class="rg-mini" id="rg-zoomout" type="button" aria-label="지도 축소">－</button><button class="rg-mini" id="rg-zoomreset" type="button">초기화</button></div></div>'+
- '<svg id="rg-svg" viewBox="0 0 840 875" role="img" aria-label="시와 군의 위치를 클릭해 확인하는 대한민국 백지도"><g id="rg-zoomlayer"></g></svg>'+
- '<div class="rg-legend"><span><i class="rg-key city"></i> 시(도시)</span><span><i class="rg-key county"></i> 군</span><span id="rg-counts"></span></div></div>'+
+ '<svg id="rg-svg" viewBox="0 0 840 875" role="img" aria-label="도 경계와 시·군 경계가 표시된 대한민국 백지도"><g id="rg-zoomlayer"></g></svg>'+
+ '<div class="rg-legend"><span><i class="rg-key city"></i> 시(도시)</span><span><i class="rg-key county"></i> 군</span><span><i class="rg-key metro"></i> 특별·광역시·세종(학습 제외)</span><span id="rg-counts"></span></div></div>'+
  '<aside class="rg-side"><div id="rg-detail"></div><div class="rg-results"><strong>지역 목록</strong><small id="rg-resultcount"></small><div id="rg-list"></div></div></aside></div>'+
- '<p class="rg-source">행정경계 원자료: 국가공간정보포털(V-World, 2023년), 가공: KnellBalm/kr-admin-geojson. 2026년과 경계 차이가 있을 수 있습니다. 구 단위는 합쳐서 표시하며 특별·광역·특별자치시는 도시 전체를 시 유형으로 묶어 보여줍니다.</p>';
+ '<p class="rg-source">행정경계 원자료: 국가공간정보포털(V-World, 2023년), 가공: KnellBalm/kr-admin-geojson. 2026년과 경계 차이가 있을 수 있습니다. 서울·광역시·세종시는 소속 군을 포함해 흰색으로 처리하며 위치 학습 및 퀴즈에서 제외합니다. 굵은 선은 시·도 경계, 가는 선은 시·군 경계입니다.</p>';
  $("#rg-province",r).value=state.province;
  $("#rg-search",r).value=state.query;
  r.onclick=event=>{
@@ -88,16 +90,25 @@ function renderPanel(){
 }
 function mapInit(){
  const d3=window.d3,features=state.data.features,svg=d3.select($("#rg-svg",state.root));
- const projection=d3.geoMercator().fitExtent([[22,15],[818,845]],state.data),path=d3.geoPath(projection);
+ const projection=d3.geoMercator().fitExtent([[22,15],[818,845]],state.provinces),path=d3.geoPath(projection);
  const layer=svg.select("#rg-zoomlayer");
- const shapes=layer.selectAll("path").data(features).enter().append("path").attr("class","rg-region").attr("d",path).attr("data-rg-feature",(d,i)=>i)
-  .attr("tabindex",0).attr("role","button").on("click",(event,f)=>{
+ const units=layer.append("g").attr("class","rg-unit-layer");
+ const shapes=units.selectAll("path").data(features).enter().append("path")
+  .attr("class",f=>"rg-region"+(isStudy(f)?"":" rg-metro")).attr("d",path).attr("data-rg-feature",(d,i)=>i)
+  .attr("tabindex",f=>isStudy(f)?0:null).attr("role",f=>isStudy(f)?"button":null)
+  .on("click",(event,f)=>{
    if(state.mode==="quiz"||!isShown(f))return;
    state.chosen=f;draw();
   }).on("keydown",(event,f)=>{
    if(state.mode==="quiz"||!isShown(f)||!["Enter"," "].includes(event.key))return;
    event.preventDefault();state.chosen=f;draw();
   });
+ // A separate layer ensures that provincial borders remain legible in all modes,
+ // including the blank-map quiz, without erasing the thinner city/county borders.
+ layer.append("g").attr("class","rg-province-layer")
+  .selectAll("path").data(state.provinces.features).enter().append("path")
+  .attr("class","rg-province-border").attr("d",path)
+  .attr("aria-hidden","true").style("pointer-events","none");
  state.zoom=d3.zoom().scaleExtent([1,15]).on("zoom",event=>layer.attr("transform",event.transform));
  svg.call(state.zoom).on("dblclick.zoom",null);
  state.svg=svg;state.layer=layer;state.paths=shapes;
@@ -110,12 +121,13 @@ function draw(){
  const match=state.data.features.filter(isShown),visible=match.filter(f=>state.mode==="all"||quiz||f.properties.kind===state.mode);
  $("#rg-counts",r).textContent=visible.length+"개 지역";
  state.paths.attr("fill",f=>{
-   if(quiz)return f===question?"#f3a340":"#e5ebef";
+   if(!isStudy(f))return "#ffffff";
+   if(quiz)return f===question?"#f3a340":"#e6ecf0";
    if(!isShown(f))return "#f0f3f5";
    if(state.mode!=="all"&&f.properties.kind!==state.mode)return "#e7ebef";
    if(f===state.chosen)return "#ee9b47";
    return f.properties.kind==="city"?"#3e88ab":"#96bd9c";
- }).attr("opacity",f=>quiz?(f===question?1:.72):!isShown(f)?.45:1)
+ }).attr("opacity",f=>!isStudy(f)?1:quiz?1:!isShown(f)?.65:1)
  .attr("aria-label",f=>quiz?"백지도 지역":identity(f)+" "+kind(f))
  .attr("aria-disabled",quiz?"true":"false")
  .classed("selected",f=>!quiz&&f===state.chosen)
@@ -140,7 +152,7 @@ function draw(){
   d.innerHTML='<div class="rg-detailcard"><span class="rg-kicker">선택한 지역</span><h2>'+E(f.properties.name)+'</h2>'+
    '<div class="rg-type">'+kind(f)+' <small>'+E(f.properties.province)+'</small></div>'+
    (info?'<h3>한국지리 핵심 특징</h3><p>'+E(info)+'</p>':'<p class="rg-muted">지도에서 위치와 주변 시·군을 살펴보세요. 이 지역의 상세 학습 자료는 추후 추가할 수 있습니다.</p>')+
-   (metro.has(f.properties.name)?'<p class="rg-muted">특별시·광역시·특별자치시는 이 학습 지도에서 하나의 도시로 묶어 표시합니다.</p>':"")+'</div>';
++'</div>';
  }else{
   d.innerHTML='<div class="rg-detailcard"><span class="rg-kicker">지역 위치 학습</span><h2>'+({"all":"시와 군을 구분해 보세요","city":"시만 강조한 지도","county":"군만 강조한 지도"}[state.mode])+'</h2>'+
   '<p>색칠된 지역을 클릭하면 이름과 소속 시·도, 주요 지리 특징이 표시됩니다.</p><p class="rg-muted">마우스 휠·두 손가락으로 확대할 수 있습니다. 시와 군을 각각 선택해 분포를 비교해 보세요.</p></div>';
@@ -156,10 +168,11 @@ async function render(){
  if(!window.d3){state.root.textContent="지도를 표시하는 데 필요한 라이브러리를 찾을 수 없습니다.";return}
  state.root.innerHTML='<p class="rg-loading">지역 지도 데이터를 불러오는 중입니다.</p>';
  try{
-  if(!state.promise)state.promise=fetch(file).then(r=>{if(!r.ok)throw Error("HTTP "+r.status);return r.json()});
-  state.data=await state.promise;
+  if(!state.promise)state.promise=Promise.all([file,provinceFile].map(p=>fetch(p).then(r=>{if(!r.ok)throw Error(p+" HTTP "+r.status);return r.json()}))).catch(err=>{state.promise=null;throw err});
+  [state.data,state.provinces]=await state.promise;
   const features=state.data.features;
-  if(!Array.isArray(features)||features.length<150||features.some(f=>!["city","county"].includes(f.properties.kind)))throw Error("시·군 경계 자료가 올바르지 않습니다.");
+  if(!Array.isArray(features)||features.length!==161||features.some(f=>!["city","county","metro"].includes(f.properties.kind)))throw Error("시·군 경계 자료가 올바르지 않습니다.");
+  if(!Array.isArray(state.provinces.features)||state.provinces.features.length!==17)throw Error("시·도 경계 자료가 올바르지 않습니다.");
   state.chosen=null;
   state.ready=true;renderPanel();
  }catch(e){state.root.innerHTML='<p class="rg-loading">지역 지도를 불러올 수 없습니다: '+E(e.message)+'</p>'}

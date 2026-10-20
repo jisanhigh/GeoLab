@@ -20,6 +20,11 @@ for(const f of features){
  assert.equal(f.type,"Feature");
  assert.equal(f.geometry.type,"MultiPolygon");
  assert.ok(f.geometry.coordinates.length>0,key+" has no boundary");
+ const signed=ring=>ring.slice(0,-1).reduce((sum,p,i)=>sum+p[0]*ring[i+1][1]-ring[i+1][0]*p[1],0)/2;
+ for(const polygon of f.geometry.coordinates){
+   assert.ok(signed(polygon[0]) < -1e-11,key+" exterior D3 winding is not clockwise");
+   for(const hole of polygon.slice(1))assert.ok(signed(hole) > 1e-11,key+" hole winding is not counterclockwise");
+ }
  for(const polygon of f.geometry.coordinates)for(const ring of polygon){
    assert.ok(ring.length>=4,key+" invalid ring");
    assert.deepEqual(ring[0],ring[ring.length-1],key+" unclosed ring");

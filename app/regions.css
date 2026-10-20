@@ -17,15 +17,18 @@ body[data-subject="world"] [data-korea-only]{display:none!important}
 .rg-maphead div{display:flex;gap:5px}
 .rg-mini{background:#f4f7f9;border:1px solid #e0e7eb;border-radius:7px;color:#526d80;font-size:13px;padding:5px 9px}
 #rg-svg{width:100%;height:auto;aspect-ratio:840/875;display:block;background:#f7fafb;touch-action:none}
-.rg-region{stroke:none;filter:drop-shadow(0 0 .85px rgba(255,255,255,.98));cursor:pointer;transition:fill .16s}
-.rg-region:hover{filter:drop-shadow(0 0 1.6px #314958)}
-.rg-region.selected{filter:drop-shadow(0 0 2px #805322)}
-.rg-region:focus-visible{outline:none;filter:drop-shadow(0 0 3px #e49a24)}
+.rg-region{stroke:#a0afba;stroke-width:.82px;stroke-linejoin:round;vector-effect:non-scaling-stroke;cursor:pointer;transition:fill .16s}
+.rg-region:not(.rg-metro):hover{stroke:#4c6779;stroke-width:1.4px}
+.rg-region.selected{stroke:#9a5a1e;stroke-width:1.5px}
+.rg-region:focus-visible{outline:2px solid #e49a24;outline-offset:2px}
+.rg-region.rg-metro{stroke:none;cursor:default;pointer-events:none}
+.rg-province-border{fill:none;stroke:#30495a;stroke-width:2.25px;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;pointer-events:none}
 .rg-legend{padding:9px 16px;display:flex;gap:17px;align-items:center;flex-wrap:wrap;border-top:1px solid #e8eef0;font-size:11px;color:#637782}
 .rg-legend span{display:flex;align-items:center;gap:6px}
 .rg-legend #rg-counts{margin-left:auto;font-weight:800;color:#35687c}
 .rg-key{display:inline-block;width:13px;height:13px;border-radius:3px;background:#3e88ab}
 .rg-key.county{background:#96bd9c}
+.rg-key.metro{background:#fff;border:1.5px solid #a7b5c1}
 .rg-side{display:grid;gap:12px}
 .rg-detailcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}
 .rg-detailcard h2{margin:8px 0 13px;font-size:21px;line-height:1.45}

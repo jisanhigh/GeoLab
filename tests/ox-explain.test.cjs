@@ -51,6 +51,15 @@ assert.equal(correct,765);
 assert.equal(incorrect,411);
 assert.equal(reviewed,161,"Only the 161 individually recorded EBS notes should be shown");
 assert.equal(reviewed,Object.keys(ctx.GeoLabOX.ENTRIES).length,"Orphan or mismatched reviewed explanation");
+
+for(const [id,note] of Object.entries(ctx.GeoLabOX.ENTRIES)){
+ const body=note.explanation;
+ assert.ok(body.length>=40&&body.length<=270,"Explanation outside readable length: "+id);
+ assert.ok(!/(\*\*|함께 기억하세요|연결해 이해|핵심입니다|반드시 알아두세요|생각해 보세요)/.test(body),"Awkward or generated coaching phrase: "+id);
+ assert.ok(note.question&&!note.question.includes("**"),"Question text is sourced literally");
+ assert.ok(note.referencePage>0&&note.verifiedWith,"EBS source page missing: "+id);
+}
+
 assert.equal(pending,correct-reviewed);
 for(const id of Object.keys(ctx.GeoLabOX.ENTRIES))assert.ok(used.has(id),"Unverified orphan entry "+id);
 assert.equal(Object.keys(ctx.GeoLabOX2027World).length,43);

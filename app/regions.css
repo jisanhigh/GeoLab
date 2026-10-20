@@ -1,0 +1,60 @@
+/* 한국지리 시·군 지도: 구 단위 경계는 학습 지도에서 숨김 */
+body[data-subject="world"] [data-korea-only]{display:none!important}
+.rg-toolbar{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+.rg-tabs{display:flex;flex-wrap:wrap;gap:6px;align-self:center}
+.rg-tabs button{border:1px solid #d9e4e8;background:#f8fafb;border-radius:9px;color:#536672;font-size:13px;font-weight:700;padding:9px 12px}
+.rg-tabs button.active{background:#245d73;color:#fff;border-color:#245d73}
+.rg-filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.rg-filters label{font-size:11px;font-weight:750;color:#647986;display:grid;gap:4px}
+.rg-filters input,.rg-filters select{border:1px solid #d4e0e5;border-radius:9px;background:white;padding:9px 10px;min-width:150px;color:#243e50;font-size:13px}
+.rg-filters input{min-width:160px}
+.rg-filters input:disabled{opacity:.5}
+.rg-layout{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(250px,.85fr);gap:14px;align-items:start}
+.rg-map,.rg-side{min-width:0}
+.rg-map{background:#fff;border:1px solid var(--line);border-radius:15px;overflow:hidden}
+.rg-maphead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid #edf1f3}
+.rg-maphead strong{font-size:14px}
+.rg-maphead div{display:flex;gap:5px}
+.rg-mini{background:#f4f7f9;border:1px solid #e0e7eb;border-radius:7px;color:#526d80;font-size:13px;padding:5px 9px}
+#rg-svg{width:100%;height:auto;aspect-ratio:840/875;display:block;background:#f7fafb;touch-action:none}
+.rg-region{stroke:none;filter:drop-shadow(0 0 .85px rgba(255,255,255,.98));cursor:pointer;transition:fill .16s}
+.rg-region:hover{filter:drop-shadow(0 0 1.6px #314958)}
+.rg-region.selected{filter:drop-shadow(0 0 2px #805322)}
+.rg-region:focus-visible{outline:none;filter:drop-shadow(0 0 3px #e49a24)}
+.rg-legend{padding:9px 16px;display:flex;gap:17px;align-items:center;flex-wrap:wrap;border-top:1px solid #e8eef0;font-size:11px;color:#637782}
+.rg-legend span{display:flex;align-items:center;gap:6px}
+.rg-legend #rg-counts{margin-left:auto;font-weight:800;color:#35687c}
+.rg-key{display:inline-block;width:13px;height:13px;border-radius:3px;background:#3e88ab}
+.rg-key.county{background:#96bd9c}
+.rg-side{display:grid;gap:12px}
+.rg-detailcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}
+.rg-detailcard h2{margin:8px 0 13px;font-size:21px;line-height:1.45}
+.rg-detailcard h3{font-size:13px;margin:19px 0 6px}
+.rg-detailcard p{font-size:13px;line-height:1.8;color:#465f6f;margin:9px 0}
+.rg-kicker{font-size:11px;font-weight:800;color:#34758c;letter-spacing:.4px}
+.rg-type{display:inline-flex;align-items:center;gap:9px;padding:5px 11px;background:#e8f4f7;border-radius:20px;color:#26627e;font-weight:800}
+.rg-type small{font-size:11px;font-weight:500}
+.rg-muted{color:#81919d!important;font-size:12px!important}
+.rg-results{background:white;border:1px solid var(--line);border-radius:14px;padding:15px;max-height:450px;display:flex;flex-direction:column}
+.rg-results>strong{font-size:14px}
+.rg-results>small{font-size:11px;color:#8496a0;margin-top:3px;margin-bottom:8px}
+#rg-list{min-height:36px;overflow:auto;overscroll-behavior:contain}
+#rg-list button{border:0;background:#fff;border-bottom:1px solid #edf1f3;width:100%;padding:8px 5px;text-align:left;font-size:13px;color:#26485b;font-weight:750}
+#rg-list button:hover,#rg-list button.on{background:#eef6f7}
+#rg-list button span{display:block;font-size:10px;font-weight:400;color:#8a99a2}
+#rg-list>small{display:block;color:#8b9ba4;padding:10px}
+.rg-answers{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:18px 0}
+.rg-answers button{min-height:72px;border:2px solid #c9dce3;border-radius:11px;background:#f5fafb;font-size:25px;font-weight:800;color:#275c76}
+.rg-answers button:not(:disabled):hover{background:#e5f3f6}
+.rg-feedback{background:#e8f6ec;color:#267447;border-radius:10px;padding:12px;margin:12px 0;font-size:13px;font-weight:750;line-height:1.7}
+.rg-feedback.no{background:#fff0ed;color:#aa563d}
+.rg-feedback b{display:block}
+.rg-feedback p{font-weight:400;margin:6px 0 0}
+.rg-quizfoot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:16px;font-size:12px;color:#748592}
+.rg-primary{border:0;border-radius:9px;background:#265f79;color:white;padding:10px 14px;font-size:13px;font-weight:750}
+.rg-primary:disabled{opacity:.4}
+.rg-source{color:#84959d;font-size:11px;line-height:1.8;margin:14px 4px 26px}
+.rg-loading{padding:35px 20px;border:1px solid #e0e8eb;border-radius:12px;color:#728591;background:white}
+@media(max-width:1100px){.rg-layout{grid-template-columns:minmax(0,1fr) 260px}.rg-toolbar{flex-direction:column}}
+@media(max-width:820px){.rg-layout{grid-template-columns:1fr}.rg-side{grid-template-columns:1fr}.rg-results{max-height:280px}}
+@media(max-width:500px){.rg-tabs{display:grid;grid-template-columns:1fr 1fr;width:100%}.rg-tabs button{font-size:12px;padding:10px 5px}.rg-filters{display:grid;grid-template-columns:1fr 1fr}.rg-filters input,.rg-filters select{width:100%;min-width:0}.rg-maphead{padding:10px}.rg-maphead strong{font-size:12px}.rg-mini{padding:5px 7px}.rg-detailcard{padding:17px}}

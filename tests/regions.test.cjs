@@ -42,5 +42,12 @@ for(const [region,kind] of [
 const page=text("site/index.html");
 for(const snippet of ['id="panel-regions"','data-view="regions"','./regions.js?v=1','./regions.css?v=1'])assert.ok(page.includes(snippet),"Missing interface: "+snippet);
 assert.ok(fs.existsSync(path.join(root,"site/data/korea-sigun.geojson")),"Site build did not copy boundary data");
-new Function(text("app/regions.js"));
+const regionScript=text("app/regions.js");
+new Function(regionScript);
+const helper=regionScript.match(/^const \\$=(.+);$/m);
+assert.ok(helper,"Region selector helper missing");
+const select=require("node:vm").runInNewContext(helper[1]);
+const marker={};
+const fakeRoot={querySelector(selector){assert.equal(selector,"#rg-svg");return marker;}};
+assert.equal(select("#rg-svg",fakeRoot),marker,"Selector argument order must match all call sites");
 console.log("Regions verified:",features.length,"learning units, 17 provinces, no gu, valid polygons.");

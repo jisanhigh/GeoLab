@@ -56,7 +56,7 @@ for(const [region,kind] of [
  ["세종특별자치시 세종특별자치시","metro"],["전북특별자치도 전주시","city"]
 ])assert.equal(byName.get(region),kind,"Misclassified: "+region);
 const page=text("site/index.html");
-for(const snippet of ['id="panel-regions"','data-view="regions"','./regions.js?v=3','./regions.css?v=2'])assert.ok(page.includes(snippet),"Missing interface: "+snippet);
+for(const snippet of ['id="panel-regions"','data-view="regions"','./regions.js?v=4','./regions.css?v=2'])assert.ok(page.includes(snippet),"Missing interface: "+snippet);
 assert.ok(fs.existsSync(path.join(root,"site/data/korea-sigun.geojson")),"Site build did not copy boundary data");
 assert.ok(fs.existsSync(path.join(root,"site/data/korea-provinces.geojson")),"Site build did not copy provincial borders");
 const regionScript=text("app/regions.js");
@@ -65,6 +65,30 @@ assert.ok(regionScript.includes('rg-province-border'),"Province border layer mus
 assert.ok(regionScript.includes('layer.append("g").attr("class","rg-province-layer")'),"Province borders must overlay units");
 assert.ok(regionScript.includes('if(!isStudy(f))return "#ffffff"'),"Metro fill must remain pure white");
 assert.ok(regionScript.includes('const isStudy=f=>f.properties.kind==="city"||f.properties.kind==="county"'),"Quiz and explorer must exclude all metros");
+
+assert.ok(regionScript.includes('cache:"no-store"'),"Boundary fetch must bypass stale browser cache");
+const vm=require("node:vm");
+const sandbox={window:{},console};
+vm.runInNewContext(regionScript,sandbox);
+const normalize=sandbox.window.GeoLabRegions.normalizeData;
+assert.equal(typeof normalize,"function");
+const fromCurrent=normalize(data);
+assert.equal(fromCurrent.features.length,161);
+assert.equal(fromCurrent.features.filter(f=>f.properties.kind==="county").length,76);
+assert.equal(fromCurrent.features.filter(f=>f.properties.kind==="metro").length,8);
+// An earlier deployment held separate metro counties; simulate that cached format.
+const legacy=structuredClone(data);
+const busan=legacy.features.find(f=>f.properties.name==="부산광역시");
+const half=Math.max(1,Math.floor(busan.geometry.coordinates.length/2));
+const remainder=busan.geometry.coordinates.splice(half);
+legacy.features.push({type:"Feature",properties:{name:"기장군",province:"부산광역시",kind:"county"},geometry:{type:"MultiPolygon",coordinates:remainder}});
+assert.equal(legacy.features.length,162);
+const converted=normalize(legacy);
+assert.equal(converted.features.length,161);
+assert.equal(converted.features.filter(f=>f.properties.kind==="county").length,76);
+assert.equal(converted.features.filter(f=>f.properties.kind==="metro").length,8);
+assert.ok(!converted.features.some(f=>f.properties.name==="기장군"));
+
 const regionCSS=text("app/regions.css");
 assert.ok(/\.rg-region\{stroke:/.test(regionCSS),"Thin city/county borders must be visible");
 assert.ok(/\.rg-province-border\{fill:none;stroke:/.test(regionCSS),"Thick provincial borders must be visible");

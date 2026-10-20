@@ -11,7 +11,8 @@
 const ENTRIES = Object.freeze(Object.assign({},
  root.GeoLabOX2027World||{},
  root.GeoLabOX2027Korea||{},
- root.GeoLabOX2027Batch2||{}
+ root.GeoLabOX2027Batch2||{},
+ root.GeoLabOX2027Batch3||{}
 ));
 
 function get(id) {return Object.prototype.hasOwnProperty.call(ENTRIES,id)?ENTRIES[id]:null}

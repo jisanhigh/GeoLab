@@ -44,9 +44,9 @@ for(const snippet of ['id="panel-regions"','data-view="regions"','./regions.js?v
 assert.ok(fs.existsSync(path.join(root,"site/data/korea-sigun.geojson")),"Site build did not copy boundary data");
 const regionScript=text("app/regions.js");
 new Function(regionScript);
-const helper=regionScript.match(/^const \\$=(.+);$/m);
+const helper=regionScript.split("\n").find(line=>line.startsWith("const $="))?.slice("const $=".length,-1);
 assert.ok(helper,"Region selector helper missing");
-const select=require("node:vm").runInNewContext(helper[1]);
+const select=require("node:vm").runInNewContext(helper);
 const marker={};
 const fakeRoot={querySelector(selector){assert.equal(selector,"#rg-svg");return marker;}};
 assert.equal(select("#rg-svg",fakeRoot),marker,"Selector argument order must match all call sites");

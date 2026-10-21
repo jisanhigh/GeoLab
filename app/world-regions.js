@@ -122,6 +122,16 @@ function submitQuiz(id){
  refreshDetail();paintMap();
 }
 function endQuiz(){P.quiz=null;P.done=false;P.lastAnswer=null;refresh();}
+function beliefInfo(x){
+ if(!x?.beliefStudy)return "";
+ const study=x.beliefStudy;
+ const heading=study.type==="ethnic"?"주요 민족 집단":study.type==="belief"?"관련 종교":"관련 집단의 주요 종교";
+ return '<section class="wr-belief" aria-label="'+esc(heading)+'">'+
+  '<h3>'+esc(heading)+'</h3>'+
+  '<div class="wr-belief-grid">'+study.people.map(p=>'<div class="wr-belief-person">'+
+   '<span>'+esc(p.label)+'</span><strong>'+esc(p.belief)+'</strong></div>').join("")+'</div>'+
+  '<p class="wr-belief-note">'+esc(study.summary)+'</p></section>';
+}
 function entryInfo(x){
  if(!x)return "";
  if(P.mode==="industry")return '<div class="wr-eyebrow">'+esc(x.country)+' · '+esc(x.group)+'</div>'+
@@ -129,7 +139,7 @@ function entryInfo(x){
   '<div class="wr-fact"><b>주요 산업</b><p>'+esc(x.keywords)+'</p></div>'+
   '<div class="wr-fact"><b>입지 및 변화</b><p>'+esc(x.description)+'</p></div>';
  return '<div class="wr-eyebrow">'+esc(x.continent)+' · 대표 유형: '+esc(x.group)+'</div>'+
-  '<h2>'+esc(x.name)+'</h2><div class="wr-fact"><b>주요 관련 국가·집단</b><p>'+esc(x.parties)+'</p></div>'+
+  '<h2>'+esc(x.name)+'</h2>'+beliefInfo(x)+'<div class="wr-fact"><b>주요 관련 국가·집단</b><p>'+esc(x.parties)+'</p></div>'+
   '<div class="wr-fact"><b>주요 쟁점</b><p>'+esc(x.keywords)+'</p></div>'+
   '<div class="wr-fact"><b>교재 중심 배경</b><p>'+esc(x.description)+'</p></div>'+
   '<p class="wr-caution">'+esc(x.note)+'</p>';

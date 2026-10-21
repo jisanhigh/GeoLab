@@ -333,7 +333,8 @@ root.GeoLabAdvancedData={
      "인천광역시",
      "인천광역시"
     ]
-   ]
+   ],
+   "administrative": "인천광역시 영종구"
   },
   {
    "name": "김포국제공항",
@@ -347,7 +348,8 @@ root.GeoLabAdvancedData={
      "서울특별시",
      "서울특별시"
     ]
-   ]
+   ],
+   "administrative": "서울특별시 강서구"
   },
   {
    "name": "김해국제공항",
@@ -361,7 +363,8 @@ root.GeoLabAdvancedData={
      "부산광역시",
      "부산광역시"
     ]
-   ]
+   ],
+   "administrative": "부산광역시 강서구"
   },
   {
    "name": "제주국제공항",
@@ -375,7 +378,8 @@ root.GeoLabAdvancedData={
      "제주특별자치도",
      "제주시"
     ]
-   ]
+   ],
+   "administrative": "제주특별자치도 제주시"
   },
   {
    "name": "대구국제공항",
@@ -389,7 +393,8 @@ root.GeoLabAdvancedData={
      "대구광역시",
      "대구광역시"
     ]
-   ]
+   ],
+   "administrative": "대구광역시 동구"
   },
   {
    "name": "청주국제공항",
@@ -403,7 +408,8 @@ root.GeoLabAdvancedData={
      "충청북도",
      "청주시"
     ]
-   ]
+   ],
+   "administrative": "충청북도 청주시 청원구"
   },
   {
    "name": "무안국제공항",
@@ -417,7 +423,8 @@ root.GeoLabAdvancedData={
      "전라남도",
      "무안군"
     ]
-   ]
+   ],
+   "administrative": "전라남도 무안군"
   },
   {
    "name": "양양국제공항",
@@ -431,7 +438,8 @@ root.GeoLabAdvancedData={
      "강원특별자치도",
      "양양군"
     ]
-   ]
+   ],
+   "administrative": "강원특별자치도 양양군"
   }
  ],
  "fez": [
@@ -991,6 +999,7 @@ root.GeoLabAdvancedData={
   "railStation": "https://www.kric.go.kr/jsp/board/portal/sub05/est/estation_BasicDetail.jsp",
   "nationalRail": "https://korass.or.kr/_img/web/ebook_filekr.pdf",
   "Bubal": "https://amisp.kr.or.kr/devl/KRPTLDEVL001.do"
- }
+ },
+ "airportAdministrativeSource": "한국공항보안 전국 사업장 2025 및 출입국외국인정책본부 2026 행정구역(인천 영종구). 역/공항 명칭은 지역 행정구역과 다를 수 있음."
 };
 })(window);

@@ -10,6 +10,17 @@ assert.equal(data.industry.length,30,"Industry reference sites, including Suneun
 assert.equal(data.industry.filter(x=>x.continent==="유럽").length,16);
 assert.equal(data.industry.filter(x=>x.continent==="북아메리카").length,14);
 assert.equal(data.conflicts.length,22,"Conflict textbook case count");
+const expectedConflictCounts={"영토·영유권":4,"분리·독립":9,"민족·종교":6,"전쟁·내전":3};
+assert.equal(JSON.stringify(data.conflictCategories),JSON.stringify(Object.keys(expectedConflictCounts)),"Conflict filters must stay at four clear primary groups");
+assert.equal(new Set(data.conflicts.map(x=>x.group)).size,4,"Do not recreate overlapping conflict filter labels");
+for(const [group,count] of Object.entries(expectedConflictCounts)){
+ assert.equal(data.conflicts.filter(x=>x.group===group).length,count,group+" classification changed unexpectedly");
+}
+assert.ok(data.conflictClassificationNote.includes("대표적인 쟁점"),"Explain that overlapping real-world causes are simplified only for the filter");
+assert.equal(data.conflicts.filter(x=>x.id==="cf-kashmir")[0].group,"영토·영유권");
+assert.equal(data.conflicts.filter(x=>x.id==="cf-srilanka")[0].group,"민족·종교");
+assert.equal(data.conflicts.filter(x=>x.id==="cf-scotland")[0].group,"분리·독립");
+assert.equal(data.conflicts.filter(x=>x.id==="cf-syria")[0].group,"전쟁·내전");
 assert.equal(world.features.length,179,"Global outline data");
 function signedRing(ring){let s=0;for(let i=0;i<ring.length-1;i++)s+=ring[i][0]*ring[i+1][1]-ring[i+1][0]*ring[i][1];return s}
 for(const f of world.features){
@@ -45,7 +56,7 @@ new Function(js);
 assert.ok(js.includes("window.GeoLabWorldRegions={render}"));
 assert.ok(js.includes('"유럽":{center:[12,56.5],scale:700}'),"European projection must include northern Finland and southern France");
 for(const token of ["function projection()","geoNaturalEarth1","wr-country","wr-pin","function launchQuiz()","function submitQuiz(","function showTip(","function moveTip(","data/world-countries.geojson","role=\"tooltip\""])assert.ok(js.includes(token),"Missing world-map capability: "+token);
-for(const token of ['id="panel-worldregions"','id="worldregion-root"','data-view="worldregions"','data-world-only','world-regions-data.js?v=2','world-regions.js?v=2','world-regions.css?v=1'])assert.ok(html.includes(token),"Missing world geography entry: "+token);
+for(const token of ['id="panel-worldregions"','id="worldregion-root"','data-view="worldregions"','data-world-only','world-regions-data.js?v=3','world-regions.js?v=3','world-regions.css?v=2'])assert.ok(html.includes(token),"Missing world geography entry: "+token);
 assert.ok(app.includes('view==="worldregions"&&state.s!=="world"'),"World-only navigation guard missing");
 assert.ok(app.includes('window.GeoLabWorldRegions.render()'),"World region screen must mount");
 assert.ok(css.includes('body[data-subject="korea"] [data-world-only]'),"Do not show world region menu in Korean geography");
@@ -66,8 +77,13 @@ mod.P.area="북아메리카";
 assert.equal(mod.choices().length,14);
 mod.P.mode="conflicts";mod.P.area="아시아";
 assert.ok(mod.choices().length>=6,"Asia conflict sites");
-mod.P.group="해양 영유권";
-assert.equal(mod.choices().length,2,"Both textbook East/SE Asia island disputes");
+mod.P.group="영토·영유권";
+assert.equal(mod.choices().length,3,"Asian land and maritime territory dispute localities");
+mod.P.group="분리·독립";
+assert.ok(mod.choices().length>=2,"Self-determination localities should remain accessible");
+assert.ok(js.includes("data.conflictCategories.filter"),"Use one stable short conflict category list");
+assert.ok(js.includes("wr-filter-count"),"Show categories with small case counts");
+assert.ok(js.includes("대표 유형:"),"In detailed conflict cards classify by primary issue, not a full explanation");
 mod.P.group="전체";mod.P.area="전체";
 assert.equal(mod.choices().length,22);
 const ans=mod.questionOptions(data.conflicts[0],data.conflicts);

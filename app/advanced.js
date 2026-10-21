@@ -37,6 +37,15 @@ function moveStationTooltip(event){
  tip.style.left=left+"px";tip.style.top=top+"px";
 }
 function hideStationTooltip(){const tip=hoverTip();if(tip)tip.hidden=true}
+/* The same transient location preview applies to airports; quiz answers stay hidden. */
+function showAirportTooltip(airport,event){
+ if(st.category!=="airports"||st.quiz||!airport?.administrative||event?.pointerType==="touch")return;
+ const tip=hoverTip();if(!tip)return;
+ tip.innerHTML='<strong>'+e(airport.name)+'</strong><span>'+e(airport.administrative)+'</span>';
+ tip.hidden=false;
+ moveStationTooltip(event);
+}
+
 
 function resetCategory(cat){
  hideStationTooltip();st.category=cat;st.index=0;st.quiz=false;st.answered=false;st.correct=false;st.stationName=null;refresh();
@@ -44,6 +53,7 @@ function resetCategory(cat){
 function makeQuiz(){hideStationTooltip();st.quiz=true;st.index=Math.floor(Math.random()*list().length);st.answered=false;st.correct=false;st.stationName=null;refresh()}
 function answer(index){
  if(!list()[index])return;
+ hideStationTooltip();
  if(st.quiz){if(st.answered)return;st.correct=index===st.index;st.answered=true}else {if(index!==st.index)st.stationName=null;st.index=index;}
  refresh();
 }
@@ -130,7 +140,18 @@ function paint(){
  points().forEach(p=>{
   if(st.quiz&&cat!=="airports"&&!st.answered)return;
   const active=p.index===st.index,isHighlighted=active&&(!st.quiz||st.answered);
-  const g=dots.append("g").attr("class","advanced-marker").on("click",()=>answer(p.index));
+  const airportInfo=cat==="airports"?list()[p.index]:null;
+  const g=dots.append("g").attr("class","advanced-marker"+(airportInfo?" advanced-airport":""))
+   .attr("role",airportInfo&&!st.quiz?"button":null)
+   .attr("tabindex",airportInfo&&!st.quiz?0:null)
+   .attr("aria-label",airportInfo?airportInfo.name+" · "+airportInfo.administrative:p.name)
+   .on("pointerenter",ev=>{if(airportInfo)showAirportTooltip(airportInfo,ev)})
+   .on("pointermove",ev=>{if(airportInfo&&ev.pointerType!=="touch")moveStationTooltip(ev)})
+   .on("pointerleave",hideStationTooltip)
+   .on("focus",ev=>{if(airportInfo)showAirportTooltip(airportInfo,ev)})
+   .on("blur",hideStationTooltip)
+   .on("keydown",ev=>{if(airportInfo&&(ev.key==="Enter"||ev.key===" ")){ev.preventDefault();hideStationTooltip();answer(p.index)}})
+   .on("click",()=>{hideStationTooltip();answer(p.index)});
   g.append("circle").attr("cx",p.p[0]).attr("cy",p.p[1]).attr("r",isHighlighted?6.5:4.7)
    .attr("stroke","#fff").attr("stroke-width",1.7).attr("fill",isHighlighted?"#ea8938":"#25768d");
   g.append("circle").attr("cx",p.p[0]).attr("cy",p.p[1]).attr("r",15).attr("fill","transparent");
@@ -157,10 +178,13 @@ function detail(){
      (data.stationAdministrativeNotes?.[st.stationName]?'<p class="advanced-station-caveat">'+e(data.stationAdministrativeNotes[st.stationName])+'</p>':""):
      '<p class="advanced-station-placeholder">지도에서 역 이름을 클릭하면 실제 소재 시·도와 시·군·구가 여기에 표시됩니다.</p>')+
     '</section>':"")+
-  '<div class="advanced-locations"><b>'+(rail?"주요 거점역 순서 · 역명 클릭 가능":"지도 표시 지역")+'</b>'+
+  (st.category==="airports"?'<section class="advanced-station-info" aria-live="polite">'+
+   '<div class="advanced-eyebrow">공항 소재 행정구역</div><h3>'+name+'</h3>'+
+   '<p class="advanced-station-address">'+e(chosen.administrative||"확인 중")+'</p></section>':"")+
+  '<div class="advanced-locations"><b>'+(rail?"주요 거점역 순서 · 역명 클릭 가능":st.category==="airports"?"공항 소재 시·도 및 시·군·구":"지도 표시 지역")+'</b>'+
   (rail?'<div class="advanced-station-buttons">'+chosen.stops.map(n=>
    '<button type="button" data-advanced-station="'+e(n)+'" class="'+(st.stationName===n?"selected":"")+'">'+e(n)+'역</button>').join("")+'</div>':
-   '<p>'+(chosen.places||[]).map(x=>e(x.join(" "))).join(" · ")+'</p>')+'</div>';
+   '<p>'+(st.category==="airports"?e(chosen.administrative||""):(chosen.places||[]).map(x=>e(x.join(" "))).join(" · "))+'</p>')+'</div>';
  }
  q("#advanced-items",st.root).innerHTML=list().map((i,index)=>'<button data-advanced-choice="'+index+'" class="'+(index===st.index?"selected":"")+'" '+(quiz&&!rail?"disabled":"")+'><b>'+e(i.name)+'</b><small>'+
   (rail?i.stops.length+"개 주요 거점역":e(i.description||"").slice(0,56))+'</small></button>').join("");
@@ -188,6 +212,17 @@ function detail(){
   button.addEventListener("focus",ev=>showStationTooltip(station,ev));
   button.addEventListener("blur",hideStationTooltip);
  });
+ if(st.category==="airports"&&!st.quiz){
+  st.root.querySelectorAll("#advanced-items [data-advanced-choice]").forEach(button=>{
+   const airport=list()[Number(button.dataset.advancedChoice)];
+   if(!airport)return;
+   button.addEventListener("pointerenter",ev=>showAirportTooltip(airport,ev));
+   button.addEventListener("pointermove",ev=>{if(ev.pointerType!=="touch")moveStationTooltip(ev)});
+   button.addEventListener("pointerleave",hideStationTooltip);
+   button.addEventListener("focus",ev=>showAirportTooltip(airport,ev));
+   button.addEventListener("blur",hideStationTooltip);
+  });
+ }
 
 }
 function refresh(){

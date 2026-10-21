@@ -5,7 +5,7 @@ const data=window.GeoLabAdvancedData;
 const T=[["slow","슬로시티"],["innovation","혁신도시"],["enterprise","기업도시"],["rail","고속철도"],["airports","국제공항"],["fez","경제자유구역"]];
 const e=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const q=(id,root)=>root.querySelector(id);
-const st={category:"slow",index:0,showLabels:true,quiz:false,answered:false,correct:false,root:null,areas:null,provinces:null,projection:null,svg:null,zoom:null,layer:null,promise:null,requestId:0};
+const st={category:"slow",index:0,showLabels:true,quiz:false,answered:false,correct:false,root:null,areas:null,provinces:null,projection:null,svg:null,zoom:null,layer:null,promise:null,requestId:0,stationName:null};
 const list=()=>data[st.category];
 const item=()=>list()[st.index];
 const placeId=(p,n)=>p+" "+n;
@@ -14,12 +14,17 @@ const contains=(feature,i)=>places(i).includes(placeId(feature.properties.provin
 const metropolis=new Set(["서울특별시","부산광역시","대구광역시","인천광역시","광주광역시","대전광역시","울산광역시","세종특별자치시"]);
 const visibleSource={slow:"slow",innovation:"innovation",enterprise:"enterprise",rail:"rail",airports:"airport",fez:"fez"};
 function resetCategory(cat){
- st.category=cat;st.index=0;st.quiz=false;st.answered=false;st.correct=false;refresh();
+ st.category=cat;st.index=0;st.quiz=false;st.answered=false;st.correct=false;st.stationName=null;refresh();
 }
-function makeQuiz(){st.quiz=true;st.index=Math.floor(Math.random()*list().length);st.answered=false;st.correct=false;refresh()}
+function makeQuiz(){st.quiz=true;st.index=Math.floor(Math.random()*list().length);st.answered=false;st.correct=false;st.stationName=null;refresh()}
 function answer(index){
  if(!list()[index])return;
- if(st.quiz){if(st.answered)return;st.correct=index===st.index;st.answered=true}else st.index=index;
+ if(st.quiz){if(st.answered)return;st.correct=index===st.index;st.answered=true}else {if(index!==st.index)st.stationName=null;st.index=index;}
+ refresh();
+}
+function selectStation(name){
+ if(st.category!=="rail"||st.quiz||!item().stops.includes(name)||!data.stationAdministrative[name])return;
+ st.stationName=name;
  refresh();
 }
 function points(){
@@ -73,9 +78,21 @@ function paint(){
   });
   chosen.stops.forEach((name,j)=>{
    const ll=data.stations[name];if(!ll)return;const p=st.projection(ll);
-   const g=dots.append("g");g.append("circle").attr("cx",p[0]).attr("cy",p[1]).attr("r",4)
-    .attr("fill","#fff").attr("stroke","#c76035").attr("stroke-width",1.6);
-   if(st.showLabels&&!st.quiz||st.answered)g.append("text").attr("class","advanced-place-label").attr("x",p[0]+7).attr("y",p[1]-6).text(name);
+   const active=st.stationName===name&&!st.quiz;
+   const g=dots.append("g").attr("class","advanced-station"+(active?" selected":""))
+    .attr("role",st.quiz?null:"button").attr("tabindex",st.quiz?null:0)
+    .attr("aria-label",name+"역")
+    .style("cursor",st.quiz?"default":"pointer")
+    .on("click",ev=>{ev.stopPropagation();selectStation(name)})
+    .on("keydown",ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();selectStation(name)}});
+   g.append("title").text(name+"역");
+   g.append("circle").attr("class","advanced-station-hit").attr("cx",p[0]).attr("cy",p[1]).attr("r",14)
+    .attr("fill","transparent").attr("pointer-events",st.quiz?"none":"all");
+   g.append("circle").attr("class","advanced-station-symbol").attr("cx",p[0]).attr("cy",p[1]).attr("r",active?7:4)
+    .attr("fill",active?"#f2a550":"#fff").attr("stroke",active?"#ab451a":"#c76035").attr("stroke-width",active?2.5:1.6)
+    .style("pointer-events","none");
+   if((st.showLabels&&!st.quiz)||st.answered)g.append("text").attr("class","advanced-place-label")
+    .attr("x",p[0]+7).attr("y",p[1]-6).text(name+"역");
   });
   return;
  }
@@ -103,8 +120,16 @@ function detail(){
  }else{
   d.innerHTML='<div class="advanced-eyebrow">'+e(T.find(t=>t[0]===st.category)[1])+' · '+(st.index+1)+' / '+list().length+'</div>'+
   '<h2>'+name+'</h2><p>'+e(chosen.description||"")+'</p>'+
-  '<div class="advanced-locations"><b>'+(rail?"주요 거점역 순서":"지도 표시 지역")+'</b><p>'+
-  (rail?chosen.stops.map(e).join(" → "):(chosen.places||[]).map(x=>e(x.join(" "))).join(" · "))+'</p></div>';
+  (rail?'<section class="advanced-station-info" aria-live="polite">'+
+    (st.stationName?'<div class="advanced-eyebrow">선택한 역 · 소재 행정구역</div><h3>'+e(st.stationName)+'역</h3>'+
+     '<p class="advanced-station-address">'+e(data.stationAdministrative[st.stationName]||"소재지 확인 중")+'</p>'+
+     (data.stationAdministrativeNotes?.[st.stationName]?'<p class="advanced-station-caveat">'+e(data.stationAdministrativeNotes[st.stationName])+'</p>':""):
+     '<p class="advanced-station-placeholder">지도에서 역 이름을 클릭하면 실제 소재 시·도와 시·군·구가 여기에 표시됩니다.</p>')+
+    '</section>':"")+
+  '<div class="advanced-locations"><b>'+(rail?"주요 거점역 순서 · 역명 클릭 가능":"지도 표시 지역")+'</b>'+
+  (rail?'<div class="advanced-station-buttons">'+chosen.stops.map(n=>
+   '<button type="button" data-advanced-station="'+e(n)+'" class="'+(st.stationName===n?"selected":"")+'">'+e(n)+'역</button>').join("")+'</div>':
+   '<p>'+(chosen.places||[]).map(x=>e(x.join(" "))).join(" · ")+'</p>')+'</div>';
  }
  q("#advanced-items",st.root).innerHTML=list().map((i,index)=>'<button data-advanced-choice="'+index+'" class="'+(index===st.index?"selected":"")+'" '+(quiz&&!rail?"disabled":"")+'><b>'+e(i.name)+'</b><small>'+
   (rail?i.stops.length+"개 주요 거점역":e(i.description||"").slice(0,56))+'</small></button>').join("");
@@ -143,6 +168,7 @@ function mount(){
  '<div class="advanced-notes"><p id="advanced-note"></p><p><a id="advanced-source" href="#" target="_blank" rel="noopener noreferrer">관련 자료 출처 ↗</a> · 경계 기준 V-World 2023 / 철도는 개략 노선</p></div>';
  r.onclick=event=>{
   const tab=event.target.closest("[data-advanced-tab]");if(tab){resetCategory(tab.dataset.advancedTab);return}
+  const station=event.target.closest("[data-advanced-station]");if(station){selectStation(station.dataset.advancedStation);return}
   const choice=event.target.closest("[data-advanced-choice]");if(choice){answer(Number(choice.dataset.advancedChoice));return}
   const button=event.target.closest("[data-advanced-action]");if(!button)return;
   const a=button.dataset.advancedAction;

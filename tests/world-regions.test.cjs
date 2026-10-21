@@ -13,6 +13,29 @@ assert.equal(data.conflicts.length,22,"Conflict textbook case count");
 const expectedConflictCounts={"영토·영유권":4,"분리·독립":9,"민족·종교":6,"전쟁·내전":3};
 assert.equal(JSON.stringify(data.conflictCategories),JSON.stringify(Object.keys(expectedConflictCounts)),"Conflict filters must stay at four clear primary groups");
 assert.equal(new Set(data.conflicts.map(x=>x.group)).size,4,"Do not recreate overlapping conflict filter labels");
+
+const beliefs=Object.fromEntries(data.conflicts.filter(x=>x.beliefStudy).map(x=>[x.id,x.beliefStudy]));
+assert.equal(Object.keys(beliefs).length,12,"Check EBS religious and ethnic study cases");
+for(const id of ["cf-srilanka","cf-rakhine","cf-mindanao","cf-nigeria","cf-rwanda","cf-burundi"])
+ assert.ok(beliefs[id],"All six ethnicity-and-religion filter cases must contain study information");
+function beliefValues(id){return beliefs[id].people.map(p=>p.belief)}
+assert.deepEqual(beliefValues("cf-srilanka"),["불교","힌두교"]);
+assert.deepEqual(beliefValues("cf-rakhine"),["불교","이슬람교"]);
+assert.deepEqual(beliefValues("cf-mindanao"),["크리스트교","이슬람교"]);
+assert.deepEqual(beliefValues("cf-nigeria"),["이슬람교","크리스트교"]);
+assert.deepEqual(beliefValues("cf-rwanda"),["후투족","투치족"]);
+assert.deepEqual(beliefValues("cf-burundi"),["후투족","투치족"]);
+assert.equal(beliefs["cf-rwanda"].type,"ethnic","Never mislabel Rwanda as a religious conflict");
+assert.equal(beliefs["cf-burundi"].type,"ethnic","Never mislabel Burundi as a religious conflict");
+for(const id of ["cf-kashmir","cf-northernireland","cf-sudan","cf-tibet","cf-xinjiang","cf-israel"])assert.ok(beliefs[id],"Cross-category conflict religious context is missing: "+id);
+assert.deepEqual(beliefValues("cf-northernireland"),["개신교(크리스트교)","가톨릭교(크리스트교)"]);
+assert.ok(beliefs["cf-israel"].summary.includes("영토"),"Religious background must not replace territorial context");
+for(const entry of Object.values(beliefs)){
+ assert.ok(["religion","ethnic","belief"].includes(entry.type),"Unexpected belief context type");
+ assert.ok(entry.people.length>=1&&entry.people.every(p=>p.label&&p.belief),"Belief entry must include group and religious name");
+ assert.ok(entry.summary.length>20,"Missing qualification of the primary conflict");
+}
+
 for(const [group,count] of Object.entries(expectedConflictCounts)){
  assert.equal(data.conflicts.filter(x=>x.group===group).length,count,group+" classification changed unexpectedly");
 }
@@ -54,9 +77,16 @@ assert.ok(data.conflicts.find(x=>x.name==="난사 군도(스프래틀리)").desc
 const js=read("app/world-regions.js"),css=read("app/world-regions.css"),html=read("site/index.html"),app=read("app/app.js"),sw=read("app/sw.js");
 new Function(js);
 assert.ok(js.includes("window.GeoLabWorldRegions={render}"));
+assert.ok(js.includes('function beliefInfo(x)'),"Details need religious or ethnic comparison component");
+assert.ok(js.includes("beliefInfo(x)+'<div"),"Every relevant conflict detail must include study cards");
+assert.ok(js.includes('study.type==="ethnic"'),"Ethnic and religious cases must render distinct labels");
+assert.ok(css.includes(".wr-belief-grid")&&css.includes(".wr-belief-note"),"Religious study cards must work in a responsive view");
+assert.ok(html.includes('© 안쌤'),"GeoLab main UI should use the requested copyright");
+assert.ok(!html.includes("원본 자료: twotimess"),"Remove outdated main UI copyright attribution");
+
 assert.ok(js.includes('"유럽":{center:[12,56.5],scale:700}'),"European projection must include northern Finland and southern France");
 for(const token of ["function projection()","geoNaturalEarth1","wr-country","wr-pin","function launchQuiz()","function submitQuiz(","function showTip(","function moveTip(","data/world-countries.geojson","role=\"tooltip\""])assert.ok(js.includes(token),"Missing world-map capability: "+token);
-for(const token of ['id="panel-worldregions"','id="worldregion-root"','data-view="worldregions"','data-world-only','world-regions-data.js?v=3','world-regions.js?v=3','world-regions.css?v=2'])assert.ok(html.includes(token),"Missing world geography entry: "+token);
+for(const token of ['id="panel-worldregions"','id="worldregion-root"','data-view="worldregions"','data-world-only','world-regions-data.js?v=4','world-regions.js?v=4','world-regions.css?v=3'])assert.ok(html.includes(token),"Missing world geography entry: "+token);
 assert.ok(app.includes('view==="worldregions"&&state.s!=="world"'),"World-only navigation guard missing");
 assert.ok(app.includes('window.GeoLabWorldRegions.render()'),"World region screen must mount");
 assert.ok(css.includes('body[data-subject="korea"] [data-world-only]'),"Do not show world region menu in Korean geography");
@@ -66,11 +96,20 @@ for(const f of ["world-regions.js","world-regions-data.js","world-regions.css","
  assert.ok(sw.includes("./"+f),"Offline cache missing "+f);
 }
 // Execute the filtering and quiz-option logic in a sandbox without a browser.
-const injection=js.replace("window.GeoLabWorldRegions={render};","window.GeoLabWorldRegions={render,__test:{P,choices,setOf,areaType,initSelection,questionOptions}};");
+const injection=js.replace("window.GeoLabWorldRegions={render};","window.GeoLabWorldRegions={render,__test:{P,choices,setOf,areaType,initSelection,questionOptions,beliefInfo,entryInfo}};");
 assert.notEqual(injection,js,"Helper injection anchor changed");
 const sandbox={window:{GeoLabWorldRegionsData:data},console};
 vm.runInNewContext(injection,sandbox);
 const mod=sandbox.window.GeoLabWorldRegions.__test;
+const sriLanka=mod.entryInfo(data.conflicts.find(x=>x.id==="cf-srilanka"));
+assert.ok(sriLanka.includes("불교")&&sriLanka.includes("힌두교"),"Sri Lankan study names must appear in the detail");
+const rwanda=mod.entryInfo(data.conflicts.find(x=>x.id==="cf-rwanda"));
+assert.ok(rwanda.includes("주요 민족 집단")&&rwanda.includes("후투족")&&rwanda.includes("투치족"),"Rwanda is ethnicity rather than a contest between religions");
+const noBelief=mod.entryInfo(data.conflicts.find(x=>x.id==="cf-ukraine"));
+assert.ok(!noBelief.includes("wr-belief"),"Don't invent religious rivalries in unrelated conflicts");
+const quizExplanation=mod.entryInfo(data.conflicts.find(x=>x.id==="cf-rakhine"));
+assert.ok(quizExplanation.includes("로힝야족")&&quizExplanation.includes("이슬람교"),"Correct quiz feedback should include faith names");
+
 mod.P.area="유럽";mod.P.mode="industry";mod.P.group="전체";
 assert.equal(mod.choices().length,16);
 mod.P.area="북아메리카";

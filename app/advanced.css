@@ -1,0 +1,53 @@
+/* GeoLab advanced thematic Korean geography map */
+.advanced-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.advanced-tabs button{background:#fff;border:1px solid #dae4e9;border-radius:10px;color:#516d7b;padding:10px 15px;font-weight:740;font-size:13px}
+.advanced-tabs button.selected{background:#235b73;border-color:#235b73;color:white}
+.advanced-controls{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;background:white;border:1px solid #e1e8ec;border-radius:12px;padding:11px 13px;margin-bottom:13px}
+.advanced-controls>div{display:flex;gap:7px;flex-wrap:wrap}
+.advanced-controls button,.advanced-actions button{border:1px solid #d7e2e8;background:#f7fafb;border-radius:8px;color:#2e566c;padding:8px 11px;font-size:12px;font-weight:750}
+.advanced-controls button:hover,.advanced-actions button:hover{background:#e8f3f5}
+.advanced-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(250px,.85fr);gap:13px;align-items:start}
+.advanced-mapbox,.advanced-sidebar>div{background:#fff;border:1px solid #e0e8eb;border-radius:14px;overflow:hidden}
+.advanced-mapbox header{display:flex;gap:9px;flex-wrap:wrap;justify-content:space-between;align-items:center;padding:13px 15px;border-bottom:1px solid #e6ecee}
+.advanced-mapbox header b{font-size:14px}
+.advanced-mapbox header small{color:#788995;font-size:11px}
+#advanced-map{width:100%;height:auto;aspect-ratio:840/875;display:block;background:#f8fafb;touch-action:none}
+.advanced-area{stroke:#bbc8d0;stroke-width:.8px;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.advanced-area:hover{stroke:#54798b;stroke-width:1.3px}
+.advanced-province{fill:none;stroke:#304d61;stroke-width:2.1px;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.advanced-route{fill:none;stroke-linecap:round;stroke-linejoin:round;cursor:pointer;vector-effect:non-scaling-stroke}
+.advanced-marker{cursor:pointer}
+.advanced-place-label{font:700 11px system-ui,-apple-system,"Malgun Gothic",sans-serif;fill:#2d4151;stroke:white;stroke-width:2.5px;paint-order:stroke;pointer-events:none}
+.advanced-mapbox footer{padding:11px 14px;color:#7b8e9a;border-top:1px solid #e6edf0;font-size:11px}
+.advanced-sidebar{display:grid;gap:13px}
+#advanced-detail{padding:19px}
+#advanced-detail h2{font-size:19px;line-height:1.55;letter-spacing:-.4px;margin:9px 0 14px}
+#advanced-detail>p{font-size:13px;line-height:1.8;color:#536e7c;margin:7px 0}
+.advanced-eyebrow{font-size:11px;letter-spacing:.25px;font-weight:800;color:#317990}
+.advanced-locations{border-top:1px solid #e8edf0;margin-top:15px;padding-top:12px;color:#425c6e}
+.advanced-locations b{font-size:12px}
+.advanced-locations p{line-height:1.8;margin:6px 0;font-size:12px;overflow-wrap:anywhere}
+.advanced-list{min-height:175px;max-height:415px;display:flex;flex-direction:column}
+.advanced-listhead{display:flex;justify-content:space-between;align-items:center;padding:13px 15px;border-bottom:1px solid #e8edf0}
+.advanced-listhead strong{font-size:13px}
+.advanced-listhead span{color:#83949e;font-size:11px}
+#advanced-items{overflow:auto;overscroll-behavior:contain}
+#advanced-items button{display:block;width:100%;text-align:left;padding:11px 14px;border:0;border-bottom:1px solid #edf1f3;background:#fff;color:#38566a}
+#advanced-items button.selected,#advanced-items button:hover{background:#eaf3f6}
+#advanced-items button b{display:block;font-size:12px}
+#advanced-items button small{display:block;font-size:10px;color:#8294a0;line-height:1.65;margin-top:4px;font-weight:400}
+.advanced-subtle{color:#7a8e9c!important;font-size:12px}
+.advanced-quizchoices{display:grid;grid-template-columns:1fr 1fr;gap:6px;max-height:200px;overflow:auto;margin:13px 0}
+.advanced-quizchoices button{padding:9px 6px;text-align:left;background:#f7fafb;border:1px solid #dce6e9;border-radius:8px;color:#45647a;font-size:11px}
+.advanced-answer{background:#e7f3ec;padding:13px;border-radius:9px;color:#287047;font-size:12px;font-weight:750;margin-top:14px;line-height:1.7}
+.advanced-answer.wrong{background:#fff0ed;color:#a34c33}
+.advanced-answer strong{display:block;margin:5px 0}
+.advanced-answer p{margin:3px 0;color:#435d69;font-size:12px;font-weight:400}
+.advanced-actions{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:15px}
+.advanced-notes{font-size:12px;line-height:1.8;color:#667d8b;border:1px solid #e1e8eb;background:#fff;padding:12px 15px;border-radius:12px;margin:14px 0 24px}
+.advanced-notes p{margin:3px 0}
+.advanced-notes a{color:#216b8e;font-weight:750}
+.advanced-loading{padding:33px 18px;color:#667c8e;background:white;border:1px solid #e2e8eb;border-radius:12px}
+@media(max-width:1060px){.advanced-grid{grid-template-columns:minmax(0,1fr) 260px}}
+@media(max-width:820px){.advanced-grid{grid-template-columns:1fr}.advanced-sidebar{grid-template-columns:1fr}.advanced-list{max-height:280px}}
+@media(max-width:500px){.advanced-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.advanced-tabs button{padding:10px 4px;font-size:11px}.advanced-mapbox header{padding:10px}.advanced-mapbox header b{font-size:12px}.advanced-mapbox header small{font-size:10px}#advanced-detail{padding:15px}.advanced-controls button{padding:7px 9px}}

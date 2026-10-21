@@ -18,6 +18,44 @@ for(const [group,count] of Object.entries({slow:15,innovation:10,enterprise:4,ai
   }
  }
 }
+
+const stationKeys=Object.keys(d.stations);
+assert.equal(stationKeys.length,59,"All study stations must remain available");
+assert.equal(Object.keys(d.stationAdministrative||{}).length,stationKeys.length,"No station should lack an administrative district");
+for(const station of stationKeys){
+ const official=d.stationAdministrative[station];
+ assert.ok(official&&typeof official==="string","Missing station district: "+station);
+ assert.ok(/(시|도) /.test(official)&&/(시|군|구)$/.test(official),"Incomplete city/county/district for "+station+": "+official);
+}
+for(const [station,locality] of Object.entries({
+ "천안아산":"충청남도 아산시","김천구미":"경상북도 김천시",
+ "부발":"경기도 이천시","감곡장호원":"충청북도 음성군",
+ "울산":"울산광역시 울주군","서울":"서울특별시 용산구",
+ "오송":"충청북도 청주시 흥덕구","진부":"강원특별자치도 평창군",
+ "포항":"경상북도 포항시 북구"
+}))assert.equal(d.stationAdministrative[station],locality,station+" has the wrong district");
+// Coordinates represent the district on the shared 2023 base map. Exact address may
+// differ at a boundary, so the mapped municipality is checked separately below.
+function withinRing([x,y],ring){
+ let inside=false;
+ for(let i=0,j=ring.length-1;i<ring.length;j=i++){
+  const [xi,yi]=ring[i], [xj,yj]=ring[j];
+  if((yi>y)!==(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)inside=!inside;
+ }
+ return inside;
+}
+function insideRegion(coord,shape){
+ return shape.geometry.coordinates.some(poly=>withinRing(coord,poly[0])&&!poly.slice(1).some(h=>withinRing(coord,h)));
+}
+const foundStations=stationKeys.map(name=>{
+ const matches=geo.features.filter(f=>insideRegion(d.stations[name],f));
+ assert.equal(matches.length,1,"Station coordinates must resolve to exactly one mapped area: "+name);
+ return [name,matches[0].properties.province+" "+matches[0].properties.name];
+});
+const mapped=new Map(foundStations);
+assert.equal(mapped.get("부발"),"경기도 이천시","Bubal marker must not appear in Yeoju");
+assert.equal(mapped.get("감곡장호원"),"충청북도 음성군","Gamgok-Janghowon marker must not appear in Icheon");
+
 const placeCount=d.rail.reduce((n,route)=>n+route.stops.length,0);
 assert.ok(placeCount>55);
 for(const route of d.rail){
@@ -42,7 +80,12 @@ assert.ok(js.includes('window.GeoLabAdvanced={render}'),"Advanced module must ex
 assert.ok(js.includes('window.GeoLabRegions.normalizeData(st.areas)'),"Legacy map compatibility");
 assert.ok(js.includes('advanced-province'),"Province boundaries should be drawn");
 assert.ok(js.includes('advanced-route'),"Rail routes should be drawable");
+assert.ok(js.includes('selectStation(name)'),"Selecting a train station must update the detail view");
+assert.ok(js.includes('data-advanced-station'),"Students must also be able to select stations from the sidebar");
+assert.ok(js.includes('advanced-station-hit'),"Station markers must have enlarged touch targets");
+assert.ok(js.includes('data.stationAdministrative[st.stationName]'),"Detail panel must display the station municipality");
+assert.ok(css.includes(".advanced-station-info")&&css.includes(".advanced-station-buttons"),"Station detail and list must be styled");
 assert.ok(css.includes(".advanced-route")&&css.includes(".advanced-province"));
-for(const tag of ['id="panel-advanced"','id="advanced-root"','data-view="advanced"','advanced-data.js?v=1','advanced.js?v=2','advanced.css?v=1'])assert.ok(html.includes(tag),"Advanced nav missing: "+tag);
+for(const tag of ['id="panel-advanced"','id="advanced-root"','data-view="advanced"','advanced-data.js?v=2','advanced.js?v=3','advanced.css?v=2'])assert.ok(html.includes(tag),"Advanced nav missing: "+tag);
 for(const file of ["advanced.js","advanced-data.js","advanced.css"])assert.ok(fs.existsSync(path.join(root,"site",file)),"Missing site file "+file);
 console.log("Advanced themes verified: 15 slow, 10 innovation, 4 enterprise, 8 airports, 9 FEZ, 7 rail lines; "+placeCount+" rail waypoints.");

@@ -11,6 +11,14 @@ assert.equal(data.industry.filter(x=>x.continent==="유럽").length,16);
 assert.equal(data.industry.filter(x=>x.continent==="북아메리카").length,14);
 assert.equal(data.conflicts.length,22,"Conflict textbook case count");
 assert.equal(world.features.length,179,"Global outline data");
+function signedRing(ring){let s=0;for(let i=0;i<ring.length-1;i++)s+=ring[i][0]*ring[i+1][1]-ring[i+1][0]*ring[i][1];return s}
+for(const f of world.features){
+ const polygons=f.geometry.type==="Polygon"?[f.geometry.coordinates]:f.geometry.coordinates;
+ for(const polygon of polygons){
+  assert.ok(signedRing(polygon[0])<0,"D3 exterior winding must be clockwise: "+f.properties.name);
+  for(const hole of polygon.slice(1))assert.ok(signedRing(hole)>0,"D3 holes must be counterclockwise: "+f.properties.name);
+ }
+}
 assert.ok(data.source.includes("수능완성")&&data.source.includes("수능특강")&&data.source.includes("원본 전체 대조는 별도"),"Transparent EBS reference scope");
 const ids=new Set();
 for(const [kind,entries] of Object.entries({industry:data.industry,conflicts:data.conflicts})){
@@ -35,8 +43,9 @@ assert.ok(data.conflicts.find(x=>x.name==="난사 군도(스프래틀리)").desc
 const js=read("app/world-regions.js"),css=read("app/world-regions.css"),html=read("site/index.html"),app=read("app/app.js"),sw=read("app/sw.js");
 new Function(js);
 assert.ok(js.includes("window.GeoLabWorldRegions={render}"));
+assert.ok(js.includes('"유럽":{center:[12,56.5],scale:700}'),"European projection must include northern Finland and southern France");
 for(const token of ["function projection()","geoNaturalEarth1","wr-country","wr-pin","function launchQuiz()","function submitQuiz(","function showTip(","function moveTip(","data/world-countries.geojson","role=\"tooltip\""])assert.ok(js.includes(token),"Missing world-map capability: "+token);
-for(const token of ['id="panel-worldregions"','id="worldregion-root"','data-view="worldregions"','data-world-only','world-regions-data.js?v=2','world-regions.js?v=1','world-regions.css?v=1'])assert.ok(html.includes(token),"Missing world geography entry: "+token);
+for(const token of ['id="panel-worldregions"','id="worldregion-root"','data-view="worldregions"','data-world-only','world-regions-data.js?v=2','world-regions.js?v=2','world-regions.css?v=1'])assert.ok(html.includes(token),"Missing world geography entry: "+token);
 assert.ok(app.includes('view==="worldregions"&&state.s!=="world"'),"World-only navigation guard missing");
 assert.ok(app.includes('window.GeoLabWorldRegions.render()'),"World region screen must mount");
 assert.ok(css.includes('body[data-subject="korea"] [data-world-only]'),"Do not show world region menu in Korean geography");

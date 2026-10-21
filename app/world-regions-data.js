@@ -2,7 +2,7 @@
 "use strict";
 root.GeoLabWorldRegionsData={
  "version": "2026-10-21",
- "source": "2027학년도 EBS 수능완성 세계지리 THEME 14 공업과 테마 16 및 관련 지역 분쟁 자료·해설. 수능특강 원본은 이 버전의 직접 대조에 사용하지 못함.",
+ "source": "2027학년도 EBS 수능완성 세계지리 14단원 및 지역 분쟁 단원(본문·해설), 2027학년도 EBS 수능특강 세계지리 14단원 정답과 해설 대조. 수능특강 원본 전체 대조는 별도.",
  "mapDisclaimer": "대표 위치 점이며 공업지역 또는 분쟁 지역의 정확한 공간적 경계·영토 주장 표시가 아님.",
  "groups": {
   "industry": [
@@ -35,6 +35,202 @@ root.GeoLabWorldRegionsData={
  },
  "industry": [
   {
+   "id": "na-boston",
+   "continent": "북아메리카",
+   "group": "뉴잉글랜드",
+   "name": "뉴잉글랜드 공업 지역",
+   "location": "미국 북동부 보스턴 일대",
+   "point": [
+    -71.06,
+    42.36
+   ],
+   "keywords": "초기 공업·기계·첨단 기술",
+   "description": "미국에서 산업화 역사가 오래된 공업 지역. 항만과 숙련 노동력을 바탕으로 성장했으며 산업이 고도화되었다.",
+   "country": "미국"
+  },
+  {
+   "id": "na-ciudad",
+   "continent": "북아메리카",
+   "group": "멕시코 북부",
+   "name": "시우다드후아레스",
+   "location": "멕시코 치와와주",
+   "point": [
+    -106.48,
+    31.74
+   ],
+   "keywords": "수출가공·자동차 부품",
+   "description": "미국 텍사스주 엘패소와 국경을 맞댄 수출가공 제조업 중심지.",
+   "country": "멕시코"
+  },
+  {
+   "id": "na-tijuana",
+   "continent": "북아메리카",
+   "group": "멕시코 북부",
+   "name": "티후아나",
+   "location": "멕시코 바하칼리포르니아주",
+   "point": [
+    -117.04,
+    32.52
+   ],
+   "keywords": "수출가공 조립·전자",
+   "description": "미국 국경과 인접해 마킬라도라(수출가공 조립 산업)를 중심으로 제조업이 발달한 지역.",
+   "country": "멕시코"
+  },
+  {
+   "id": "na-neworleans",
+   "continent": "북아메리카",
+   "group": "멕시코만 연안",
+   "name": "루이지애나 석유화학 지역",
+   "location": "미국 루이지애나주",
+   "point": [
+    -90.07,
+    29.95
+   ],
+   "keywords": "석유 정제·화학",
+   "description": "멕시코만 연안의 자원 개발과 미시시피강 수운·항만을 기반으로 석유 관련 공업이 발달하였다.",
+   "country": "미국"
+  },
+  {
+   "id": "na-houston",
+   "continent": "북아메리카",
+   "group": "멕시코만 연안",
+   "name": "휴스턴",
+   "location": "미국 텍사스주",
+   "point": [
+    -95.37,
+    29.76
+   ],
+   "keywords": "석유화학·항공우주",
+   "description": "멕시코만 연안의 석유·천연가스와 항만 교통에 힘입어 에너지 관련 산업이 발달하였다.",
+   "country": "미국"
+  },
+  {
+   "id": "na-detroit",
+   "continent": "북아메리카",
+   "group": "오대호 연안",
+   "name": "디트로이트",
+   "location": "미국 미시간주",
+   "point": [
+    -83.05,
+    42.33
+   ],
+   "keywords": "자동차 공업",
+   "description": "오대호 수운과 산업 집적을 기반으로 성장한 자동차 공업의 대표 도시. 제조업 쇠퇴와 혁신을 모두 경험하였다.",
+   "country": "미국"
+  },
+  {
+   "id": "na-chicago",
+   "continent": "북아메리카",
+   "group": "오대호 연안",
+   "name": "시카고",
+   "location": "미국 일리노이주",
+   "point": [
+    -87.63,
+    41.88
+   ],
+   "keywords": "기계·철강·물류",
+   "description": "오대호와 내륙 교통망을 활용해 제조업·유통업이 성장한 대표적인 공업·교통 중심지.",
+   "country": "미국"
+  },
+  {
+   "id": "na-pittsburgh",
+   "continent": "북아메리카",
+   "group": "오대호 연안",
+   "name": "피츠버그",
+   "location": "미국 펜실베이니아주",
+   "point": [
+    -79.99,
+    40.44
+   ],
+   "keywords": "제철·중화학 공업",
+   "description": "석탄 산지와 수운에 기반한 철강업의 대표 도시. 제조업 중심 경제에서 구조 전환을 겪었다.",
+   "country": "미국"
+  },
+  {
+   "id": "na-nyc",
+   "continent": "북아메리카",
+   "group": "중부 대서양 연안",
+   "name": "뉴욕·필라델피아 공업 지역",
+   "location": "미국 북동부 대서양 연안",
+   "point": [
+    -74,
+    40.72
+   ],
+   "keywords": "기계·제철·가공업",
+   "description": "큰 소비 시장, 노동력, 항만과 교통망을 바탕으로 산업이 집적한 중부 대서양 연안 지역.",
+   "country": "미국"
+  },
+  {
+   "id": "na-montreal",
+   "continent": "북아메리카",
+   "group": "캐나다 남동부",
+   "name": "몬트리올",
+   "location": "캐나다 퀘벡주",
+   "point": [
+    -73.56,
+    45.5
+   ],
+   "keywords": "항공·기계·첨단 산업",
+   "description": "캐나다 남동부의 대도시 산업 중심지로 수운과 도시 집적, 고급 인력을 활용한다.",
+   "country": "캐나다"
+  },
+  {
+   "id": "na-toronto",
+   "continent": "북아메리카",
+   "group": "캐나다 남동부",
+   "name": "토론토·온타리오 공업 지대",
+   "location": "캐나다 온타리오주",
+   "point": [
+    -79.39,
+    43.65
+   ],
+   "keywords": "자동차·기계·전기전자",
+   "description": "미국과 가까운 캐나다 남동부의 공업 집중 지역. 대도시 시장과 국경 간 생산·교역이 중요하다.",
+   "country": "캐나다"
+  },
+  {
+   "id": "na-la",
+   "continent": "북아메리카",
+   "group": "태평양 연안",
+   "name": "로스앤젤레스",
+   "location": "미국 캘리포니아주",
+   "point": [
+    -118.24,
+    34.05
+   ],
+   "keywords": "항공우주·전자·제조",
+   "description": "태평양 연안의 대도시·항만과 넓은 시장을 바탕으로 다양한 제조업·첨단 산업이 발달하였다.",
+   "country": "미국"
+  },
+  {
+   "id": "na-seattle",
+   "continent": "북아메리카",
+   "group": "태평양 연안",
+   "name": "시애틀",
+   "location": "미국 워싱턴주",
+   "point": [
+    -122.33,
+    47.61
+   ],
+   "keywords": "항공우주·첨단 기술",
+   "description": "태평양 북서부의 항공기 제조와 첨단 산업 집적 지역.",
+   "country": "미국"
+  },
+  {
+   "id": "na-silicon",
+   "continent": "북아메리카",
+   "group": "태평양 연안",
+   "name": "실리콘 밸리",
+   "location": "미국 캘리포니아주 새너제이 일대",
+   "point": [
+    -121.89,
+    37.34
+   ],
+   "keywords": "반도체·정보통신",
+   "description": "대학·벤처 기업·연구개발 인력이 집적한 첨단 산업 지역. 태평양 연안 공업의 대표 사례이다.",
+   "country": "미국"
+  },
+  {
    "id": "eu-lancashire",
    "continent": "유럽",
    "group": "전통 공업",
@@ -47,48 +243,6 @@ root.GeoLabWorldRegionsData={
    "keywords": "면직물·섬유 공업",
    "description": "석탄과 산업 혁명 초기 공업화를 배경으로 발전한 전통 공업 지역. 자원·산업 구조의 변화에 따라 제조업의 상대적 비중이 감소하였다.",
    "country": "영국"
-  },
-  {
-   "id": "eu-yorkshire",
-   "continent": "유럽",
-   "group": "전통 공업",
-   "name": "요크셔",
-   "location": "영국 잉글랜드 북부",
-   "point": [
-    -1.55,
-    53.8
-   ],
-   "keywords": "모직물·철강·기계",
-   "description": "석탄 산지와 연계해 성장한 영국 전통 공업 지역. 산업 혁명기 발달하였고 이후 산업 구조 전환을 겪었다.",
-   "country": "영국"
-  },
-  {
-   "id": "eu-ruhr",
-   "continent": "유럽",
-   "group": "전통 공업",
-   "name": "루르 공업 지역",
-   "location": "독일 서부",
-   "point": [
-    7.04,
-    51.46
-   ],
-   "keywords": "석탄·철강·중화학 공업",
-   "description": "석탄 산지와 라인강 수운을 바탕으로 발전한 대표적 전통 공업 지역. 탈공업화 이후 첨단 산업·서비스업 등으로 다각화하였다.",
-   "country": "독일"
-  },
-  {
-   "id": "eu-saar",
-   "continent": "유럽",
-   "group": "전통 공업",
-   "name": "자르",
-   "location": "독일 남서부",
-   "point": [
-    7,
-    49.24
-   ],
-   "keywords": "석탄·제철",
-   "description": "석탄 자원과 철강을 기반으로 발달한 전통 공업 지역. 프랑스 국경 인접 지역이다.",
-   "country": "독일"
   },
   {
    "id": "eu-lorraine",
@@ -105,31 +259,143 @@ root.GeoLabWorldRegionsData={
    "country": "프랑스"
   },
   {
-   "id": "eu-cardiff",
+   "id": "eu-ruhr",
    "continent": "유럽",
-   "group": "해운·하운",
-   "name": "카디프",
-   "location": "영국 웨일스 남부",
+   "group": "전통 공업",
+   "name": "루르 공업 지역",
+   "location": "독일 서부",
    "point": [
-    -3.18,
-    51.48
+    7.04,
+    51.46
    ],
-   "keywords": "항만·석탄 수출·공업",
-   "description": "해상 운송과 항만을 활용해 성장한 산업 도시. 과거 남웨일스 탄전의 석탄 수출항으로 기능하였다.",
+   "keywords": "석탄·철강·중화학 공업",
+   "description": "석탄 산지와 라인강 수운을 바탕으로 발전한 대표적 전통 공업 지역. 탈공업화 이후 첨단 산업·서비스업 등으로 다각화하였다.",
+   "country": "독일"
+  },
+  {
+   "id": "eu-bilbao",
+   "continent": "유럽",
+   "group": "전통 공업",
+   "name": "빌바오",
+   "location": "에스파냐 바스크 지방",
+   "point": [
+    -2.94,
+    43.26
+   ],
+   "keywords": "제철·조선 공업",
+   "description": "바스크 지방의 대표적 산업 도시. 전통적으로 제철·조선 공업이 발달하였으며 산업 구조 변화와 도시 재생을 경험하였다.",
+   "country": "에스파냐"
+  },
+  {
+   "id": "eu-yorkshire",
+   "continent": "유럽",
+   "group": "전통 공업",
+   "name": "요크셔",
+   "location": "영국 잉글랜드 북부",
+   "point": [
+    -1.55,
+    53.8
+   ],
+   "keywords": "모직물·철강·기계",
+   "description": "석탄 산지와 연계해 성장한 영국 전통 공업 지역. 산업 혁명기 발달하였고 이후 산업 구조 전환을 겪었다.",
    "country": "영국"
   },
   {
-   "id": "eu-middlesbrough",
+   "id": "eu-saar",
    "continent": "유럽",
-   "group": "해운·하운",
-   "name": "미들즈브러",
-   "location": "영국 잉글랜드 북동부",
+   "group": "전통 공업",
+   "name": "자르",
+   "location": "독일 남서부",
    "point": [
-    -1.23,
-    54.58
+    7,
+    49.24
    ],
-   "keywords": "철강·화학·항만",
-   "description": "티스강 하구의 수운·항만과 연결된 공업 지역. 교재에서 해운·하운 교통 발달 공업 지역의 사례로 제시된다.",
+   "keywords": "석탄·제철",
+   "description": "석탄 자원과 철강을 기반으로 발달한 전통 공업 지역. 프랑스 국경 인접 지역이다.",
+   "country": "독일"
+  },
+  {
+   "id": "eu-sophia",
+   "continent": "유럽",
+   "group": "첨단 산업",
+   "name": "소피아 앙티폴리스",
+   "location": "프랑스 남부",
+   "point": [
+    7.05,
+    43.62
+   ],
+   "keywords": "정보통신·연구개발",
+   "description": "프랑스 남부 니스 인근의 첨단 산업단지. 연구기관과 혁신 기업의 집적이 특징이다.",
+   "country": "프랑스"
+  },
+  {
+   "id": "eu-kista",
+   "continent": "유럽",
+   "group": "첨단 산업",
+   "name": "시스타 사이언스 시티",
+   "location": "스웨덴 스톡홀름 인근",
+   "point": [
+    17.95,
+    59.41
+   ],
+   "keywords": "정보통신·첨단 기술",
+   "description": "스톡홀름 북서쪽의 첨단 산업 클러스터. 대학·연구소·정보통신 기업의 집적이 특징이다.",
+   "country": "스웨덴"
+  },
+  {
+   "id": "eu-siliconglen",
+   "continent": "유럽",
+   "group": "첨단 산업",
+   "name": "실리콘 글렌",
+   "location": "영국 스코틀랜드 에든버러 일대",
+   "point": [
+    -3.19,
+    55.95
+   ],
+   "keywords": "정보통신·전자·첨단 기술",
+   "description": "영국 스코틀랜드 중앙부에 발달한 첨단 산업 집적 지역. 에든버러를 대표 위치로 표시한다.",
+   "country": "영국"
+  },
+  {
+   "id": "eu-oulu",
+   "continent": "유럽",
+   "group": "첨단 산업",
+   "name": "오울루 테크노폴리스",
+   "location": "핀란드 오울루",
+   "point": [
+    25.47,
+    65.06
+   ],
+   "keywords": "정보통신·첨단 기술",
+   "description": "핀란드 북부 오울루의 기술·연구개발 중심 산업 클러스터.",
+   "country": "핀란드"
+  },
+  {
+   "id": "eu-third-italy",
+   "continent": "유럽",
+   "group": "첨단 산업",
+   "name": "제3 이탈리아",
+   "location": "이탈리아 중·북동부 (베네치아·볼로냐 일대)",
+   "point": [
+    11.35,
+    44.49
+   ],
+   "keywords": "고부가가치 특화 제조업·디자인·가죽·의류",
+   "description": "이탈리아 북동부와 중부 일대 중소기업 중심의 유연한 산업 지구. 가죽·의류·보석 등 고부가가치 특화 제품의 사례로 수능특강 해설에 제시된다. 볼로냐를 대표 위치로 표시한다.",
+   "country": "이탈리아"
+  },
+  {
+   "id": "eu-cambridge",
+   "continent": "유럽",
+   "group": "첨단 산업",
+   "name": "케임브리지 사이언스 파크",
+   "location": "영국 케임브리지",
+   "point": [
+    0.15,
+    52.24
+   ],
+   "keywords": "연구개발·정보통신·생명과학",
+   "description": "대학·연구기관과 기업이 가까운 입지 조건을 활용한 첨단 산업 클러스터.",
    "country": "영국"
   },
   {
@@ -161,256 +427,32 @@ root.GeoLabWorldRegionsData={
    "country": "네덜란드"
   },
   {
-   "id": "eu-cambridge",
+   "id": "eu-middlesbrough",
    "continent": "유럽",
-   "group": "첨단 산업",
-   "name": "케임브리지 사이언스 파크",
-   "location": "영국 케임브리지",
+   "group": "해운·하운",
+   "name": "미들즈브러",
+   "location": "영국 잉글랜드 북동부",
    "point": [
-    0.15,
-    52.24
+    -1.23,
+    54.58
    ],
-   "keywords": "연구개발·정보통신·생명과학",
-   "description": "대학·연구기관과 기업이 가까운 입지 조건을 활용한 첨단 산업 클러스터.",
+   "keywords": "철강·화학·항만",
+   "description": "티스강 하구의 수운·항만과 연결된 공업 지역. 교재에서 해운·하운 교통 발달 공업 지역의 사례로 제시된다.",
    "country": "영국"
   },
   {
-   "id": "eu-sophia",
+   "id": "eu-cardiff",
    "continent": "유럽",
-   "group": "첨단 산업",
-   "name": "소피아 앙티폴리스",
-   "location": "프랑스 남부",
+   "group": "해운·하운",
+   "name": "카디프",
+   "location": "영국 웨일스 남부",
    "point": [
-    7.05,
-    43.62
+    -3.18,
+    51.48
    ],
-   "keywords": "정보통신·연구개발",
-   "description": "프랑스 남부 니스 인근의 첨단 산업단지. 연구기관과 혁신 기업의 집적이 특징이다.",
-   "country": "프랑스"
-  },
-  {
-   "id": "eu-kista",
-   "continent": "유럽",
-   "group": "첨단 산업",
-   "name": "시스타 사이언스 시티",
-   "location": "스웨덴 스톡홀름 인근",
-   "point": [
-    17.95,
-    59.41
-   ],
-   "keywords": "정보통신·첨단 기술",
-   "description": "스톡홀름 북서쪽의 첨단 산업 클러스터. 대학·연구소·정보통신 기업의 집적이 특징이다.",
-   "country": "스웨덴"
-  },
-  {
-   "id": "eu-oulu",
-   "continent": "유럽",
-   "group": "첨단 산업",
-   "name": "오울루 테크노폴리스",
-   "location": "핀란드 오울루",
-   "point": [
-    25.47,
-    65.06
-   ],
-   "keywords": "정보통신·첨단 기술",
-   "description": "핀란드 북부 오울루의 기술·연구개발 중심 산업 클러스터.",
-   "country": "핀란드"
-  },
-  {
-   "id": "na-boston",
-   "continent": "북아메리카",
-   "group": "뉴잉글랜드",
-   "name": "뉴잉글랜드 공업 지역",
-   "location": "미국 북동부 보스턴 일대",
-   "point": [
-    -71.06,
-    42.36
-   ],
-   "keywords": "초기 공업·기계·첨단 기술",
-   "description": "미국에서 산업화 역사가 오래된 공업 지역. 항만과 숙련 노동력을 바탕으로 성장했으며 산업이 고도화되었다.",
-   "country": "미국"
-  },
-  {
-   "id": "na-nyc",
-   "continent": "북아메리카",
-   "group": "중부 대서양 연안",
-   "name": "뉴욕·필라델피아 공업 지역",
-   "location": "미국 북동부 대서양 연안",
-   "point": [
-    -74,
-    40.72
-   ],
-   "keywords": "기계·제철·가공업",
-   "description": "큰 소비 시장, 노동력, 항만과 교통망을 바탕으로 산업이 집적한 중부 대서양 연안 지역.",
-   "country": "미국"
-  },
-  {
-   "id": "na-pittsburgh",
-   "continent": "북아메리카",
-   "group": "오대호 연안",
-   "name": "피츠버그",
-   "location": "미국 펜실베이니아주",
-   "point": [
-    -79.99,
-    40.44
-   ],
-   "keywords": "제철·중화학 공업",
-   "description": "석탄 산지와 수운에 기반한 철강업의 대표 도시. 제조업 중심 경제에서 구조 전환을 겪었다.",
-   "country": "미국"
-  },
-  {
-   "id": "na-chicago",
-   "continent": "북아메리카",
-   "group": "오대호 연안",
-   "name": "시카고",
-   "location": "미국 일리노이주",
-   "point": [
-    -87.63,
-    41.88
-   ],
-   "keywords": "기계·철강·물류",
-   "description": "오대호와 내륙 교통망을 활용해 제조업·유통업이 성장한 대표적인 공업·교통 중심지.",
-   "country": "미국"
-  },
-  {
-   "id": "na-detroit",
-   "continent": "북아메리카",
-   "group": "오대호 연안",
-   "name": "디트로이트",
-   "location": "미국 미시간주",
-   "point": [
-    -83.05,
-    42.33
-   ],
-   "keywords": "자동차 공업",
-   "description": "오대호 수운과 산업 집적을 기반으로 성장한 자동차 공업의 대표 도시. 제조업 쇠퇴와 혁신을 모두 경험하였다.",
-   "country": "미국"
-  },
-  {
-   "id": "na-toronto",
-   "continent": "북아메리카",
-   "group": "캐나다 남동부",
-   "name": "토론토·온타리오 공업 지대",
-   "location": "캐나다 온타리오주",
-   "point": [
-    -79.39,
-    43.65
-   ],
-   "keywords": "자동차·기계·전기전자",
-   "description": "미국과 가까운 캐나다 남동부의 공업 집중 지역. 대도시 시장과 국경 간 생산·교역이 중요하다.",
-   "country": "캐나다"
-  },
-  {
-   "id": "na-montreal",
-   "continent": "북아메리카",
-   "group": "캐나다 남동부",
-   "name": "몬트리올",
-   "location": "캐나다 퀘벡주",
-   "point": [
-    -73.56,
-    45.5
-   ],
-   "keywords": "항공·기계·첨단 산업",
-   "description": "캐나다 남동부의 대도시 산업 중심지로 수운과 도시 집적, 고급 인력을 활용한다.",
-   "country": "캐나다"
-  },
-  {
-   "id": "na-houston",
-   "continent": "북아메리카",
-   "group": "멕시코만 연안",
-   "name": "휴스턴",
-   "location": "미국 텍사스주",
-   "point": [
-    -95.37,
-    29.76
-   ],
-   "keywords": "석유화학·항공우주",
-   "description": "멕시코만 연안의 석유·천연가스와 항만 교통에 힘입어 에너지 관련 산업이 발달하였다.",
-   "country": "미국"
-  },
-  {
-   "id": "na-neworleans",
-   "continent": "북아메리카",
-   "group": "멕시코만 연안",
-   "name": "루이지애나 석유화학 지역",
-   "location": "미국 루이지애나주",
-   "point": [
-    -90.07,
-    29.95
-   ],
-   "keywords": "석유 정제·화학",
-   "description": "멕시코만 연안의 자원 개발과 미시시피강 수운·항만을 기반으로 석유 관련 공업이 발달하였다.",
-   "country": "미국"
-  },
-  {
-   "id": "na-silicon",
-   "continent": "북아메리카",
-   "group": "태평양 연안",
-   "name": "실리콘 밸리",
-   "location": "미국 캘리포니아주 새너제이 일대",
-   "point": [
-    -121.89,
-    37.34
-   ],
-   "keywords": "반도체·정보통신",
-   "description": "대학·벤처 기업·연구개발 인력이 집적한 첨단 산업 지역. 태평양 연안 공업의 대표 사례이다.",
-   "country": "미국"
-  },
-  {
-   "id": "na-la",
-   "continent": "북아메리카",
-   "group": "태평양 연안",
-   "name": "로스앤젤레스",
-   "location": "미국 캘리포니아주",
-   "point": [
-    -118.24,
-    34.05
-   ],
-   "keywords": "항공우주·전자·제조",
-   "description": "태평양 연안의 대도시·항만과 넓은 시장을 바탕으로 다양한 제조업·첨단 산업이 발달하였다.",
-   "country": "미국"
-  },
-  {
-   "id": "na-seattle",
-   "continent": "북아메리카",
-   "group": "태평양 연안",
-   "name": "시애틀",
-   "location": "미국 워싱턴주",
-   "point": [
-    -122.33,
-    47.61
-   ],
-   "keywords": "항공우주·첨단 기술",
-   "description": "태평양 북서부의 항공기 제조와 첨단 산업 집적 지역.",
-   "country": "미국"
-  },
-  {
-   "id": "na-tijuana",
-   "continent": "북아메리카",
-   "group": "멕시코 북부",
-   "name": "티후아나",
-   "location": "멕시코 바하칼리포르니아주",
-   "point": [
-    -117.04,
-    32.52
-   ],
-   "keywords": "수출가공 조립·전자",
-   "description": "미국 국경과 인접해 마킬라도라(수출가공 조립 산업)를 중심으로 제조업이 발달한 지역.",
-   "country": "멕시코"
-  },
-  {
-   "id": "na-ciudad",
-   "continent": "북아메리카",
-   "group": "멕시코 북부",
-   "name": "시우다드후아레스",
-   "location": "멕시코 치와와주",
-   "point": [
-    -106.48,
-    31.74
-   ],
-   "keywords": "수출가공·자동차 부품",
-   "description": "미국 텍사스주 엘패소와 국경을 맞댄 수출가공 제조업 중심지.",
-   "country": "멕시코"
+   "keywords": "항만·석탄 수출·공업",
+   "description": "해상 운송과 항만을 활용해 성장한 산업 도시. 과거 남웨일스 탄전의 석탄 수출항으로 기능하였다.",
+   "country": "영국"
   }
  ],
  "conflicts": [
@@ -722,6 +764,7 @@ root.GeoLabWorldRegionsData={
    "description": "프랑스어 사용 인구 비율이 높으며 주(州)의 독립 여부가 정치적 쟁점이었던 지역.",
    "note": "캐나다 내 정치적 자치·독립 논의"
   }
- ]
+ ],
+ "industrySourceNote": "EBS 2027 수능특강 세계지리 정답과 해설 14단원에서 빌바오·실리콘 글렌·제3 이탈리아 사례를 추가 검토함."
 };
 })(window);

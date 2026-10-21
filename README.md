@@ -7,12 +7,11 @@
 - 지도·기후·통계·기출의 원본 고급 기능을 자체 웹사이트 경로로 제공
 - 스마트폰 설치형 PWA, 안드로이드 앱 빌드 지원 예정
 
-GitHub Actions에서 원본 공개 배포 파일 약 3천 개를 사이트 내부로 가져옵니다.
-원본 콘텐츠는 누락 없이 보존하며, 자료 사용 조건과 출처는 원본 라이선스를 따릅니다.
+**GeoLab 개발·기획 및 추가 학습 기능: © 안쌤**
 
-원본: twotimess / Promenade Geography (비영리, 출처 표기).
-원본 코드 PolyForm Noncommercial 1.0.0, 데이터 CC BY-NC-SA 4.0.
-제3자 자료 재배포는 별도 허락 범위를 확인해야 합니다.
+GitHub Actions를 통해 기존 공개 학습 자료를 함께 제공하며, GeoLab 자체 제작 화면과 학습 콘텐츠를 지속적으로 확장합니다.
+기존 외부 코드·자료의 이용 조건은 별도 보관된 라이선스 및 해당 자료의 이용 범위에 따라 관리합니다.
+기술적 원자료 내려받기 경로와 원본 데이터 무결성 검사는 기존 동작을 유지합니다.
 
 배포: 저장소 Settings → Pages → Build and deployment → GitHub Actions.
 예상 URL: https://jisanhigh.github.io/GeoLab/

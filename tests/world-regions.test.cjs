@@ -18,7 +18,7 @@ const beliefs=Object.fromEntries(data.conflicts.filter(x=>x.beliefStudy).map(x=>
 assert.equal(Object.keys(beliefs).length,12,"Check EBS religious and ethnic study cases");
 for(const id of ["cf-srilanka","cf-rakhine","cf-mindanao","cf-nigeria","cf-rwanda","cf-burundi"])
  assert.ok(beliefs[id],"All six ethnicity-and-religion filter cases must contain study information");
-function beliefValues(id){return beliefs[id].people.map(p=>p.belief)}
+function beliefValues(id){return Array.from(beliefs[id].people,p=>p.belief)}
 assert.deepEqual(beliefValues("cf-srilanka"),["불교","힌두교"]);
 assert.deepEqual(beliefValues("cf-rakhine"),["불교","이슬람교"]);
 assert.deepEqual(beliefValues("cf-mindanao"),["크리스트교","이슬람교"]);

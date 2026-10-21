@@ -49,6 +49,7 @@ function answer(index){
 }
 function selectStation(name){
  if(st.category!=="rail"||st.quiz||!item().stops.includes(name)||!data.stationAdministrative[name])return;
+ hideStationTooltip();
  st.stationName=name;
  refresh();
 }
@@ -181,7 +182,6 @@ function detail(){
  q("#advanced-items",st.root).setAttribute("aria-label",rail?"고속철도 노선 목록":"지역 학습 목록");
  st.root.querySelectorAll("[data-advanced-station]").forEach(button=>{
   const station=button.dataset.advancedStation;
-  button.setAttribute("title",station+"역 · "+(data.stationAdministrative[station]||""));
   button.addEventListener("pointerenter",ev=>showStationTooltip(station,ev));
   button.addEventListener("pointermove",moveStationTooltip);
   button.addEventListener("pointerleave",hideStationTooltip);

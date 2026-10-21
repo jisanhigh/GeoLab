@@ -36,10 +36,18 @@ function moveStationTooltip(event){
  const top=y+height+19<window.innerHeight?y+15:Math.max(edge,y-height-13);
  tip.style.left=left+"px";tip.style.top=top+"px";
 }
-function hideStationTooltip(){const tip=hoverTip();if(tip)tip.hidden=true}
+function hideStationTooltip(){
+ const tip=hoverTip();if(tip)tip.hidden=true;
+ const preview=st.root&&q("#advanced-airport-preview",st.root);if(preview)preview.hidden=true;
+}
 /* The same transient location preview applies to airports; quiz answers stay hidden. */
 function showAirportTooltip(airport,event){
  if(st.category!=="airports"||st.quiz||!airport?.administrative||event?.pointerType==="touch")return;
+ const preview=st.root&&q("#advanced-airport-preview",st.root);
+ if(preview){
+  preview.innerHTML='<strong>'+e(airport.name)+'</strong><span>'+e(airport.administrative)+'</span>';
+  preview.hidden=false;
+ }
  const tip=hoverTip();if(!tip)return;
  tip.innerHTML='<strong>'+e(airport.name)+'</strong><span>'+e(airport.administrative)+'</span>';
  tip.hidden=false;
@@ -142,6 +150,7 @@ function paint(){
   const active=p.index===st.index,isHighlighted=active&&(!st.quiz||st.answered);
   const airportInfo=cat==="airports"?list()[p.index]:null;
   const g=dots.append("g").attr("class","advanced-marker"+(airportInfo?" advanced-airport":""))
+   .attr("data-airport-id",airportInfo?p.index:null)
    .attr("role",airportInfo&&!st.quiz?"button":null)
    .attr("tabindex",airportInfo&&!st.quiz?0:null)
    .attr("aria-label",airportInfo?airportInfo.name+" · "+airportInfo.administrative:p.name)
@@ -151,7 +160,8 @@ function paint(){
    .on("focus",ev=>{if(airportInfo)showAirportTooltip(airportInfo,ev)})
    .on("blur",hideStationTooltip)
    .on("keydown",ev=>{if(airportInfo&&(ev.key==="Enter"||ev.key===" ")){ev.preventDefault();hideStationTooltip();answer(p.index)}})
-   .on("click",()=>{hideStationTooltip();answer(p.index)});
+    .on("click",()=>{hideStationTooltip();answer(p.index)});
+  if(airportInfo)g.append("title").text(airportInfo.name+" · "+airportInfo.administrative);
   g.append("circle").attr("cx",p.p[0]).attr("cy",p.p[1]).attr("r",isHighlighted?6.5:4.7)
    .attr("stroke","#fff").attr("stroke-width",1.7).attr("fill",isHighlighted?"#ea8938":"#25768d");
   g.append("circle").attr("cx",p.p[0]).attr("cy",p.p[1]).attr("r",15).attr("fill","transparent");
@@ -216,6 +226,7 @@ function detail(){
   st.root.querySelectorAll("#advanced-items [data-advanced-choice]").forEach(button=>{
    const airport=list()[Number(button.dataset.advancedChoice)];
    if(!airport)return;
+   button.setAttribute("title",airport.name+" · "+airport.administrative);
    button.addEventListener("pointerenter",ev=>showAirportTooltip(airport,ev));
    button.addEventListener("pointermove",ev=>{if(ev.pointerType!=="touch")moveStationTooltip(ev)});
    button.addEventListener("pointerleave",hideStationTooltip);
@@ -238,11 +249,19 @@ function mount(){
  '<div class="advanced-controls"><div><button id="advanced-labelbtn" data-advanced-action="labels">지역명 숨기기</button><button id="advanced-quizbtn" data-advanced-action="quiz">백지도 위치 맞히기</button></div>'+
  '<div><button data-advanced-action="plus" aria-label="확대">＋</button><button data-advanced-action="minus" aria-label="축소">－</button><button data-advanced-action="reset">초기화</button></div></div>'+
  '<div class="advanced-grid"><section class="advanced-mapbox"><header><b>우리나라 지역 심화 지도</b><small>도 경계·시군 경계 표시</small></header>'+
+ '<div id="advanced-airport-preview" class="advanced-airport-preview" aria-live="off" hidden></div>'+
  '<svg id="advanced-map" viewBox="0 0 840 875" role="img" aria-label="대한민국 심화 지역 학습 지도"><g id="advanced-layer"></g></svg>'+
  '<footer>지도에서 지역과 노선을 선택하세요. 마우스와 터치로 확대·이동할 수 있습니다.</footer></section>'+
  '<aside class="advanced-sidebar"><div id="advanced-detail"></div><div class="advanced-list"><div class="advanced-listhead"><strong>학습 목록</strong><span id="advanced-count"></span></div><div id="advanced-items"></div></div></aside></div>'+
  '<div class="advanced-notes"><p id="advanced-note"></p><p><a id="advanced-source" href="#" target="_blank" rel="noopener noreferrer">관련 자료 출처 ↗</a> · 경계 기준 V-World 2023 / 철도는 개략 노선</p></div>'+
  '<div id="advanced-station-tooltip" class="advanced-station-tooltip" role="tooltip" hidden></div>';
+ r.onpointerover=event=>{
+  if(st.category!=="airports"||st.quiz||event.pointerType==="touch")return;
+  const g=event.target.closest&&event.target.closest("[data-airport-id]");
+  if(g&&g.dataset.airportId!==undefined){
+   const airport=list()[Number(g.dataset.airportId)];if(airport)showAirportTooltip(airport,event);
+  }
+ };
  r.onclick=event=>{
   const tab=event.target.closest("[data-advanced-tab]");if(tab){resetCategory(tab.dataset.advancedTab);return}
   const station=event.target.closest("[data-advanced-station]");if(station){selectStation(station.dataset.advancedStation);return}

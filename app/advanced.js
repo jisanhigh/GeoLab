@@ -13,10 +13,35 @@ const places=i=>(i.places||[]).map(([p,n])=>placeId(p,n));
 const contains=(feature,i)=>places(i).includes(placeId(feature.properties.province,feature.properties.name));
 const metropolis=new Set(["서울특별시","부산광역시","대구광역시","인천광역시","광주광역시","대전광역시","울산광역시","세종특별자치시"]);
 const visibleSource={slow:"slow",innovation:"innovation",enterprise:"enterprise",rail:"rail",airports:"airport",fez:"fez"};
-function resetCategory(cat){
- st.category=cat;st.index=0;st.quiz=false;st.answered=false;st.correct=false;st.stationName=null;refresh();
+/* Hover is a temporary preview; clicking/tapping still selects a station permanently. */
+function hoverTip(){return st.root&&q("#advanced-station-tooltip",st.root)}
+function showStationTooltip(name,event){
+ if(st.category!=="rail"||st.quiz||!data.stationAdministrative?.[name])return;
+ const tip=hoverTip();if(!tip)return;
+ tip.innerHTML='<strong>'+e(name)+'역</strong><span>'+e(data.stationAdministrative[name])+'</span>';
+ tip.hidden=false;
+ moveStationTooltip(event);
 }
-function makeQuiz(){st.quiz=true;st.index=Math.floor(Math.random()*list().length);st.answered=false;st.correct=false;st.stationName=null;refresh()}
+function moveStationTooltip(event){
+ const tip=hoverTip();if(!tip||tip.hidden)return;
+ let x=event&&Number.isFinite(event.clientX)?event.clientX:undefined;
+ let y=event&&Number.isFinite(event.clientY)?event.clientY:undefined;
+ if(x===undefined||y===undefined){
+  const node=event&&event.currentTarget,rect=node&&node.getBoundingClientRect&&node.getBoundingClientRect();
+  if(!rect)return;
+  x=rect.left+rect.width/2;y=rect.top+rect.height/2;
+ }
+ const width=tip.offsetWidth||200,height=tip.offsetHeight||65,edge=8;
+ const left=Math.max(edge,Math.min(x+16,window.innerWidth-width-edge));
+ const top=y+height+19<window.innerHeight?y+15:Math.max(edge,y-height-13);
+ tip.style.left=left+"px";tip.style.top=top+"px";
+}
+function hideStationTooltip(){const tip=hoverTip();if(tip)tip.hidden=true}
+
+function resetCategory(cat){
+ hideStationTooltip();st.category=cat;st.index=0;st.quiz=false;st.answered=false;st.correct=false;st.stationName=null;refresh();
+}
+function makeQuiz(){hideStationTooltip();st.quiz=true;st.index=Math.floor(Math.random()*list().length);st.answered=false;st.correct=false;st.stationName=null;refresh()}
 function answer(index){
  if(!list()[index])return;
  if(st.quiz){if(st.answered)return;st.correct=index===st.index;st.answered=true}else {if(index!==st.index)st.stationName=null;st.index=index;}
@@ -81,11 +106,16 @@ function paint(){
    const active=st.stationName===name&&!st.quiz;
    const g=dots.append("g").attr("class","advanced-station"+(active?" selected":""))
     .attr("role",st.quiz?null:"button").attr("tabindex",st.quiz?null:0)
-    .attr("aria-label",name+"역")
+    .attr("aria-label",name+"역 · "+(data.stationAdministrative[name]||"소재지 정보 없음"))
     .style("cursor",st.quiz?"default":"pointer")
-    .on("click",ev=>{ev.stopPropagation();selectStation(name)})
+    .on("pointerenter",ev=>showStationTooltip(name,ev))
+    .on("pointermove",moveStationTooltip)
+    .on("pointerleave",hideStationTooltip)
+    .on("focus",ev=>showStationTooltip(name,ev))
+    .on("blur",hideStationTooltip)
+    .on("click",ev=>{ev.stopPropagation();hideStationTooltip();selectStation(name)})
     .on("keydown",ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();selectStation(name)}});
-   g.append("title").text(name+"역");
+
    g.append("circle").attr("class","advanced-station-hit").attr("cx",p[0]).attr("cy",p[1]).attr("r",14)
     .attr("fill","transparent").attr("pointer-events",st.quiz?"none":"all");
    g.append("circle").attr("class","advanced-station-symbol").attr("cx",p[0]).attr("cy",p[1]).attr("r",active?7:4)
@@ -148,6 +178,17 @@ function detail(){
  q("#advanced-labelbtn",st.root).disabled=quiz;
  q("#advanced-quizbtn",st.root).hidden=quiz;
  q("#advanced-quizbtn",st.root).textContent=rail?"철도 노선 판별":"백지도 위치 맞히기";
+ q("#advanced-items",st.root).setAttribute("aria-label",rail?"고속철도 노선 목록":"지역 학습 목록");
+ st.root.querySelectorAll("[data-advanced-station]").forEach(button=>{
+  const station=button.dataset.advancedStation;
+  button.setAttribute("title",station+"역 · "+(data.stationAdministrative[station]||""));
+  button.addEventListener("pointerenter",ev=>showStationTooltip(station,ev));
+  button.addEventListener("pointermove",moveStationTooltip);
+  button.addEventListener("pointerleave",hideStationTooltip);
+  button.addEventListener("focus",ev=>showStationTooltip(station,ev));
+  button.addEventListener("blur",hideStationTooltip);
+ });
+
 }
 function refresh(){
  if(!st.layer)return;
@@ -165,13 +206,15 @@ function mount(){
  '<svg id="advanced-map" viewBox="0 0 840 875" role="img" aria-label="대한민국 심화 지역 학습 지도"><g id="advanced-layer"></g></svg>'+
  '<footer>지도에서 지역과 노선을 선택하세요. 마우스와 터치로 확대·이동할 수 있습니다.</footer></section>'+
  '<aside class="advanced-sidebar"><div id="advanced-detail"></div><div class="advanced-list"><div class="advanced-listhead"><strong>학습 목록</strong><span id="advanced-count"></span></div><div id="advanced-items"></div></div></aside></div>'+
- '<div class="advanced-notes"><p id="advanced-note"></p><p><a id="advanced-source" href="#" target="_blank" rel="noopener noreferrer">관련 자료 출처 ↗</a> · 경계 기준 V-World 2023 / 철도는 개략 노선</p></div>';
+ '<div class="advanced-notes"><p id="advanced-note"></p><p><a id="advanced-source" href="#" target="_blank" rel="noopener noreferrer">관련 자료 출처 ↗</a> · 경계 기준 V-World 2023 / 철도는 개략 노선</p></div>'+
+ '<div id="advanced-station-tooltip" class="advanced-station-tooltip" role="tooltip" hidden></div>';
  r.onclick=event=>{
   const tab=event.target.closest("[data-advanced-tab]");if(tab){resetCategory(tab.dataset.advancedTab);return}
   const station=event.target.closest("[data-advanced-station]");if(station){selectStation(station.dataset.advancedStation);return}
   const choice=event.target.closest("[data-advanced-choice]");if(choice){answer(Number(choice.dataset.advancedChoice));return}
   const button=event.target.closest("[data-advanced-action]");if(!button)return;
   const a=button.dataset.advancedAction;
+  hideStationTooltip();
   if(a==="quiz")makeQuiz();
   if(a==="next")makeQuiz();
   if(a==="explore"){st.quiz=false;st.answered=false;refresh()}

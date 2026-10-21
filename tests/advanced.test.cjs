@@ -126,4 +126,34 @@ assert.ok(css.includes(".advanced-station-info")&&css.includes(".advanced-statio
 assert.ok(css.includes(".advanced-route")&&css.includes(".advanced-province"));
 for(const tag of ['id="panel-advanced"','id="advanced-root"','data-view="advanced"','advanced-data.js?v=3','advanced.js?v=6','advanced.css?v=5'])assert.ok(html.includes(tag),"Advanced nav missing: "+tag);
 for(const file of ["advanced.js","advanced-data.js","advanced.css"])assert.ok(fs.existsSync(path.join(root,"site",file)),"Missing site file "+file);
+
+// Test the actual hover code with lightweight DOM stand-ins, not only source text.
+const previewElement={hidden:true,innerHTML:""};
+const popupElement={hidden:true,innerHTML:"",style:{},offsetWidth:190,offsetHeight:70};
+const panel={querySelector(selector){
+ if(selector==="#advanced-airport-preview")return previewElement;
+ if(selector==="#advanced-station-tooltip")return popupElement;
+ return null;
+}};
+const scriptForTest=js.replace("window.GeoLabAdvanced={render};","window.GeoLabAdvanced={render,__test:{showAirportTooltip,hideStationTooltip,st}};");
+assert.notEqual(scriptForTest,js,"Test helper injection target changed");
+const fakeBrowser={window:{GeoLabAdvancedData:d,innerWidth:1280,innerHeight:800},console};
+vm.runInNewContext(scriptForTest,fakeBrowser);
+const hover=fakeBrowser.window.GeoLabAdvanced.__test;
+hover.st.root=panel;hover.st.category="airports";hover.st.quiz=false;
+hover.showAirportTooltip(d.airports.find(x=>x.name==="김해국제공항"),{pointerType:"mouse",clientX:160,clientY:300});
+assert.equal(previewElement.hidden,false,"Hover must show an on-map location preview");
+assert.equal(popupElement.hidden,false,"Hover must show a cursor tooltip");
+assert.ok(previewElement.innerHTML.includes("부산광역시 강서구"),"Hover must display the verified actual locality");
+assert.ok(popupElement.style.left.endsWith("px")&&popupElement.style.top.endsWith("px"),"Tooltip must have screen position");
+hover.hideStationTooltip();
+assert.equal(previewElement.hidden,true,"Preview must hide on cursor exit");
+assert.equal(popupElement.hidden,true,"Popup must hide on cursor exit");
+hover.st.quiz=true;
+hover.showAirportTooltip(d.airports[0],{pointerType:"mouse",clientX:160,clientY:300});
+assert.equal(previewElement.hidden,true,"Quiz mode must not leak airport answers");
+hover.st.quiz=false;
+hover.showAirportTooltip(d.airports[0],{pointerType:"touch",clientX:160,clientY:300});
+assert.equal(previewElement.hidden,true,"Touch uses click details, not simulated hover");
+
 console.log("Advanced themes verified: 15 slow, 10 innovation, 4 enterprise, 8 airports, 9 FEZ, 7 rail lines; "+placeCount+" rail waypoints.");

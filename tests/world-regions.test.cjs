@@ -101,6 +101,7 @@ assert.notEqual(injection,js,"Helper injection anchor changed");
 const sandbox={window:{GeoLabWorldRegionsData:data},console};
 vm.runInNewContext(injection,sandbox);
 const mod=sandbox.window.GeoLabWorldRegions.__test;
+mod.P.mode="conflicts";
 const sriLanka=mod.entryInfo(data.conflicts.find(x=>x.id==="cf-srilanka"));
 assert.ok(sriLanka.includes("불교")&&sriLanka.includes("힌두교"),"Sri Lankan study names must appear in the detail");
 const rwanda=mod.entryInfo(data.conflicts.find(x=>x.id==="cf-rwanda"));

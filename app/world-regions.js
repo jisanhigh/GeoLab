@@ -19,7 +19,7 @@ const current=()=>list().find(x=>x.id===P.chosen)||null;
 function projection(){
  const d3=window.d3;
  const specs={
- "유럽":{center:[12,54],scale:850},
+ "유럽":{center:[12,56.5],scale:700},
  "북아메리카":{center:[-101,39],scale:535},
  "아시아":{center:[87,28],scale:365},
  "아프리카":{center:[18,2],scale:395}
@@ -214,7 +214,7 @@ async function render(){
  root.innerHTML='<p class="wr-loading">세계지리 지역 탐구 지도를 준비하고 있습니다.</p>';
  const token=++P.token;
  try{
-  if(!P.promise)P.promise=fetch("data/world-countries.geojson?worldregions=20261021-v1",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("HTTP "+r.status);return r.json()}).catch(e=>{P.promise=null;throw e});
+  if(!P.promise)P.promise=fetch("data/world-countries.geojson?worldregions=20261021-v2",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("HTTP "+r.status);return r.json()}).catch(e=>{P.promise=null;throw e});
   const map=await P.promise;
   if(token!==P.token)return;
   if(!Array.isArray(map.features)||map.features.length<160)throw Error("세계 행정경계 자료가 올바르지 않습니다.");

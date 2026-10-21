@@ -13,6 +13,11 @@ body[data-subject="korea"] [data-world-only]{display:none!important}
 .wr-cats{margin-top:9px;padding-top:9px;border-top:1px solid #eef2f4}
 .wr-filter button{background:#f5f8f9;color:#597484;border:1px solid transparent;border-radius:7px;font-size:11px;font-weight:700;padding:8px 11px}
 .wr-filter button.selected{background:#dcecf1;color:#1c617a;border-color:#a8cad5}
+/* Four broad conflict filters fit on one row on ordinary desktop widths. */
+.wr-cats button{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.wr-filter-count{display:inline-flex;min-width:18px;height:18px;padding:0 5px;border-radius:9px;align-items:center;justify-content:center;background:#e3edf1;color:#65808e;font-size:10px;font-variant-numeric:tabular-nums}
+.wr-filter button.selected .wr-filter-count{background:#bedbe5;color:#14506a}
+
 .wr-controlbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px}
 .wr-controlbar>div{display:flex;gap:7px;flex-wrap:wrap}
 .wr-controlbar button,.wr-quizcontrols button{background:#fff;border:1px solid #d9e5e9;border-radius:9px;padding:9px 12px;font-size:12px;font-weight:750;color:#385e72}

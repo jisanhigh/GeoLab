@@ -61,7 +61,7 @@ const sandbox={window:{GeoLabWorldRegionsData:data},console};
 vm.runInNewContext(injection,sandbox);
 const mod=sandbox.window.GeoLabWorldRegions.__test;
 mod.P.area="유럽";mod.P.mode="industry";mod.P.group="전체";
-assert.equal(mod.choices().length,13);
+assert.equal(mod.choices().length,16);
 mod.P.area="북아메리카";
 assert.equal(mod.choices().length,14);
 mod.P.mode="conflicts";mod.P.area="아시아";

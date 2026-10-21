@@ -19,6 +19,9 @@
 .advanced-marker{cursor:pointer}
 .advanced-station{cursor:pointer;outline:none}
 .advanced-station .advanced-place-label{pointer-events:all;cursor:help}
+.advanced-airport .advanced-place-label{pointer-events:all;cursor:help}
+.advanced-airport:focus-visible circle:first-of-type{stroke:#156d9a;stroke-width:2.5px}
+.advanced-airport:hover circle:first-of-type{stroke:#205c80;stroke-width:2px}
 .advanced-station-tooltip{position:fixed;left:0;top:0;z-index:100;pointer-events:none;min-width:140px;max-width:min(270px,calc(100vw - 16px));padding:11px 13px;border-radius:10px;background:#182d40;color:#f7fbfe;box-shadow:0 7px 25px rgba(20,39,53,.24);font:12px/1.55 system-ui,-apple-system,"Malgun Gothic",sans-serif;white-space:normal;overflow-wrap:break-word}
 .advanced-station-tooltip[hidden]{display:none!important}
 .advanced-station-tooltip strong{display:block;font-size:13px;font-weight:800;margin-bottom:2px;color:white}

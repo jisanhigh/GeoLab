@@ -29,6 +29,8 @@ jobs:
         run: node tests/regions.test.cjs
       - name: Test advanced map categories and schematic railway study
         run: node tests/advanced.test.cjs
+      - name: Verify world geography industrial and conflict region explorer
+        run: node tests/world-regions.test.cjs
       - name: Audit complete source statistics and official UN migration cross-checks
         run: node tests/stats-integrity.test.cjs
       - uses: actions/upload-artifact@v4

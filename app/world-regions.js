@@ -44,7 +44,7 @@ function paintMap(){
   const showLabel=!quiz&&P.showNames&&enabled;
   const group=dots.append("g").attr("class","wr-pin"+(active?" current":""))
    .attr("role",quiz?null:"button").attr("tabindex",quiz?null:0)
-   .attr("aria-label",quiz?"지도 위치":x.name+" · "+x.location||x.parties)
+   .attr("aria-label",quiz?"지도 위치":x.name+" · "+(x.location||x.parties))
    .style("cursor",quiz?"default":"pointer")
    .on("pointerenter",event=>{if(!quiz&&enabled)showTip(x,event)})
    .on("pointermove",moveTip).on("pointerleave",hideTip)

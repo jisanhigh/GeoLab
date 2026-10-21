@@ -487,7 +487,21 @@ root.GeoLabWorldRegionsData={
    "parties": "인도·파키스탄·중국 일부 관련",
    "keywords": "영토 귀속·종교적 차이",
    "description": "인도와 파키스탄의 대표적인 영토 분쟁 지역. 힌두교·이슬람교 관련 역사적 배경과 국경 문제를 함께 학습한다.",
-   "note": "인도·파키스탄 간 주요 분쟁 지역"
+   "note": "인도·파키스탄 간 주요 분쟁 지역",
+   "beliefStudy": {
+    "type": "religion",
+    "people": [
+     {
+      "label": "인도 사회의 주요 종교",
+      "belief": "힌두교"
+     },
+     {
+      "label": "카슈미르 주민 다수 및 파키스탄의 주요 종교",
+      "belief": "이슬람교"
+     }
+    ],
+    "summary": "힌두교·이슬람교 분포를 비교하되, 인도·파키스탄의 영토 주장과 역사적 국경 문제가 핵심입니다."
+   }
   },
   {
    "id": "cf-xinjiang",
@@ -501,7 +515,17 @@ root.GeoLabWorldRegionsData={
    "parties": "중국",
    "keywords": "위구르족·국가 정책·인권",
    "description": "중국의 신장 지역에서 위구르족 등 소수 민족과 국가 정책을 둘러싼 갈등이 제기된다.",
-   "note": "소수 민족 문제"
+   "note": "소수 민족 문제",
+   "beliefStudy": {
+    "type": "belief",
+    "people": [
+     {
+      "label": "위구르족의 주요 종교",
+      "belief": "이슬람교"
+     }
+    ],
+    "summary": "이슬람교와 다른 종교가 직접 대립하는 구조가 아니라, 위구르족의 문화·종교·인권과 국가 정책에 관한 문제입니다."
+   }
   },
   {
    "id": "cf-tibet",
@@ -515,7 +539,17 @@ root.GeoLabWorldRegionsData={
    "parties": "중국",
    "keywords": "티베트족의 문화·종교·자치",
    "description": "티베트족의 문화·종교·자치 및 중국 정부 정책을 둘러싼 갈등을 이해하는 지역이다.",
-   "note": "소수 민족·자치 문제"
+   "note": "소수 민족·자치 문제",
+   "beliefStudy": {
+    "type": "belief",
+    "people": [
+     {
+      "label": "티베트족의 주요 종교",
+      "belief": "티베트 불교"
+     }
+    ],
+    "summary": "서로 다른 두 종교의 직접 대립으로 보지 않습니다. 종교·문화적 정체성과 자치·국가 정책 문제를 함께 학습합니다."
+   }
   },
   {
    "id": "cf-srilanka",
@@ -529,7 +563,21 @@ root.GeoLabWorldRegionsData={
    "parties": "스리랑카",
    "keywords": "신할리즈족·타밀족",
    "description": "신할리즈족과 타밀족 간 갈등 및 2009년 종료된 내전의 역사적 사례. 현재 진행 중인 내전이라는 의미는 아니다.",
-   "note": "내전은 2009년에 종결된 역사적 사례"
+   "note": "내전은 2009년에 종결된 역사적 사례",
+   "beliefStudy": {
+    "type": "religion",
+    "people": [
+     {
+      "label": "신할리즈족",
+      "belief": "불교"
+     },
+     {
+      "label": "타밀족",
+      "belief": "힌두교"
+     }
+    ],
+    "summary": "불교와 힌두교의 분포를 연관 지어 학습하되, 갈등의 핵심에는 민족·언어·정치적 차이가 있습니다. 2009년 종료된 내전의 역사적 사례입니다."
+   }
   },
   {
    "id": "cf-rakhine",
@@ -543,7 +591,21 @@ root.GeoLabWorldRegionsData={
    "parties": "미얀마",
    "keywords": "로힝야족 관련 갈등·박해",
    "description": "라카인주 로힝야족에 대한 박해와 강제 이주, 난민 발생을 학습하는 지역이다.",
-   "note": "로힝야족과 국가 정책"
+   "note": "로힝야족과 국가 정책",
+   "beliefStudy": {
+    "type": "religion",
+    "people": [
+     {
+      "label": "미얀마의 다수 종교",
+      "belief": "불교"
+     },
+     {
+      "label": "로힝야족",
+      "belief": "이슬람교"
+     }
+    ],
+    "summary": "로힝야족에 대한 박해와 시민권·민족 문제가 핵심입니다. 불교 신자 전체와 이슬람교 신자 전체의 대립으로 일반화하지 않습니다."
+   }
   },
   {
    "id": "cf-mindanao",
@@ -557,7 +619,21 @@ root.GeoLabWorldRegionsData={
    "parties": "필리핀",
    "keywords": "무슬림 공동체와 자치 문제",
    "description": "민다나오의 무슬림 공동체와 중앙 정부 간 역사적 갈등, 자치 과정 등을 학습한다.",
-   "note": "종교 차이와 정치적 자치"
+   "note": "종교 차이와 정치적 자치",
+   "beliefStudy": {
+    "type": "religion",
+    "people": [
+     {
+      "label": "필리핀의 다수 종교",
+      "belief": "크리스트교"
+     },
+     {
+      "label": "민다나오의 모로 공동체",
+      "belief": "이슬람교"
+     }
+    ],
+    "summary": "종교 분포의 차이와 함께 자치·지역 정체성·역사적 정치 갈등을 이해합니다."
+   }
   },
   {
    "id": "cf-spratly",
@@ -613,7 +689,25 @@ root.GeoLabWorldRegionsData={
    "parties": "이스라엘·팔레스타인",
    "keywords": "영토·안보·민족 자결권",
    "description": "국가 형성과 영토, 안전 보장, 팔레스타인인의 자결권 등 복합적 원인을 가진 장기 분쟁.",
-   "note": "다양한 당사자와 민간인 피해에 유의"
+   "note": "다양한 당사자와 민간인 피해에 유의",
+   "beliefStudy": {
+    "type": "belief",
+    "people": [
+     {
+      "label": "이스라엘 내 유대인 공동체",
+      "belief": "유대교"
+     },
+     {
+      "label": "팔레스타인 주민의 주요 종교",
+      "belief": "이슬람교"
+     },
+     {
+      "label": "팔레스타인 및 이스라엘의 일부 공동체",
+      "belief": "크리스트교"
+     }
+    ],
+    "summary": "세 종교와 관련된 성지가 있지만, 분쟁은 영토·국가 형성·민족 자결·안보 문제를 중심으로 이해해야 합니다. 팔레스타인인 가운데 크리스트교 신자도 있습니다."
+   }
   },
   {
    "id": "cf-sudan",
@@ -627,7 +721,21 @@ root.GeoLabWorldRegionsData={
    "parties": "수단·남수단",
    "keywords": "국경·자원·정치·민족",
    "description": "2011년 남수단 독립 이후에도 국경과 자원 등을 둘러싼 갈등이 발생해 왔다. 수단 국내 갈등과는 구분한다.",
-   "note": "역사적 분리·국경 및 자원 문제"
+   "note": "역사적 분리·국경 및 자원 문제",
+   "beliefStudy": {
+    "type": "religion",
+    "people": [
+     {
+      "label": "수단의 주요 종교",
+      "belief": "이슬람교"
+     },
+     {
+      "label": "남수단에서 분포",
+      "belief": "크리스트교·토속 신앙"
+     }
+    ],
+    "summary": "EBS의 국가 분리 배경을 이해하기 위한 종교 분포 비교입니다. 2011년 남수단 독립 이후의 영토·자원 문제도 구분해 학습합니다."
+   }
   },
   {
    "id": "cf-nigeria",
@@ -641,7 +749,21 @@ root.GeoLabWorldRegionsData={
    "parties": "나이지리아",
    "keywords": "지역별 종교·민족 다양성",
    "description": "북부의 이슬람교와 남부의 크리스트교 등 종교·민족·경제적 차이가 갈등 배경의 하나다.",
-   "note": "단일 종교 전쟁으로 단순화하지 않음"
+   "note": "단일 종교 전쟁으로 단순화하지 않음",
+   "beliefStudy": {
+    "type": "religion",
+    "people": [
+     {
+      "label": "북부에서 주로 분포",
+      "belief": "이슬람교"
+     },
+     {
+      "label": "남부에서 주로 분포",
+      "belief": "크리스트교"
+     }
+    ],
+    "summary": "지역별 주요 종교 분포를 비교하는 사례입니다. 각 지역에 다른 종교 신자도 거주하며 갈등 원인은 민족·토지·정치·경제 문제와 겹칩니다."
+   }
   },
   {
    "id": "cf-rwanda",
@@ -655,7 +777,21 @@ root.GeoLabWorldRegionsData={
    "parties": "르완다",
    "keywords": "식민 통치·집단 갈등의 역사",
    "description": "식민지 정책과 민족 갈등의 역사적 사례. 1994년 르완다 집단학살 등 과거 사건으로, 현재 진행 중인 같은 전쟁을 의미하지 않는다.",
-   "note": "역사적 사례"
+   "note": "역사적 사례",
+   "beliefStudy": {
+    "type": "ethnic",
+    "people": [
+     {
+      "label": "주요 민족 집단",
+      "belief": "후투족"
+     },
+     {
+      "label": "주요 민족 집단",
+      "belief": "투치족"
+     }
+    ],
+    "summary": "종교 간 갈등 사례가 아닙니다. 후투족과 투치족의 민족·정치 갈등 및 식민지 지배의 영향을 중심으로 학습합니다. 역사적 사례입니다."
+   }
   },
   {
    "id": "cf-burundi",
@@ -669,7 +805,21 @@ root.GeoLabWorldRegionsData={
    "parties": "부룬디",
    "keywords": "식민지 유산과 정치 갈등",
    "description": "서로 다른 집단 간 갈등에 식민지 정책과 정치적 요인이 작용한 사례.",
-   "note": "역사적·정치적 맥락"
+   "note": "역사적·정치적 맥락",
+   "beliefStudy": {
+    "type": "ethnic",
+    "people": [
+     {
+      "label": "주요 민족 집단",
+      "belief": "후투족"
+     },
+     {
+      "label": "주요 민족 집단",
+      "belief": "투치족"
+     }
+    ],
+    "summary": "종교 대 종교의 대립이 아니라, 후투족과 투치족을 중심으로 한 민족·정치 갈등과 식민지 유산에 주목합니다."
+   }
   },
   {
    "id": "cf-scotland",
@@ -697,7 +847,21 @@ root.GeoLabWorldRegionsData={
    "parties": "영국·아일랜드 관련",
    "keywords": "정체성·국가 귀속",
    "description": "영국 잔류와 아일랜드 통일을 둘러싼 역사적 갈등. 1998년 벨파스트 협정 등 평화 과정과 함께 이해한다.",
-   "note": "정치적·역사적 갈등"
+   "note": "정치적·역사적 갈등",
+   "beliefStudy": {
+    "type": "religion",
+    "people": [
+     {
+      "label": "역사적 연합주의 진영과 연관된 종교 배경",
+      "belief": "개신교(크리스트교)"
+     },
+     {
+      "label": "역사적 민족주의 진영과 연관된 종교 배경",
+      "belief": "가톨릭교(크리스트교)"
+     }
+    ],
+    "summary": "양쪽 모두 크리스트교 계열입니다. 신앙의 차이만 아니라 영국 잔류·아일랜드 통일과 관련된 정치·국가 정체성이 중요합니다."
+   }
   },
   {
    "id": "cf-catalonia",
@@ -763,6 +927,7 @@ root.GeoLabWorldRegionsData={
   "민족·종교",
   "전쟁·내전"
  ],
- "conflictClassificationNote": "하나의 지역에서 여러 갈등 원인이 겹칠 수 있으나, 지도 필터에서는 학습 편의를 위해 대표적인 쟁점 1가지로만 분류합니다. 세부 원인과 역사적 상황은 개별 지역 설명을 확인하세요."
+ "conflictClassificationNote": "하나의 지역에서 여러 갈등 원인이 겹칠 수 있으나, 지도 필터에서는 학습 편의를 위해 대표적인 쟁점 1가지로만 분류합니다. 세부 원인과 역사적 상황은 개별 지역 설명을 확인하세요.",
+ "religionStudyNote": "민족·종교 유형에는 종교 갈등과 민족 갈등이 함께 포함되어 있습니다. 역사적 배경, 대표 집단의 종교 분포, 실제 갈등 원인을 구분해 설명합니다."
 };
 })(window);

@@ -1,0 +1,67 @@
+/* GeoLab — 세계지리 지역 탐구 */
+body[data-subject="korea"] [data-world-only]{display:none!important}
+.wr-app{color:#294757}
+.wr-heading{display:flex;align-items:end;justify-content:space-between;gap:18px;margin:10px 0 15px;flex-wrap:wrap}
+.wr-heading h1{font-size:clamp(24px,2.6vw,31px);letter-spacing:-.8px;line-height:1.32;margin:5px 0}
+.wr-heading p{font-size:13px;color:#778b97;line-height:1.6;margin:7px 0 0}
+.wr-heading small{font-size:11px;font-weight:800;color:#39889b;letter-spacing:.55px}
+.wr-mode{display:flex;background:#e7eff2;border-radius:12px;padding:4px;gap:3px}
+.wr-mode button{border:0;border-radius:9px;background:transparent;color:#547285;font-size:13px;font-weight:760;padding:10px 17px}
+.wr-mode button.selected{background:#215a73;color:white;box-shadow:0 2px 7px rgba(19,56,76,.16)}
+.wr-filter{background:#fff;border:1px solid #e1e8ed;border-radius:14px;padding:11px 13px;margin-bottom:12px}
+.wr-areas,.wr-cats{display:flex;flex-wrap:wrap;gap:7px}
+.wr-cats{margin-top:9px;padding-top:9px;border-top:1px solid #eef2f4}
+.wr-filter button{background:#f5f8f9;color:#597484;border:1px solid transparent;border-radius:7px;font-size:11px;font-weight:700;padding:8px 11px}
+.wr-filter button.selected{background:#dcecf1;color:#1c617a;border-color:#a8cad5}
+.wr-controlbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+.wr-controlbar>div{display:flex;gap:7px;flex-wrap:wrap}
+.wr-controlbar button,.wr-quizcontrols button{background:#fff;border:1px solid #d9e5e9;border-radius:9px;padding:9px 12px;font-size:12px;font-weight:750;color:#385e72}
+.wr-controlbar button:hover,.wr-quizcontrols button:hover{background:#eaf5f8}
+.wr-controlbar button:disabled{opacity:.45;cursor:not-allowed}
+.wr-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,.82fr);align-items:start;gap:13px}
+.wr-mapcard,.wr-sidebar>div{background:#fff;border:1px solid #dde7eb;border-radius:14px;overflow:hidden}
+.wr-maphead{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 15px;border-bottom:1px solid #e8eef1}
+.wr-maphead strong{font-size:13px}
+.wr-maphead small{font-size:11px;color:#8da2ac}
+#wr-map{width:100%;height:auto;aspect-ratio:900/610;display:block;background:#f3f7f8;touch-action:none}
+.wr-country{fill:#ecf0f2;stroke:#aebdc5;stroke-width:.8px;stroke-linejoin:round;vector-effect:non-scaling-stroke;pointer-events:none}
+.wr-pin{outline:none}
+.wr-pin.current circle:nth-of-type(2){filter:drop-shadow(0 0 3px #d68a51)}
+.wr-pin:focus-visible circle:nth-of-type(2){stroke:#2e718c;stroke-width:3px}
+.wr-label{font:700 11px system-ui,-apple-system,"Malgun Gothic",sans-serif;fill:#38576b;stroke:white;stroke-width:3px;paint-order:stroke;cursor:pointer}
+.wr-mapfoot{padding:11px 14px;border-top:1px solid #e8eef1;font-size:11px;color:#758c97}
+.wr-sidebar{display:grid;gap:12px}
+.wr-detail{padding:19px}
+.wr-detail h2{font-size:20px;letter-spacing:-.6px;line-height:1.45;margin:8px 0 12px;word-break:keep-all}
+.wr-eyebrow{font-size:11px;line-height:1.5;letter-spacing:.25px;color:#35859b;font-weight:850}
+.wr-place{font-size:13px;color:#65828f;line-height:1.7;margin:7px 0}
+.wr-fact{padding:12px 0;border-top:1px solid #e8eef1;margin-top:12px}
+.wr-fact b{font-size:11px;color:#617c8b}
+.wr-fact p{margin:6px 0 0;font-size:13px;color:#3e586a;line-height:1.78;word-break:keep-all}
+.wr-caution{padding:10px 11px;border-radius:9px;background:#f3f7f8;color:#718793;font-size:11px;line-height:1.7}
+.wr-listhead{padding:13px 15px;border-bottom:1px solid #e6eef0;font-size:13px}
+.wr-list{max-height:380px;min-height:100px;overflow:auto;overscroll-behavior:contain}
+.wr-list button{display:block;width:100%;padding:11px 14px;background:#fff;border:0;border-bottom:1px solid #eff2f4;text-align:left;color:#2d5269}
+.wr-list button:hover,.wr-list button.selected{background:#e8f4f7}
+.wr-list strong{display:block;font-size:12px;line-height:1.6}
+.wr-list small{display:block;color:#8397a1;margin-top:4px;line-height:1.6;font-size:10px}
+.wr-tooltip{position:fixed;left:0;top:0;background:#182f40;color:white;border-radius:9px;box-shadow:0 7px 25px #1f435b38;padding:10px 12px;z-index:100;max-width:min(270px,calc(100vw - 16px));min-width:130px;pointer-events:none;font-size:12px}
+.wr-tooltip[hidden]{display:none!important}
+.wr-tooltip strong{display:block;margin-bottom:4px;font-size:13px}
+.wr-tooltip span{color:#d1e6ee;line-height:1.6}
+.wr-quiet{font-size:12px;line-height:1.7;color:#7a909d}
+.wr-choices{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:13px 0}
+.wr-choices button{border:1px solid #d7e5e9;border-radius:9px;background:#f8fafb;padding:10px 8px;font-size:12px;font-weight:700;color:#3e5c70;line-height:1.55}
+.wr-choices button:not(:disabled):hover{background:#e8f2f7}
+.wr-choices button.correct{border-color:#7fbca4;background:#e7f4ed;color:#286549}
+.wr-choices button.incorrect{border-color:#dca18e;background:#fcf0ea;color:#9d543b}
+.wr-feedback{border-radius:8px;background:#e6f3ec;padding:9px 12px;font-size:12px;font-weight:780;color:#236a46}
+.wr-feedback.wrong{background:#fff1eb;color:#a34d32}
+.wr-quizexpl{border-top:1px solid #e5edf1;padding-top:13px;margin-top:13px}
+.wr-quizcontrols{display:flex;flex-wrap:wrap;gap:7px;justify-content:space-between;margin-top:14px}
+.wr-notes{border:1px solid #e0e8ec;background:white;border-radius:12px;padding:12px 15px;margin-top:13px;font-size:11px;color:#768b98;line-height:1.8}
+.wr-notes p{margin:3px 0}
+.wr-loading{padding:32px 18px;background:white;border:1px solid #dae6eb;border-radius:12px;color:#657f8b}
+@media(max-width:1150px){.wr-grid{grid-template-columns:minmax(0,1fr) 270px}}
+@media(max-width:840px){.wr-grid{grid-template-columns:1fr}.wr-list{max-height:260px}}
+@media(max-width:520px){.wr-mode{width:100%}.wr-mode button{flex:1}.wr-filter{padding:9px}.wr-filter button{padding:7px 8px;font-size:10px}.wr-heading h1{font-size:25px}.wr-detail{padding:15px}.wr-controlbar button{padding:8px}.wr-maphead{padding:10px 12px}}

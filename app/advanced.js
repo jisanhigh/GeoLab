@@ -40,7 +40,7 @@ function mapSetup(){
  group.append("g").attr("class","advanced-units").selectAll("path").data(st.areas.features).enter()
   .append("path").attr("class","advanced-area").attr("d",path)
   .on("click",(event,f)=>{
-   if(st.category==="rail"||st.category==="airports"||metropolis.has(f.properties.province))return;
+   if(st.category==="rail"||st.category==="airports")return;
    const index=list().findIndex(i=>contains(f,i));if(index>=0)answer(index);
   });
  group.append("g").attr("class","advanced-provinces").selectAll("path").data(st.provinces.features).enter()
@@ -58,7 +58,7 @@ function paint(){
   if(st.quiz)return st.answered&&contains(f,chosen)?"#f2aa55":"#f8fafb";
   if(contains(f,chosen))return "#f0a04d";
   return list().some(i=>contains(f,i))?"#cbded9":"#f8fafb";
- }).style("pointer-events",f=>!rail&&!airport&&!metropolis.has(f.properties.province)&&list().some(i=>contains(f,i))?"auto":"none");
+ }).style("pointer-events",f=>!rail&&!airport&&list().some(i=>contains(f,i))?"auto":"none");
  const dots=st.layer.select(".advanced-markers"),lines=st.layer.select(".advanced-lines");
  dots.selectAll("*").remove();lines.selectAll("*").remove();
  if(rail){
@@ -168,6 +168,7 @@ async function render(){
    fetch(p+"?advanced=20261021-v1",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("HTTP "+r.status);return r.json()})))
    .catch(err=>{st.promise=null;throw err});
   [st.areas,st.provinces]=await st.promise;
+  if(window.GeoLabRegions&&window.GeoLabRegions.normalizeData)st.areas=window.GeoLabRegions.normalizeData(st.areas);
   if(id!==st.requestId)return;
   if(!Array.isArray(st.areas.features)||st.areas.features.length<150||!Array.isArray(st.provinces.features)||st.provinces.features.length!==17)throw Error("행정경계 파일 형식이 올바르지 않습니다.");
   mount();

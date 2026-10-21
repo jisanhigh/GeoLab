@@ -31,3 +31,6 @@ main{min-width:0;padding-bottom:80px}.panel{display:none}.panel.active{display:b
 .ox-source-verbatim{white-space:pre-wrap;overflow-wrap:anywhere}
 .ox-pending{padding:14px 18px;margin:0;color:#587080;font-size:13px;line-height:1.8}
 .ox-verification{display:block;font-size:10px;color:#8294a0;margin-top:9px;line-height:1.6}
+
+/* GeoLab visual authorship (source-component licences remain separate). */
+.geolab-copyright{font-size:11px;color:#7f909a;text-align:center;padding:18px 12px 24px;letter-spacing:.2px}

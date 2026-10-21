@@ -56,6 +56,21 @@ const mapped=new Map(foundStations);
 assert.equal(mapped.get("부발"),"경기도 이천시","Bubal marker must not appear in Yeoju");
 assert.equal(mapped.get("감곡장호원"),"충청북도 음성군","Gamgok-Janghowon marker must not appear in Icheon");
 
+const airportAddresses={
+ "인천국제공항":"인천광역시 영종구",
+ "김포국제공항":"서울특별시 강서구",
+ "김해국제공항":"부산광역시 강서구",
+ "제주국제공항":"제주특별자치도 제주시",
+ "대구국제공항":"대구광역시 동구",
+ "청주국제공항":"충청북도 청주시 청원구",
+ "무안국제공항":"전라남도 무안군",
+ "양양국제공항":"강원특별자치도 양양군"
+};
+assert.equal(d.airports.length,Object.keys(airportAddresses).length);
+for(const airport of d.airports){
+ assert.equal(airport.administrative,airportAddresses[airport.name],"Airport address mismatch: "+airport.name);
+ assert.ok(airport.point?.length===2,"Airports must retain their map coordinates");
+}
 const placeCount=d.rail.reduce((n,route)=>n+route.stops.length,0);
 assert.ok(placeCount>55);
 for(const route of d.rail){
@@ -90,12 +105,18 @@ assert.ok(js.includes('.on("pointerleave",hideStationTooltip)'),"Hover label mus
 assert.ok(js.includes('button.addEventListener("pointerenter"'),"The station-list buttons should show the same tooltip");
 assert.ok(js.includes('button.addEventListener("focus"'),"Keyboard focus should also reveal the district");
 assert.ok(js.includes('st.category!=="rail"||st.quiz'),"Rail hover must not reveal hints in quiz mode");
+assert.ok(js.includes('showAirportTooltip(airport,ev)'),"Airport points and lists must show the administrative district on hover");
+assert.ok(js.includes('st.category!=="airports"||st.quiz'),"Airport hover must be disabled during map quizzes");
+assert.ok(js.includes('airportInfo.name+" · "+airportInfo.administrative'),"Airport markers must expose locality to accessibility tools");
+assert.ok(js.includes('chosen.administrative||"확인 중"'),"Airport click details must include actual administrative area");
+assert.ok(js.includes('airportInfo&&ev.pointerType!=="touch"'),"Touch devices should use the existing click detail rather than cursor hover");
+assert.ok(css.includes(".advanced-airport .advanced-place-label{pointer-events:all"),"Airport names must be hover targets");
 assert.ok(js.includes('data.stationAdministrative[name]'),"Hover must use the same verified district source");
 assert.ok(js.includes('role="tooltip" hidden'),"Tooltip must be a temporary overlay, hidden initially");
 assert.ok(css.includes(".advanced-station-tooltip[hidden]"),"Hidden tooltip must never block input");
 assert.ok(css.includes(".advanced-station .advanced-place-label{pointer-events:all"),"Station names should be hoverable, not just their markers");
 assert.ok(css.includes(".advanced-station-info")&&css.includes(".advanced-station-buttons"),"Station detail and list must be styled");
 assert.ok(css.includes(".advanced-route")&&css.includes(".advanced-province"));
-for(const tag of ['id="panel-advanced"','id="advanced-root"','data-view="advanced"','advanced-data.js?v=2','advanced.js?v=4','advanced.css?v=3'])assert.ok(html.includes(tag),"Advanced nav missing: "+tag);
+for(const tag of ['id="panel-advanced"','id="advanced-root"','data-view="advanced"','advanced-data.js?v=3','advanced.js?v=5','advanced.css?v=4'])assert.ok(html.includes(tag),"Advanced nav missing: "+tag);
 for(const file of ["advanced.js","advanced-data.js","advanced.css"])assert.ok(fs.existsSync(path.join(root,"site",file)),"Missing site file "+file);
 console.log("Advanced themes verified: 15 slow, 10 innovation, 4 enterprise, 8 airports, 9 FEZ, 7 rail lines; "+placeCount+" rail waypoints.");

@@ -128,7 +128,7 @@ function entryInfo(x){
   '<h2>'+esc(x.name)+'</h2><p class="wr-place">'+esc(x.location)+'</p>'+
   '<div class="wr-fact"><b>주요 산업</b><p>'+esc(x.keywords)+'</p></div>'+
   '<div class="wr-fact"><b>입지 및 변화</b><p>'+esc(x.description)+'</p></div>';
- return '<div class="wr-eyebrow">'+esc(x.continent)+' · '+esc(x.group)+'</div>'+
+ return '<div class="wr-eyebrow">'+esc(x.continent)+' · 대표 유형: '+esc(x.group)+'</div>'+
   '<h2>'+esc(x.name)+'</h2><div class="wr-fact"><b>주요 관련 국가·집단</b><p>'+esc(x.parties)+'</p></div>'+
   '<div class="wr-fact"><b>주요 쟁점</b><p>'+esc(x.keywords)+'</p></div>'+
   '<div class="wr-fact"><b>교재 중심 배경</b><p>'+esc(x.description)+'</p></div>'+
@@ -158,16 +158,24 @@ function refreshDetail(){
  $("#wr-names-btn",P.root).textContent=P.showNames?"지명 숨기기":"지명 표시";
  $("#wr-info",P.root).textContent=P.mode==="industry"?
  "지도 표식은 공업 지역의 대표 도시·클러스터 위치이며 산업 범위의 정확한 경계가 아닙니다. 2027학년도 수능완성 세계지리 14단원 기준으로 정리했습니다.":
- "분쟁은 국경·영유권·민족·역사 문제가 복합적으로 얽힙니다. 지도 점은 학습용 대표 위치일 뿐 특정 영토 주장의 인정이나 현재 진행 상태를 의미하지 않습니다.";
+ "분쟁 유형은 학습 편의를 위해 대표적인 쟁점 하나로 표시합니다. 실제로는 영토·민족·종교·정치 문제가 함께 얽힐 수 있습니다. 지도 점은 학습용 대표 위치일 뿐 특정 영토 주장이나 현재 분쟁 상태를 의미하지 않습니다.";
 }
 function refresh(){
  if(!P.root||!P.data)return;
  const areaContainer=$("#wr-areas",P.root),catContainer=$("#wr-cats",P.root);
  areaContainer.innerHTML=(P.mode==="industry"?["유럽","북아메리카"]:confAreas).map(x=>
   '<button type="button" class="'+(P.area===x?"selected":"")+'" data-wr-area="'+x+'">'+x+'</button>').join("");
- const groups=["전체",...new Set(setOf().map(x=>x.group))];
+ const available=setOf();
+ // Conflict categories have a stable curriculum order and every example appears in one primary group.
+ const groups=P.mode==="conflicts"
+  ?["전체",...data.conflictCategories.filter(group=>available.some(x=>x.group===group))]
+  :["전체",...new Set(available.map(x=>x.group))];
  if(!groups.includes(P.group))P.group="전체";
- catContainer.innerHTML=groups.map(x=>'<button type="button" data-wr-group="'+esc(x)+'" class="'+(P.group===x?"selected":"")+'">'+esc(x)+'</button>').join("");
+ catContainer.innerHTML=groups.map(group=>{
+  const count=group==="전체"?available.length:available.filter(x=>x.group===group).length;
+  const caption=P.mode==="conflicts"?'<span class="wr-filter-count">'+count+'</span>':"";
+  return '<button type="button" data-wr-group="'+esc(group)+'" class="'+(P.group===group?"selected":"")+'">'+esc(group)+caption+'</button>';
+ }).join("");
  $("#wr-modeindustry",P.root).classList.toggle("selected",P.mode==="industry");
  $("#wr-modeconflicts",P.root).classList.toggle("selected",P.mode==="conflicts");
  $("#wr-section-title",P.root).textContent=P.mode==="industry"?"유럽·북아메리카 공업 지역":"세계의 주요 분쟁 지역";

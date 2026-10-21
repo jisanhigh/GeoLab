@@ -106,6 +106,13 @@ assert.ok(js.includes('button.addEventListener("pointerenter"'),"The station-lis
 assert.ok(js.includes('button.addEventListener("focus"'),"Keyboard focus should also reveal the district");
 assert.ok(js.includes('st.category!=="rail"||st.quiz'),"Rail hover must not reveal hints in quiz mode");
 assert.ok(js.includes('showAirportTooltip(airport,ev)'),"Airport points and lists must show the administrative district on hover");
+assert.ok(js.includes('id="advanced-airport-preview"'),"Map must have a permanent preview target for airport hover");
+assert.ok(js.includes('preview.hidden=false'),"Airport preview must be made visible");
+assert.ok(js.includes('data-airport-id'),"Airport markers must expose identity to pointer delegation");
+assert.ok(js.includes('r.onpointerover=event=>'),"Pointerover fallback must work for airport labels and symbols");
+assert.ok(js.includes('g.append("title").text(airportInfo.name+" · "+airportInfo.administrative)'),"Native SVG tooltip must be present even without custom hover");
+assert.ok(js.includes('button.setAttribute("title",airport.name+" · "+airport.administrative)'),"Airport list must have native tooltip fallback");
+assert.ok(css.includes(".advanced-airport-preview[hidden]"),"Map preview should not block mouse when hidden");
 assert.ok(js.includes('st.category!=="airports"||st.quiz'),"Airport hover must be disabled during map quizzes");
 assert.ok(js.includes('airportInfo.name+" · "+airportInfo.administrative'),"Airport markers must expose locality to accessibility tools");
 assert.ok(js.includes('chosen.administrative||"확인 중"'),"Airport click details must include actual administrative area");
@@ -117,6 +124,6 @@ assert.ok(css.includes(".advanced-station-tooltip[hidden]"),"Hidden tooltip must
 assert.ok(css.includes(".advanced-station .advanced-place-label{pointer-events:all"),"Station names should be hoverable, not just their markers");
 assert.ok(css.includes(".advanced-station-info")&&css.includes(".advanced-station-buttons"),"Station detail and list must be styled");
 assert.ok(css.includes(".advanced-route")&&css.includes(".advanced-province"));
-for(const tag of ['id="panel-advanced"','id="advanced-root"','data-view="advanced"','advanced-data.js?v=3','advanced.js?v=5','advanced.css?v=4'])assert.ok(html.includes(tag),"Advanced nav missing: "+tag);
+for(const tag of ['id="panel-advanced"','id="advanced-root"','data-view="advanced"','advanced-data.js?v=3','advanced.js?v=6','advanced.css?v=5'])assert.ok(html.includes(tag),"Advanced nav missing: "+tag);
 for(const file of ["advanced.js","advanced-data.js","advanced.css"])assert.ok(fs.existsSync(path.join(root,"site",file)),"Missing site file "+file);
 console.log("Advanced themes verified: 15 slow, 10 innovation, 4 enterprise, 8 airports, 9 FEZ, 7 rail lines; "+placeCount+" rail waypoints.");

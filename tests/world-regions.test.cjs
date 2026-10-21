@@ -36,7 +36,7 @@ const js=read("app/world-regions.js"),css=read("app/world-regions.css"),html=rea
 new Function(js);
 assert.ok(js.includes("window.GeoLabWorldRegions={render}"));
 for(const token of ["function projection()","geoNaturalEarth1","wr-country","wr-pin","function launchQuiz()","function submitQuiz(","function showTip(","function moveTip(","data/world-countries.geojson","role=\"tooltip\""])assert.ok(js.includes(token),"Missing world-map capability: "+token);
-for(const token of ['id="panel-worldregions"','id="worldregion-root"','data-view="worldregions"','data-world-only','world-regions-data.js?v=1','world-regions.js?v=1','world-regions.css?v=1'])assert.ok(html.includes(token),"Missing world geography entry: "+token);
+for(const token of ['id="panel-worldregions"','id="worldregion-root"','data-view="worldregions"','data-world-only','world-regions-data.js?v=2','world-regions.js?v=1','world-regions.css?v=1'])assert.ok(html.includes(token),"Missing world geography entry: "+token);
 assert.ok(app.includes('view==="worldregions"&&state.s!=="world"'),"World-only navigation guard missing");
 assert.ok(app.includes('window.GeoLabWorldRegions.render()'),"World region screen must mount");
 assert.ok(css.includes('body[data-subject="korea"] [data-world-only]'),"Do not show world region menu in Korean geography");

@@ -17,6 +17,20 @@
 .advanced-province{fill:none;stroke:#304d61;stroke-width:2.1px;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke}
 .advanced-route{fill:none;stroke-linecap:round;stroke-linejoin:round;cursor:pointer;vector-effect:non-scaling-stroke}
 .advanced-marker{cursor:pointer}
+.advanced-station{cursor:pointer;outline:none}
+.advanced-station-hit{pointer-events:all}
+.advanced-station:focus-visible .advanced-station-symbol{stroke:#156d9a;stroke-width:3px}
+.advanced-station:hover .advanced-station-symbol{stroke:#a44b2c;stroke-width:2.5px}
+.advanced-station.selected .advanced-station-symbol{filter:drop-shadow(0 0 3px rgba(202,93,42,.45))}
+.advanced-station-info{margin:14px 0;padding:14px;border:1px solid #d7e7ee;border-left:4px solid #347f9a;border-radius:10px;background:#f5fafc}
+.advanced-station-info h3{font-size:18px;line-height:1.35;margin:8px 0}
+.advanced-station-address{font-size:14px!important;font-weight:800;color:#224e68!important;line-height:1.7;margin:8px 0!important;word-break:keep-all}
+.advanced-station-caveat{font-size:12px!important;line-height:1.65;color:#586e7d!important;margin:7px 0 0!important}
+.advanced-station-placeholder{font-size:12px!important;line-height:1.7;color:#718595!important;margin:0!important}
+.advanced-station-buttons{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.advanced-station-buttons button{border:1px solid #d7e2e8;border-radius:7px;background:#fff;padding:6px 9px;font-weight:600;font-size:11px;color:#4b687a}
+.advanced-station-buttons button.selected,.advanced-station-buttons button:hover{background:#dceef4;border-color:#87bbca;color:#145574}
+.advanced-station-buttons button:focus-visible{outline:2px solid #4794b3;outline-offset:2px}
 .advanced-place-label{font:700 11px system-ui,-apple-system,"Malgun Gothic",sans-serif;fill:#2d4151;stroke:white;stroke-width:2.5px;paint-order:stroke;pointer-events:none}
 .advanced-mapbox footer{padding:11px 14px;color:#7b8e9a;border-top:1px solid #e6edf0;font-size:11px}
 .advanced-sidebar{display:grid;gap:13px}

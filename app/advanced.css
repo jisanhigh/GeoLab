@@ -8,6 +8,11 @@
 .advanced-controls button:hover,.advanced-actions button:hover{background:#e8f3f5}
 .advanced-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(250px,.85fr);gap:13px;align-items:start}
 .advanced-mapbox,.advanced-sidebar>div{background:#fff;border:1px solid #e0e8eb;border-radius:14px;overflow:hidden}
+.advanced-mapbox{position:relative}
+.advanced-airport-preview{position:absolute;right:13px;top:54px;z-index:4;max-width:min(250px,65%);padding:10px 13px;border-radius:10px;border:1px solid #a9cdd9;background:#f4fbfd;box-shadow:0 3px 12px #24495b2b;color:#21465b;pointer-events:none}
+.advanced-airport-preview[hidden]{display:none!important}
+.advanced-airport-preview strong{display:block;font-size:12px;font-weight:850;line-height:1.5}
+.advanced-airport-preview span{display:block;font-size:12px;font-weight:650;color:#2a627b;line-height:1.55}
 .advanced-mapbox header{display:flex;gap:9px;flex-wrap:wrap;justify-content:space-between;align-items:center;padding:13px 15px;border-bottom:1px solid #e6ecee}
 .advanced-mapbox header b{font-size:14px}
 .advanced-mapbox header small{color:#788995;font-size:11px}

@@ -18,19 +18,10 @@ root.GeoLabWorldRegionsData={
    "멕시코 북부"
   ],
   "conflicts": [
-   "국가 간 전쟁·영토",
-   "영토·종교",
-   "민족·인권",
-   "민족·분리 운동",
+   "영토·영유권",
+   "분리·독립",
    "민족·종교",
-   "민족·종교(역사)",
-   "종교·자치",
-   "해양 영유권",
-   "내전·정치 변동",
-   "국가 간·민족",
-   "민족(역사)",
-   "분리·독립 운동",
-   "종교·정치(역사)"
+   "전쟁·내전"
   ]
  },
  "industry": [
@@ -459,7 +450,7 @@ root.GeoLabWorldRegionsData={
   {
    "id": "cf-ukraine",
    "continent": "유럽",
-   "group": "국가 간 전쟁·영토",
+   "group": "전쟁·내전",
    "name": "우크라이나",
    "point": [
     31.2,
@@ -473,7 +464,7 @@ root.GeoLabWorldRegionsData={
   {
    "id": "cf-kurdistan",
    "continent": "서남아시아",
-   "group": "민족·분리 운동",
+   "group": "분리·독립",
    "name": "쿠르디스탄",
    "point": [
     43.2,
@@ -487,7 +478,7 @@ root.GeoLabWorldRegionsData={
   {
    "id": "cf-kashmir",
    "continent": "남아시아",
-   "group": "영토·종교",
+   "group": "영토·영유권",
    "name": "카슈미르",
    "point": [
     74.9,
@@ -501,7 +492,7 @@ root.GeoLabWorldRegionsData={
   {
    "id": "cf-xinjiang",
    "continent": "동아시아",
-   "group": "민족·인권",
+   "group": "분리·독립",
    "name": "신장웨이우얼",
    "point": [
     85.5,
@@ -515,7 +506,7 @@ root.GeoLabWorldRegionsData={
   {
    "id": "cf-tibet",
    "continent": "동아시아",
-   "group": "민족·종교",
+   "group": "분리·독립",
    "name": "시짱(티베트)",
    "point": [
     91.1,
@@ -529,7 +520,7 @@ root.GeoLabWorldRegionsData={
   {
    "id": "cf-srilanka",
    "continent": "남아시아",
-   "group": "민족·종교(역사)",
+   "group": "민족·종교",
    "name": "스리랑카",
    "point": [
     80.7,
@@ -557,7 +548,7 @@ root.GeoLabWorldRegionsData={
   {
    "id": "cf-mindanao",
    "continent": "동남아시아",
-   "group": "종교·자치",
+   "group": "민족·종교",
    "name": "필리핀 민다나오섬",
    "point": [
     124.4,
@@ -571,7 +562,7 @@ root.GeoLabWorldRegionsData={
   {
    "id": "cf-spratly",
    "continent": "동남아시아",
-   "group": "해양 영유권",
+   "group": "영토·영유권",
    "name": "난사 군도(스프래틀리)",
    "point": [
     114.1,
@@ -585,7 +576,7 @@ root.GeoLabWorldRegionsData={
   {
    "id": "cf-senkaku",
    "continent": "동아시아",
-   "group": "해양 영유권",
+   "group": "영토·영유권",
    "name": "센카쿠 열도(댜오위다오)",
    "point": [
     123.5,
@@ -599,7 +590,7 @@ root.GeoLabWorldRegionsData={
   {
    "id": "cf-syria",
    "continent": "서남아시아",
-   "group": "내전·정치 변동",
+   "group": "전쟁·내전",
    "name": "시리아",
    "point": [
     38.6,
@@ -613,7 +604,7 @@ root.GeoLabWorldRegionsData={
   {
    "id": "cf-israel",
    "continent": "서남아시아",
-   "group": "영토·종교",
+   "group": "전쟁·내전",
    "name": "이스라엘·팔레스타인",
    "point": [
     35.2,
@@ -627,7 +618,7 @@ root.GeoLabWorldRegionsData={
   {
    "id": "cf-sudan",
    "continent": "아프리카",
-   "group": "국가 간·민족",
+   "group": "영토·영유권",
    "name": "수단·남수단",
    "point": [
     30.8,
@@ -655,7 +646,7 @@ root.GeoLabWorldRegionsData={
   {
    "id": "cf-rwanda",
    "continent": "아프리카",
-   "group": "민족(역사)",
+   "group": "민족·종교",
    "name": "르완다",
    "point": [
     30.05,
@@ -669,7 +660,7 @@ root.GeoLabWorldRegionsData={
   {
    "id": "cf-burundi",
    "continent": "아프리카",
-   "group": "민족(역사)",
+   "group": "민족·종교",
    "name": "부룬디",
    "point": [
     29.93,
@@ -683,7 +674,7 @@ root.GeoLabWorldRegionsData={
   {
    "id": "cf-scotland",
    "continent": "유럽",
-   "group": "분리·독립 운동",
+   "group": "분리·독립",
    "name": "스코틀랜드",
    "point": [
     -4.25,
@@ -697,7 +688,7 @@ root.GeoLabWorldRegionsData={
   {
    "id": "cf-northernireland",
    "continent": "유럽",
-   "group": "종교·정치(역사)",
+   "group": "분리·독립",
    "name": "북아일랜드",
    "point": [
     -6.6,
@@ -711,7 +702,7 @@ root.GeoLabWorldRegionsData={
   {
    "id": "cf-catalonia",
    "continent": "유럽",
-   "group": "분리·독립 운동",
+   "group": "분리·독립",
    "name": "카탈루냐",
    "point": [
     2.17,
@@ -725,7 +716,7 @@ root.GeoLabWorldRegionsData={
   {
    "id": "cf-basque",
    "continent": "유럽",
-   "group": "분리·독립 운동",
+   "group": "분리·독립",
    "name": "바스크",
    "point": [
     -2.93,
@@ -739,7 +730,7 @@ root.GeoLabWorldRegionsData={
   {
    "id": "cf-flanders",
    "continent": "유럽",
-   "group": "분리·독립 운동",
+   "group": "분리·독립",
    "name": "플랑드르",
    "point": [
     4.35,
@@ -753,7 +744,7 @@ root.GeoLabWorldRegionsData={
   {
    "id": "cf-quebec",
    "continent": "북아메리카",
-   "group": "분리·독립 운동",
+   "group": "분리·독립",
    "name": "퀘벡",
    "point": [
     -71.2,
@@ -765,6 +756,13 @@ root.GeoLabWorldRegionsData={
    "note": "캐나다 내 정치적 자치·독립 논의"
   }
  ],
- "industrySourceNote": "EBS 2027 수능특강 세계지리 정답과 해설 14단원에서 빌바오·실리콘 글렌·제3 이탈리아 사례를 추가 검토함."
+ "industrySourceNote": "EBS 2027 수능특강 세계지리 정답과 해설 14단원에서 빌바오·실리콘 글렌·제3 이탈리아 사례를 추가 검토함.",
+ "conflictCategories": [
+  "영토·영유권",
+  "분리·독립",
+  "민족·종교",
+  "전쟁·내전"
+ ],
+ "conflictClassificationNote": "하나의 지역에서 여러 갈등 원인이 겹칠 수 있으나, 지도 필터에서는 학습 편의를 위해 대표적인 쟁점 1가지로만 분류합니다. 세부 원인과 역사적 상황은 개별 지역 설명을 확인하세요."
 };
 })(window);

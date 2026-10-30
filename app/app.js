@@ -126,6 +126,21 @@ function teacherOXData(){
   ids.add(q.id);texts.add(key(q.text));
  }
 }
+function teacherWorldOXData(){
+ const list=window.GeoLabWorldApprovedOX||[];
+ if(!Array.isArray(list)||list.length!==43)throw Error("Approved world OX data missing or incomplete");
+ const ids=new Set(state.ox.map(q=>q.id));
+ const key=t=>N(t).replace(/\\s+/g,"").replace(/[.,?!·~]/g,"");
+ const texts=new Set(state.ox.filter(q=>q.subject==="world").map(q=>key(q.text)));
+ for(const entry of list){
+  if(entry.subject!=="world"||!["O","X"].includes(entry.answer)||!entry.text||!entry.teacherExplanation||!entry.source||!entry.teacherReviewed)throw Error("Invalid teacher-approved world OX entry "+entry.sourceId);
+  if(ids.has(entry.id)||texts.has(key(entry.text)))throw Error("Duplicate world OX entry "+entry.sourceId);
+  const q=Object.freeze({...entry});
+  state.ox.push(q);
+  add("ox","world",q.text,q.teacherExplanation,q.chapter+" · "+q.group,{id:q.id,chapter:q.chapter});
+  ids.add(q.id);texts.add(key(q.text));
+ }
+}
 function climateData(d,s){(d.regions||[]).forEach(x=>{
  const C=window.GeoLabClimate;
  const climateKey=s==="world"&&C?C.code(x):null;
@@ -212,6 +227,7 @@ async function data(){
  if(i===4)statsData(d);if(i===5)examsData(d);if(i===6)catalogData(d)
  }catch(e){console.error("GeoLab parse failed",paths[i],e)}});
  teacherOXData();
+ teacherWorldOXData();
  state.ready=true;goto(state.view,state.s,false);
  if(!state.ox.length)toast("OX 자료를 불러오지 못했습니다.");
 }

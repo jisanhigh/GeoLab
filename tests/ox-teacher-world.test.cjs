@@ -1,0 +1,30 @@
+"use strict";
+const assert=require("node:assert/strict"),fs=require("node:fs"),path=require("node:path"),vm=require("node:vm"),crypto=require("node:crypto");
+const ROOT=path.join(__dirname,"..");
+const read=f=>fs.readFileSync(fs.existsSync(path.join(ROOT,"site",f))?path.join(ROOT,"site",f):path.join(ROOT,"app",f),"utf8");
+const ctx={};vm.createContext(ctx);
+vm.runInContext(read("ox-teacher-approved-2026-world.js"),ctx);
+const questions=Array.from(ctx.GeoLabWorldApprovedOX||[]);
+const rows=questions.map(q=>[q.sourceId,q.sourceChapter,q.group,q.text,q.answer,q.teacherExplanation,q.source.replace(/ · 세계지리 .*$/,""),q.source.match(/세계지리 (\\d+번)$/)?.[1]]);
+const expectedHash="c6823b78d2be1f88f8de13e95e68a2f7ef166fb2120faf5ff46f59c29fcc1b8c";
+assert.equal(crypto.createHash("sha256").update(JSON.stringify(rows)).digest("hex"),expectedHash,"Approved contents differ from teacher-edited Excel");
+assert.equal(questions.length,43);
+assert.equal(new Set(questions.map(q=>q.id)).size,43);
+assert.equal(questions.filter(q=>q.answer==="O").length,23);
+assert.equal(questions.filter(q=>q.answer==="X").length,20);
+const excluded=["W-008","W-024","W-030","W-032","W-033","W-042","W-043","W-048","W-050","W-052","W-053","W-054"];
+for(const id of excluded)assert.ok(!questions.some(q=>q.sourceId===id),"Excluded row was included: "+id);
+for(const q of questions){
+ assert.equal(q.subject,"world");
+ assert.equal(q.chapter,"기출 기반 OX 보충문항");
+ assert.equal(q.teacherReviewed,true);
+ assert.equal(q.origin,"teacher-approved-2026-world");
+ assert.equal(q.explanation,"");
+ assert.ok(q.text&&q.teacherExplanation&&q.source&&q.group);
+}
+const app=read("app.js"),html=read("index.html");
+assert.ok(app.includes("teacherWorldOXData();"));
+assert.ok(app.includes('add("ox","world",q.text,q.teacherExplanation'));
+assert.ok(html.includes("ox-teacher-approved-2026-world.js?v=1"));
+assert.ok(html.indexOf("ox-teacher-approved-2026-world.js")<html.indexOf("app.js?v=62"));
+console.log("PASS: 43 teacher-approved world OX questions, 23 O + 20 X, all edits, and 12 exclusions");

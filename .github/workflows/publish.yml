@@ -21,6 +21,8 @@ jobs:
         run: node tests/ox-explain.test.cjs
       - name: Test teacher-reviewed Korean OX additions
         run: node tests/ox-teacher-approved.test.cjs
+      - name: Verify approved world geography OX additions and teacher edits
+        run: node tests/ox-teacher-world.test.cjs
       - name: Test Köppen classification and station search
         run: node tests/climate.test.cjs
       - name: Test separated energy statistics

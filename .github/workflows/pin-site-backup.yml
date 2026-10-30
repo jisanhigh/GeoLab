@@ -1,0 +1,43 @@
+name: Pin complete GeoLab site backup
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/pin-site-backup.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Obtain last successful, fully verified GeoLab site artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/geolab-site
+          gh run download 40986463021 --repo "$GITHUB_REPOSITORY" --name GeoLab-site --dir /tmp/geolab-site
+          python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile,ZIP_DEFLATED
+          import hashlib
+          home=Path('/tmp/geolab-site')
+          paths=[p for p in home.rglob('*') if p.is_file()]
+          assert len(paths)>=3142,('Backed-up site file count mismatch',len(paths))
+          needed=['index.html','catalog.json','original-home.html','tools/ox/data/ox.json','tools/ox/data/ox-extra.json','tools/cut/data/question-image-manifest.json']
+          for p in needed:assert (home/p).exists(),p
+          images=list((home/'tools/cut/question-images').glob('*.webp'))
+          assert len(images)==959,('Missing question images',len(images))
+          target=Path('/tmp/GeoLab-site-snapshot.zip')
+          with ZipFile(target,'w',compression=ZIP_DEFLATED,compresslevel=6) as z:
+            for p in sorted(paths):z.write(p,p.relative_to(home))
+          print('PINNED_BACKUP',len(paths),'FILES',len(images),'IMAGES','SHA256',hashlib.sha256(target.read_bytes()).hexdigest(),flush=True)
+          PY
+      - name: Publish stable recovery backup (one time)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view geolab-site-snapshot-2026-10-30 >/dev/null 2>&1 && exit 0
+          gh release create geolab-site-snapshot-2026-10-30 /tmp/GeoLab-site-snapshot.zip --title "GeoLab verified original site snapshot (2026-10-30)" --notes "Restorable verified site snapshot from a successful pre-World-OX deployment. Preserves third-party attribution and all original OX data. Used as source asset for future site builds." --latest=false

@@ -112,3 +112,21 @@ jobs:
           let d=context.TwCodec.unwrap(JSON.parse(fs.readFileSync('/tmp/tools/cut/data/ebsi_geo_data.json','utf8')));
           console.log("RECORD COUNT",d.records?.length,"SAMPLE",JSON.stringify(d.records?.slice(0,3)).slice(0,2200));
           JS
+      - name: Inspect runtime references to missing original assets
+        run: |
+          python - <<'PY'
+          import urllib.request,re
+          base="https://jisanhigh.github.io/GeoLab/"
+          files=['tools/cut/cut.js','tools/ox/app.js','tools/cut/cut.css','tools/climate/app.js','tools/ox/styles.css',
+                 'tools/climate/data/climate-data.json','tools/climate/data/korea-climate-data.json',
+                 'tools/cut/question-images/index.html','tools/ox/audio/index.html']
+          for p in files:
+            try:
+              with urllib.request.urlopen(base+p,timeout=30) as f:t=f.read().decode('utf-8',errors='replace')
+              lines=t.splitlines()
+              print('FILE',p,'SIZE',len(t),'LINES',len(lines))
+              patterns=['question-images','/audio/','audio/','mp3','mp4','png','jpeg','jpg','webp','data/','new Audio','imagePath']
+              matches=[(i+1,line) for i,line in enumerate(lines) if any(k in line for k in patterns)]
+              for n,line in matches[:50]:print('LINE',p,n,line[:350])
+            except Exception as e:print('FAILED',p,str(e)[:150])
+          PY

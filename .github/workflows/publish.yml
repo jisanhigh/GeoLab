@@ -19,6 +19,8 @@ jobs:
         run: python build_site.py
       - name: Test all OX question explanations and answer consistency
         run: node tests/ox-explain.test.cjs
+      - name: Test teacher-reviewed Korean OX additions
+        run: node tests/ox-teacher-approved.test.cjs
       - name: Test Köppen classification and station search
         run: node tests/climate.test.cjs
       - name: Test separated energy statistics

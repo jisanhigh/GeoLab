@@ -84,14 +84,16 @@ function answer(a){
  const expl=window.GeoLabOX?.build(q),f=el("feedback");
  // Text and answer are displayed from the original object without any substitutions.
  const rawCorrection=q.answer==="X"?q.explanation:"";
- const correctionBlock=q.answer==="X"
+ const correctionBlock=q.answer==="X"&&!q.teacherReviewed
    ?'<section class="ox-explain"><span class="ox-explain-heading">원본 정정 해설</span><p class="ox-source-verbatim">'+E(rawCorrection||"원본에 정정 해설이 없습니다.")+'</p></section>'
    :"";
  const checked=expl?.checked===true;
- const supplement=checked
+ const supplement=q.teacherReviewed===true
+   ?'<section class="ox-concept"><strong>기출 기반 해설 · 교사 검토</strong><p>'+E(q.teacherExplanation)+'</p><small class="ox-verification">'+E(q.source)+'</small></section>'
+   :checked
    ?'<section class="ox-concept"><strong>확인된 보충 해설</strong><p>'+E(expl.supplement)+'</p><small class="ox-verification">'+E(expl.curriculum)+' · '+E(expl.verifiedWith)+'</small></section>'
    :"";
- const pending=q.answer==="O"&&!checked
+ const pending=q.answer==="O"&&!checked&&!q.teacherReviewed
    ?'<p class="ox-pending">원본에는 별도 해설이 없습니다. 교과 내용과 자료를 대조한 뒤 문항별 해설을 추가할 예정입니다.</p>'
    :"";
  f.hidden=false;
@@ -108,6 +110,21 @@ function oxData(d,extra){
  const item=Object.freeze({id,subject:s,chapter:c.title||"기타",group:g.title,text:q.t,answer:q.a,explanation:q.f||""});
  state.ox.push(item);add("ox",s,q.t,q.f||"OX 문제",c.title+" · "+g.title,{id,chapter:item.chapter})
  }))));
+}
+function teacherOXData(){
+ const list=window.GeoLabKoreaApprovedOX||[];
+ if(!Array.isArray(list))throw Error("Teacher OX data must be an array");
+ const ids=new Set(state.ox.map(q=>q.id));
+ const key=t=>N(t).replace(/[.,?!·~\\s]/g,"");
+ const texts=new Set(state.ox.filter(q=>q.subject==="korea").map(q=>key(q.text)));
+ for(const entry of list){
+  if(entry.subject!=="korea"||!["O","X"].includes(entry.answer)||!entry.text||!entry.teacherExplanation||!entry.source)throw Error("Invalid approved Korean OX entry");
+  if(ids.has(entry.id)||texts.has(key(entry.text))){console.warn("Skipped duplicate Korean OX",entry.sourceId);continue;}
+  const q=Object.freeze({...entry});
+  state.ox.push(q);
+  add("ox","korea",q.text,q.teacherExplanation,q.chapter+" · "+q.group,{id:q.id,chapter:q.chapter});
+  ids.add(q.id);texts.add(key(q.text));
+ }
 }
 function climateData(d,s){(d.regions||[]).forEach(x=>{
  const C=window.GeoLabClimate;
@@ -194,6 +211,7 @@ async function data(){
  if(i<2)oxData(d,i===1);if(i===2)climateData(d,"world");if(i===3)climateData(d,"korea");
  if(i===4)statsData(d);if(i===5)examsData(d);if(i===6)catalogData(d)
  }catch(e){console.error("GeoLab parse failed",paths[i],e)}});
+ teacherOXData();
  state.ready=true;goto(state.view,state.s,false);
  if(!state.ox.length)toast("OX 자료를 불러오지 못했습니다.");
 }

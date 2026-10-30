@@ -94,12 +94,34 @@ def main():
     restored_live=False
     original_count=len(names)
     if len(names)<3000:
-        # Restore the complete previous GeoLab Pages site when the former
-        # upstream archive is unavailable. Verify before overlaying changes.
-        import recover_live
-        names=recover_live.run()
-        restored_live=True
-        original_count=json.loads((SITE/'INVENTORY.json').read_text('utf-8'))['original_files']
+        snapshot=HOME/'GeoLab-site-snapshot.zip'
+        if snapshot.is_file():
+            # Prefer a permanently pinned archive from our own last verified
+            # GeoLab Pages deployment, avoiding thousands of fragile HTTP reads.
+            shutil.rmtree(SITE)
+            SITE.mkdir()
+            with ZipFile(snapshot) as z:
+                members=[x for x in z.infolist() if not x.is_dir()]
+                for item in members:
+                    p=Path(item.filename)
+                    if not p.parts or p.is_absolute() or '..' in p.parts:
+                        raise ValueError('Unsafe GeoLab snapshot archive entry')
+                    dest=SITE/p
+                    dest.parent.mkdir(parents=True,exist_ok=True)
+                    with z.open(item) as src,dest.open('wb') as dst:
+                        shutil.copyfileobj(src,dst)
+                names=set(p.filename for p in members)
+            if len(names)<3142 or not (SITE/'original-home.html').is_file():
+                raise RuntimeError('Pinned GeoLab site snapshot incomplete')
+            restored_live=True
+            original_count=json.loads((SITE/'INVENTORY.json').read_text('utf-8'))['original_files']
+            print('Restored pinned GeoLab site snapshot:',len(names),'files',flush=True)
+        else:
+            # Emergency recovery route for a newly initialized repository.
+            import recover_live
+            names=recover_live.run()
+            restored_live=True
+            original_count=json.loads((SITE/'INVENTORY.json').read_text('utf-8'))['original_files']
     assert len(names)>=3000,('Missing original files',len(names))
     assert not (set(REQUIRED)-names),('Missing required files',set(REQUIRED)-names)
     for family in ['tools/cut/question-images/','tools/ox/audio/','fonts/','meridian/media/','atlas-archive/','notes/']:

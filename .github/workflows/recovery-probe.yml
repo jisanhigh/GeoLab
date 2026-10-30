@@ -56,3 +56,38 @@ jobs:
               elif p.endswith('ox.json'):print('OX ROOT KEYS',list(data)[:20])
             except Exception as e:print('ERR',p,str(e)[:300])
           PY
+      - name: Inspect historical image and audio URL conventions
+        run: |
+          python - <<'PY'
+          import urllib.request,re,pathlib
+          base="https://jisanhigh.github.io/GeoLab/"
+          names=["ds/codec.js","tools/cut/data/ebsi_geo_data.json",
+          "tools/ox/data/ox.json","tools/ox/data/ox-extra.json",
+          "tools/cut/index.html","tools/ox/index.html","tools/climate/index.html"]
+          for n in names:
+            try:
+              with urllib.request.urlopen(base+n,timeout=25) as f:b=f.read()
+              out=pathlib.Path('/tmp')/n;out.parent.mkdir(parents=True,exist_ok=True);out.write_bytes(b)
+              text=b.decode('utf8',errors='replace')
+              print("FETCH",n,len(b))
+              for pat in ("question-images","audio/","png","mp3","images/","data/"):
+                i=text.find(pat)
+                if i>=0:print("NEAR",pat,repr(text[max(0,i-150):i+230]))
+            except Exception as ex:print("FETCH FAILED",n,str(ex))
+          PY
+          node <<'JS'
+          const fs=require('fs'),vm=require('vm'),context={};
+          vm.createContext(context);
+          vm.runInContext(fs.readFileSync('/tmp/ds/codec.js','utf8'),context);
+          for (const file of ['ebsi_geo_data.json','ox.json','ox-extra.json']) {
+            const fn=file.startsWith('ebsi')?'/tmp/tools/cut/data/'+file:'/tmp/tools/ox/data/'+file;
+            let data=context.TwCodec.unwrap(JSON.parse(fs.readFileSync(fn,'utf8')));
+            console.log('UNPACKED',file,JSON.stringify(Object.keys(data)),JSON.stringify(data).length);
+            let sample=JSON.stringify(data);
+            for (let pat of ['question-images','/audio/','.png','.webp','.mp3','.jpg']) {
+              let at=sample.indexOf(pat);
+              console.log('MATCH',file,pat,at,at<0?'':sample.slice(Math.max(0,at-110),at+170));
+            }
+            console.log('HEAD DATA',file,sample.slice(0,850));
+          }
+          JS

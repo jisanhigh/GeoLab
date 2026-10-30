@@ -79,12 +79,12 @@ def references(rel, data):
   except Exception: pass
   for v in parser.refs:add(v)
  if rel.endswith(".css") or rel.endswith(".html"):
-  for x in re.findall(r"url\\(\\s*['\\\"]?([^'\\\"\\)]+)",txt,re.I):add(x)
+  for x in re.findall(r"""url\(\s*['"]?([^'")]+)""",txt,re.I):add(x)
  if rel.endswith((".js",".html")):
   # Quoted literal paths used for runtime data loading.
-  for x in re.findall(r"""['"]((?:\\./|\\.\\./|/)?(?:tools/|notes/|atlas-archive/|ds/|meridian/|fonts/|data/)[^'"<>\\s]+)['"]""",txt):
+  for x in re.findall(r"""['"]((?:\./|\.\./|/)?(?:tools/|notes/|atlas-archive/|ds/|meridian/|fonts/|data/)[^'"<>\s]+)['"]""",txt):
    add(x,BASE)
-  for x in re.findall(r"""['"]((?:\\./|\\.\\./)?[^'"]+\\.(?:json|geojson|js|css|html|png|webp|svg|woff2?|mp3|mp4|webmanifest))['"]""",txt):
+  for x in re.findall(r"""['"]((?:\./|\.\./)?[^'"]+\.(?:json|geojson|js|css|html|png|webp|svg|woff2?|mp3|mp4|webmanifest))['"]""",txt):
    add(x,u)
  if rel.endswith((".json",".geojson")):
   try:

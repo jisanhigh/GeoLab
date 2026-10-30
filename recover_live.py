@@ -33,7 +33,8 @@ REQUIRED = [
  "tools/ox/data/ox.json", "tools/ox/data/ox-extra.json",
  "tools/stats/data/stats.json", "tools/cut/data/ebsi_geo_data.json",
  "tools/climate/index.html", "tools/climate/korea.html",
- "tools/ox/index.html", "tools/stats/index.html", "notes/index.html",
+ "tools/ox/index.html", "tools/stats/index.html", "tools/cut/data/question-image-manifest.json",
+ "tools/ox/audio/bgm.mp3", "notes/index.html",
  "atlas-archive/index.html", "LICENSE","LICENSE-CODE.md","LICENSE-DATA",
 ]
 def qualify(ref, parent=BASE):
@@ -90,6 +91,12 @@ def references(rel, data):
   try:
    obj=json.loads(txt)
   except Exception:return out
+  # All 959 official question images are listed in the published manifest.
+  if rel=="tools/cut/data/question-image-manifest.json":
+   if not isinstance(obj,dict) or len(obj.get("items",[]))!=959:
+    raise RuntimeError("Incomplete official question image manifest")
+   for item in obj["items"]:
+    add(item["url"],urljoin(BASE,"tools/cut/index.html"))
   # Only reference-bearing JSON keys are crawled; packed data aren't recursively exploded.
   def walk(x,depth=0):
    if depth>7:return
@@ -168,5 +175,9 @@ def run():
  print("SAVED AUDIT",report_path,flush=True)
  if missing_required:
   raise RuntimeError("Critical public assets missing: "+", ".join(missing_required))
+ if categories["tools/cut/question-images/"]!=959:
+  raise RuntimeError("Question image backup incomplete: expected 959 images")
+ if count<expected:
+  raise RuntimeError("Restored file count "+str(count)+" smaller than original inventory "+str(expected))
  # This is only an audit until the complete original file set can be preserved.
 if __name__=="__main__":run()

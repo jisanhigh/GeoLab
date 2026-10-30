@@ -91,14 +91,23 @@ def main():
             target=SITE/p;target.parent.mkdir(parents=True,exist_ok=True)
             with z.open(item) as src,target.open('wb') as dst:shutil.copyfileobj(src,dst)
             names.add(p.as_posix())
+    restored_live=False
+    original_count=len(names)
     if len(names)<3000:
-        shutil.rmtree(SITE);SITE.mkdir()
-        names=full_historic_snapshot()
+        # Restore the complete previous GeoLab Pages site when the former
+        # upstream archive is unavailable. Verify before overlaying changes.
+        import recover_live
+        names=recover_live.run()
+        restored_live=True
+        original_count=json.loads((SITE/'INVENTORY.json').read_text('utf-8'))['original_files']
     assert len(names)>=3000,('Missing original files',len(names))
     assert not (set(REQUIRED)-names),('Missing required files',set(REQUIRED)-names)
     for family in ['tools/cut/question-images/','tools/ox/audio/','fonts/','meridian/media/','atlas-archive/','notes/']:
         assert any(p.startswith(family) for p in names),('Missing source family',family)
-    (SITE/'index.html').rename(SITE/'original-home.html')
+    if not restored_live:
+        (SITE/'index.html').rename(SITE/'original-home.html')
+    else:
+        assert (SITE/'original-home.html').is_file(), 'Missing preserved original home page'
     for p in (HOME/'app').rglob('*'):
         if p.is_file():
             dest=SITE/p.relative_to(HOME/'app')
@@ -123,8 +132,9 @@ def main():
     (SITE/'catalog.json').write_text(json.dumps(catalog,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
     for n in (180,192,512):icon(n,SITE/('icon-%s.png'%n))
     (SITE/'.nojekyll').write_text('')
-    report={'original_files':len(names),'removed_original_files':0,'catalog_pages':len(catalog),
-            'source':'twotimeessgeo/country-map-maker','app':'GeoLab'}
+    assert len(catalog)>=2003, ('Reading library pages missing',len(catalog))
+    report={'original_files':original_count,'restored_snapshot_files':len(names),'removed_original_files':0,'catalog_pages':len(catalog),
+            'source':'twotimeessgeo/country-map-maker','restored_from_existing_pages':restored_live,'app':'GeoLab'}
     (SITE/'INVENTORY.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
     print(json.dumps(report,ensure_ascii=False),flush=True)
 if __name__=='__main__':main()

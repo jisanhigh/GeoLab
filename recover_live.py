@@ -179,5 +179,5 @@ def run():
   raise RuntimeError("Question image backup incomplete: expected 959 images")
  if count<expected:
   raise RuntimeError("Restored file count "+str(count)+" smaller than original inventory "+str(expected))
- # This is only an audit until the complete original file set can be preserved.
+ return got
 if __name__=="__main__":run()

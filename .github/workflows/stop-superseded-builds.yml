@@ -1,0 +1,20 @@
+name: Stop superseded GeoLab builds
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/stop-superseded-builds.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: write
+jobs:
+  cancel-old:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel two superseded long-running legacy site builds
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run cancel 41014976372 --repo "$GITHUB_REPOSITORY" || true
+          gh run cancel 41015410040 --repo "$GITHUB_REPOSITORY" || true

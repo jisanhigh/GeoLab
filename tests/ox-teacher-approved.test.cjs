@@ -19,7 +19,7 @@ for(const q of questions){
  assert.ok(q.text&&q.teacherExplanation&&q.source&&q.source.includes("한국지리"));
  assert.equal(q.explanation,"","Preserve original X corrections separately");
 }
-assert.equal(new Set(questions.map(q=>q.text.replace(/\\s/g,""))).size,41);
+assert.equal(new Set(questions.map(q=>q.text.replaceAll(" ",""))).size,41);
 assert.equal(questions.find(q=>q.sourceId==="K-005").text,"칼데라 분지는 주로 마그마 분출 후 화구가 함몰하여 형성된다.");
 const app=read("app.js"),html=read("index.html");
 assert.ok(app.includes("teacherOXData();")&&app.includes("GeoLabKoreaApprovedOX"));

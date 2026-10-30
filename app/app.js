@@ -115,7 +115,7 @@ function teacherOXData(){
  const list=window.GeoLabKoreaApprovedOX||[];
  if(!Array.isArray(list))throw Error("Teacher OX data must be an array");
  const ids=new Set(state.ox.map(q=>q.id));
- const key=t=>N(t).replace(/[.,?!·~\\s]/g,"");
+ const key=t=>N(t).replaceAll(" ","").replace(/[.,?!·~]/g,"");
  const texts=new Set(state.ox.filter(q=>q.subject==="korea").map(q=>key(q.text)));
  for(const entry of list){
   if(entry.subject!=="korea"||!["O","X"].includes(entry.answer)||!entry.text||!entry.teacherExplanation||!entry.source)throw Error("Invalid approved Korean OX entry");

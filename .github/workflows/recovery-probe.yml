@@ -91,3 +91,24 @@ jobs:
             console.log('HEAD DATA',file,sample.slice(0,850));
           }
           JS
+      - name: Extract script paths and image naming logic
+        run: |
+          python - <<'PY'
+          import urllib.request,re
+          base="https://jisanhigh.github.io/GeoLab/"
+          for p in ["tools/cut/index.html","tools/ox/index.html","tools/climate/index.html","tools/stats/index.html","tools/cut/data/ebsi_geo_data.json"]:
+            with urllib.request.urlopen(base+p,timeout=30) as u:s=u.read().decode("utf8",errors="replace")
+            if p.endswith('.json'):
+              import json
+              obj=json.loads(s)
+              print("PACK KEYS",list(obj))
+              continue
+            print("PAGE",p,"SCRIPTS",re.findall(r'<script[^>]+src=["\']([^"\']+)',s,flags=re.I))
+            print("PAGE",p,"LINKS",re.findall(r'<link[^>]+href=["\']([^"\']+)',s,flags=re.I)[:30])
+            print("PAGE",p,"IMAGES",re.findall(r'(?:src|href)=["\']([^"\']+\.(?:png|jpg|svg|webp|mp3|mp4))',s,flags=re.I)[:20])
+          PY
+          node <<'JS'
+          const fs=require('fs'),vm=require('vm'),context={};vm.createContext(context);vm.runInContext(fs.readFileSync('/tmp/ds/codec.js','utf8'),context);
+          let d=context.TwCodec.unwrap(JSON.parse(fs.readFileSync('/tmp/tools/cut/data/ebsi_geo_data.json','utf8')));
+          console.log("RECORD COUNT",d.records?.length,"SAMPLE",JSON.stringify(d.records?.slice(0,3)).slice(0,2200));
+          JS

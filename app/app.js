@@ -130,7 +130,7 @@ function teacherWorldOXData(){
  const list=window.GeoLabWorldApprovedOX||[];
  if(!Array.isArray(list)||list.length!==43)throw Error("Approved world OX data missing or incomplete");
  const ids=new Set(state.ox.map(q=>q.id));
- const key=t=>N(t).replace(/\\s+/g,"").replace(/[.,?!·~]/g,"");
+ const key=t=>N(t).replace(/\s+/g,"").replace(/[.,?!·~]/g,"");
  const texts=new Set(state.ox.filter(q=>q.subject==="world").map(q=>key(q.text)));
  for(const entry of list){
   if(entry.subject!=="world"||!["O","X"].includes(entry.answer)||!entry.text||!entry.teacherExplanation||!entry.source||!entry.teacherReviewed)throw Error("Invalid teacher-approved world OX entry "+entry.sourceId);

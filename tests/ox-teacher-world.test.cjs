@@ -5,7 +5,7 @@ const read=f=>fs.readFileSync(fs.existsSync(path.join(ROOT,"site",f))?path.join(
 const ctx={};vm.createContext(ctx);
 vm.runInContext(read("ox-teacher-approved-2026-world.js"),ctx);
 const questions=Array.from(ctx.GeoLabWorldApprovedOX||[]);
-const rows=questions.map(q=>[q.sourceId,q.sourceChapter,q.group,q.text,q.answer,q.teacherExplanation,q.source.replace(/ · 세계지리 .*$/,""),q.source.match(/세계지리 (\\d+번)$/)?.[1]]);
+const rows=questions.map(q=>[q.sourceId,q.sourceChapter,q.group,q.text,q.answer,q.teacherExplanation,q.source.replace(/ · 세계지리 .*$/,""),q.source.match(/세계지리 (\d+번)$/)?.[1]]);
 const expectedHash="c6823b78d2be1f88f8de13e95e68a2f7ef166fb2120faf5ff46f59c29fcc1b8c";
 assert.equal(crypto.createHash("sha256").update(JSON.stringify(rows)).digest("hex"),expectedHash,"Approved contents differ from teacher-edited Excel");
 assert.equal(questions.length,43);

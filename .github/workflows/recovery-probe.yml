@@ -130,3 +130,24 @@ jobs:
               for n,line in matches[:50]:print('LINE',p,n,line[:350])
             except Exception as e:print('FAILED',p,str(e)[:150])
           PY
+      - name: Inspect missing image manifest schema
+        run: |
+          python - <<'PY'
+          import urllib.request,json,collections
+          base="https://jisanhigh.github.io/GeoLab/"
+          names=["tools/cut/data/question-image-manifest.json",
+                 "tools/ox/audio/bgm.mp3",
+                 "tools/cut/question-images/"]
+          for p in names:
+            try:
+              with urllib.request.urlopen(base+p,timeout=25) as f:
+                content=f.read(3500000)
+                print("RESOURCE",p,"STATUS",f.status,"BYTES",f.headers.get('content-length'),"TYPE",f.headers.get('content-type'))
+              if p.endswith('.json'):
+                data=json.loads(content)
+                print("MANIFEST TYPE",type(data).__name__,"TOTAL",len(data))
+                print("MANIFEST FIRST",repr(str(data)[:4500]))
+                if isinstance(data,dict):
+                  print("MANIFEST KEYS",list(data.keys())[:30])
+            except Exception as ex:print('RESOURCE FAILED',p,str(ex))
+          PY

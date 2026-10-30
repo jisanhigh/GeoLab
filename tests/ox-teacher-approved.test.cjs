@@ -1,7 +1,7 @@
 "use strict";
 const assert=require("node:assert/strict"),fs=require("node:fs"),path=require("node:path"),vm=require("node:vm");
 const site=path.join(__dirname,"..","site");
-const read=f=>fs.readFileSync(path.join(site,f),"utf8");
+const read=f=>{const built=path.join(site,f);return fs.readFileSync(fs.existsSync(built)?built:path.join(__dirname,"..","app",f),"utf8");};
 const ctx={};vm.createContext(ctx);
 vm.runInContext(read("ox-teacher-approved-2026-korea.js"),ctx);
 const questions=Array.from(ctx.GeoLabKoreaApprovedOX||[]);

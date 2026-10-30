@@ -137,16 +137,25 @@ def run():
   queued=set()
   print("RESTORE ROUND",rounds,"BATCH",len(batch),"COMPLETE",len(seen),flush=True)
   def download(rel):
-   try:
-    with urlopen(Request(urljoin(BASE,rel),headers=HEADERS),timeout=90) as f:
-     content=f.read()
-     if f.status!=200:raise ValueError("HTTP "+str(f.status))
-    p=TARGET/rel
-    p.parent.mkdir(parents=True,exist_ok=True)
-    p.write_bytes(content)
-    return rel,content,None
-   except Exception as exc:
-    return rel,None,str(exc)[:180]
+   # GitHub Pages can sporadically return 429/5xx under concurrent requests.
+   # Retry transient failures rather than dropping an existing lesson page.
+   from urllib.error import HTTPError, URLError
+   import time
+   for attempt in range(5):
+    try:
+     with urlopen(Request(urljoin(BASE,rel),headers=HEADERS),timeout=90) as f:
+      content=f.read()
+      if f.status!=200:raise ValueError("HTTP "+str(f.status))
+     p=TARGET/rel
+     p.parent.mkdir(parents=True,exist_ok=True)
+     p.write_bytes(content)
+     return rel,content,None
+    except Exception as exc:
+     transient=(isinstance(exc,HTTPError) and exc.code in (429,500,502,503,504)) or isinstance(exc,URLError)
+     if transient and attempt<4:
+      time.sleep(min(2**attempt,5))
+      continue
+     return rel,None,str(exc)[:180]
   with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
    for rel,data,err in pool.map(download,batch):
     seen.add(rel)

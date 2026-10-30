@@ -1,0 +1,27 @@
+name: Verify approved World Geography OX questions
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app/ox-teacher-approved-2026-world.js'
+      - 'app/app.js'
+      - 'app/index.html'
+      - 'tests/ox-teacher-world.test.cjs'
+      - '.github/workflows/validate-teacher-world-ox.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  ox-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify approved World Geography OX content and edits
+        run: node tests/ox-teacher-world.test.cjs
+      - name: Check JavaScript syntax
+        run: |
+          node --check app/app.js
+          node --check app/ox-teacher-approved-2026-world.js

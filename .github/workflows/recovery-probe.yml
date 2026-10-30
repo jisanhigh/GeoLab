@@ -1,0 +1,39 @@
+name: Probe GeoLab recovery sources
+on:
+  push:
+    paths:
+      - '.github/workflows/recovery-probe.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check accessible historical and hosted files
+        run: |
+          python - <<'PY'
+          from urllib.request import Request,urlopen
+          from urllib.error import HTTPError
+          targets=[
+            "https://jisanhigh.github.io/GeoLab/",
+            "https://jisanhigh.github.io/GeoLab/index.html",
+            "https://jisanhigh.github.io/GeoLab/app.js",
+            "https://jisanhigh.github.io/GeoLab/tools/ox/data/ox.json",
+            "https://jisanhigh.github.io/GeoLab/tools/ox/data/ox-extra.json",
+            "https://jisanhigh.github.io/GeoLab/ds/codec.js",
+            "https://jisanhigh.github.io/GeoLab/tools/stats/data/stats.json",
+            "https://jisanhigh.github.io/GeoLab/tools/climate/index.html",
+            "https://twotimeessgeo.github.io/country-map-maker/tools/ox/data/ox.json",
+            "https://codeload.github.com/twotimeessgeo/country-map-maker/zip/refs/heads/main",
+            "https://api.github.com/repos/twotimeessgeo/country-map-maker",
+          ]
+          for u in targets:
+            try:
+              with urlopen(Request(u,headers={'User-Agent':'GeoLab-Recovery/1.0'}),timeout=20) as f:
+                sample=f.read(512)
+                print('URL',u,'STATUS',f.status,'TYPE',f.headers.get('content-type'),'BYTES HEADER',f.headers.get('content-length'),'SAMPLE',repr(sample[:120]),flush=True)
+            except Exception as e:
+              print('URL',u,'FAILED',str(e),flush=True)
+          PY

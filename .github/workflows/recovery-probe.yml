@@ -37,3 +37,22 @@ jobs:
             except Exception as e:
               print('URL',u,'FAILED',str(e),flush=True)
           PY
+      - name: Inspect legacy catalog and inventory counts
+        run: |
+          python - <<'PY'
+          import json,urllib.request,re
+          base="https://jisanhigh.github.io/GeoLab/"
+          for p in ["INVENTORY.json","catalog.json","tools/cut/data/ebsi_geo_data.json","manifest.webmanifest","tools/ox/data/ox.json"]:
+            try:
+              with urllib.request.urlopen(base+p,timeout=25) as f: raw=f.read()
+              data=json.loads(raw)
+              print('FILE',p,'BYTES',len(raw),'TYPE',type(data).__name__,flush=True)
+              if p=="INVENTORY.json":print('INVENTORY',str(data)[:2000])
+              elif p=="catalog.json":
+                print('CATALOG COUNT',len(data),'SAMPLE',str(data[:4])[:900])
+                print('CATALOG URL SAMPLE', [x.get("url") for x in data[:10]])
+              elif p.startswith("tools/cut/"):
+                print('EXAM ROOT KEYS',list(data)[:20], 'sample',str(data)[:500])
+              elif p.endswith('ox.json'):print('OX ROOT KEYS',list(data)[:20])
+            except Exception as e:print('ERR',p,str(e)[:300])
+          PY

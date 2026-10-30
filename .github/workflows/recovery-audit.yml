@@ -1,0 +1,25 @@
+name: Audit deployed GeoLab static backup
+on:
+  push:
+    paths:
+      - 'recover_live.py'
+      - '.github/workflows/recovery-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Recover published GeoLab data without changing deployment
+        run: python recover_live.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: GeoLab-Recovery-Audit
+          path: recovery-audit.json
+          retention-days: 30
